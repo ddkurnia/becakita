@@ -34,8 +34,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 #map{width:100%;height:100%;border-radius:0 0 20px 20px;z-index:1}
 .user-dot{width:18px;height:18px;background:#3B82F6;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 0 rgba(59,130,246,.5);animation:pulse-ring 1.8s infinite}
 .user-dot-wrap{position:relative;display:flex;align-items:center;justify-content:center}
-.driver-pin{width:38px;height:38px;background:linear-gradient(135deg,#00A651,#00C853);border-radius:50% 50% 50% 4px;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,166,81,.4);border:2.5px solid #fff}
-.driver-pin i{transform:rotate(45deg);color:#fff;font-size:14px}
+.driver-pin{width:38px;height:38px;background:linear-gradient(135deg,#00A651,#00C853);border-radius:50% 50% 50% 4px;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,166,81,.4);border:2.5px solid #fff;overflow:hidden}
+.driver-pin img{width:16px;height:auto;transform:rotate(45deg);object-fit:contain}
 .toggle-track{width:52px;height:28px;border-radius:14px;background:#CBD5E1;position:relative;cursor:pointer;transition:background .3s}
 .toggle-track.on{background:#00A651}
 .toggle-thumb{width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.15)}
@@ -57,7 +57,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 .update-banner{animation:slideDown .4s ease,bounceIn .3s ease .4s}
 .upload-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2}
 .upload-overlay i{animation:spin-icon 1s linear infinite}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
 </head>
 <body class="bg-surface-50 text-ink-900 antialiased">
@@ -71,7 +71,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 <!-- SPLASH -->
 <div id="splash" class="fixed inset-0 z-[999] bg-brand-500 flex flex-col items-center justify-center transition-opacity duration-500">
   <div class="mb-4" style="animation:float 2s ease-in-out infinite">
-    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-brand-700/30"><i class="fa-solid fa-bicycle text-brand-500 text-3xl"></i></div>
+    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-brand-700/30">
+      <img src="/icon-becakita.png" alt="BecaKita" class="w-11 h-11 object-contain">
+    </div>
   </div>
   <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
   <p class="text-brand-100 text-sm mt-1 font-500">Becak Dekat, Mudah, Cepat</p>
@@ -85,7 +87,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <div class="absolute bottom-[25%] left-[-50px] w-64 h-64 bg-white/5 rounded-full"></div>
     <div class="absolute top-[30%] right-[-30px] w-32 h-32 bg-white/5 rounded-full"></div>
     <div class="flex-1 flex flex-col items-center justify-center px-6 py-16 relative z-10">
-      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4"><i class="fa-solid fa-bicycle text-brand-500 text-2xl"></i></div>
+      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
+        <img src="/icon-becakita.png" alt="BecaKita" class="w-9 h-9 object-contain">
+      </div>
       <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
       <p class="text-brand-100 text-sm mt-1 font-500 mb-12">Becak Dekat, Mudah, Cepat</p>
       <div class="w-full max-w-xs space-y-4">
@@ -95,20 +99,25 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
           <i class="fa-solid fa-chevron-right text-ink-300 text-sm"></i>
         </button>
         <button onclick="selectRole('driver')" class="role-card w-full bg-white rounded-2xl p-5 flex items-center gap-4 shadow-xl shadow-black/10 card-tap text-left">
-          <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-bicycle text-amber-500 text-xl"></i></div>
+          <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita.png" alt="BecaKita" class="w-7 h-7 object-contain"></div>
           <div class="flex-1"><div class="font-800 text-ink-900 text-lg">Tukang Becak</div><div class="text-xs text-ink-500 mt-0.5">Dashboard & lokasi GPS</div></div>
           <i class="fa-solid fa-chevron-right text-ink-300 text-sm"></i>
         </button>
       </div>
     </div>
-    <div class="text-center pb-6 text-brand-200 text-xs font-500">Kabupaten Kepulauan Meranti</div>
+    <div class="text-center pb-6 text-brand-200 text-xs">by <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-white transition-colors font-600">KedaiMedia</a> Web App Developer</div>
   </div>
 </div>
 
 <!-- ==================== USER APP ==================== -->
 <div id="page-user" class="page">
   <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm relative z-20 flex-shrink-0">
-    <div class="flex items-center gap-2"><div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-bicycle text-white text-xs"></i></div><span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span></div>
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+        <img src="/icon-becakita.png" alt="BecaKita" class="w-5 h-5 object-contain">
+      </div>
+      <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
+    </div>
     <button onclick="goBack()" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center" aria-label="Keluar"><i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-xs"></i></button>
   </header>
   <main class="flex-1 overflow-y-auto pb-20">
@@ -132,7 +141,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
             <div class="flex items-center gap-3 p-2"><div class="skeleton w-12 h-12 rounded-full flex-shrink-0"></div><div class="flex-1 space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div></div>
           </div>
           <div id="no-drivers" class="hidden text-center py-8">
-            <i class="fa-solid fa-bicycle text-4xl text-surface-200 mb-3 block"></i>
+            <img src="/icon-becakita.png" alt="" class="w-12 h-12 object-contain mx-auto mb-3 opacity-20">
             <p class="text-sm text-ink-500">Belum ada becak aktif di sekitar Anda</p>
           </div>
         </div>
@@ -162,7 +171,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
           <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-bell text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Notifikasi</span><span id="notif-status" class="text-xs ml-auto font-500">-</span></div>
           <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-shield-halved text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Kebijakan Privasi</span></div>
         </div>
-        <p class="text-center text-xs text-ink-300 mt-6">BecaKita v1.1 — Kabupaten Kepulauan Meranti</p>
+        <p class="text-center text-xs text-ink-300 mt-6">BecaKita v1.1 — by <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 text-brand-500 hover:text-brand-600 transition-colors font-600">KedaiMedia</a></p>
       </div>
     </div>
     <div id="user-driver-detail" class="view hidden"></div>
@@ -178,7 +187,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 <div id="page-driver" class="page">
   <div id="driver-login" class="view flex-1 flex flex-col">
     <div class="flex-1 flex flex-col items-center justify-center px-6">
-      <div class="w-16 h-16 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 mb-4"><i class="fa-solid fa-bicycle text-white text-2xl"></i></div>
+      <div class="w-16 h-16 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 mb-4">
+        <img src="/icon-becakita.png" alt="BecaKita" class="w-9 h-9 object-contain">
+      </div>
       <h1 class="text-2xl font-800 tracking-tight">Masuk Driver</h1>
       <p class="text-sm text-ink-500 mt-1 mb-8">Masukkan nomor HP untuk melanjutkan</p>
       <div class="w-full max-w-xs space-y-4">
@@ -196,7 +207,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   </div>
   <div id="driver-dashboard" class="view flex-1 overflow-y-auto">
     <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm flex-shrink-0">
-      <div class="flex items-center gap-2"><div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-bicycle text-white text-xs"></i></div><span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span></div>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+          <img src="/icon-becakita.png" alt="BecaKita" class="w-5 h-5 object-contain">
+        </div>
+        <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
+      </div>
       <div class="flex items-center gap-2"><button onclick="goBack()" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center" aria-label="Keluar"><i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-xs"></i></button></div>
     </header>
     <div class="px-4 py-4 space-y-4">
@@ -226,19 +242,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
       <span class="font-700">Edit Profil</span>
     </header>
     <div class="px-4 py-4 space-y-4">
-      <!-- FOTO DENGAN UPLOAD -->
       <div class="flex justify-center">
         <div class="relative">
           <img id="edit-foto" src="" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
-          <!-- Overlay loading saat upload -->
-          <div id="upload-overlay" class="hidden upload-overlay">
-            <i class="fa-solid fa-spinner text-white text-lg"></i>
-          </div>
-          <!-- Tombol kamera → trigger file input -->
+          <div id="upload-overlay" class="hidden upload-overlay"><i class="fa-solid fa-spinner text-white text-lg"></i></div>
           <div class="absolute -bottom-1 -right-1 w-8 h-8 bg-brand-500 rounded-full flex items-center justify-center border-2 border-white cursor-pointer card-tap" onclick="document.getElementById('foto-input').click()">
             <i class="fa-solid fa-camera text-white text-xs"></i>
           </div>
-          <!-- Hidden file input -->
           <input type="file" id="foto-input" accept="image/*" class="hidden" onchange="handlePhotoSelect(event)">
         </div>
       </div>
@@ -274,16 +284,12 @@ const VAPID_PUBLIC_KEY="";
 const ADMIN_WA_NUMBER="6281234567890";
 
 // ============================================================
-// CLOUDINARY — UPLOAD FOTO DRIVER
-// Cloud Name : dnpdjhdgr
-// Upload Preset : becakita_upload (BUAT di Cloudinary Console)
-//   → Settings → Upload → Upload Presets → Add Upload Preset
-//   → Nama: becakita_upload, Mode: Unsigned, Simpan
+// CLOUDINARY
 // ============================================================
 const CLOUDINARY_CLOUD='dnpdjhdgr';
 const CLOUDINARY_UPLOAD_PRESET='becakita_upload';
-const CLOUDINARY_MAX_WIDTH=400;   // maksimal lebar foto (px)
-const CLOUDINARY_QUALITY=0.7;      // kualitas JPEG (0.1-1.0)
+const CLOUDINARY_MAX_WIDTH=400;
+const CLOUDINARY_QUALITY=0.7;
 
 // ============================================================
 // DATA DEMO
@@ -434,7 +440,7 @@ function updateMapMarkers(){
   const ui=L.divIcon({className:'',html:'<div class="user-dot-wrap"><div class="user-dot"></div></div>',iconSize:[18,18],iconAnchor:[9,9]});
   userMarker=L.marker([state.userLocation.lat,state.userLocation.lng],{icon:ui,zIndexOffset:1000}).addTo(map);
   state.nearbyDrivers.forEach(d=>{
-    const di=L.divIcon({className:'',html:'<div class="driver-pin"><i class="fa-solid fa-bicycle"></i></div>',iconSize:[38,38],iconAnchor:[19,38]});
+    const di=L.divIcon({className:'',html:'<div class="driver-pin"><img src="/icon-becakita.png" style="width:16px;height:auto;transform:rotate(45deg);object-fit:contain"></div>',iconSize:[38,38],iconAnchor:[19,38]});
     driverMarkers.push(L.marker([d.lat,d.lng],{icon:di}).addTo(map).bindPopup(`<b>${d.nama}</b><br>${d.jenisBeca} · ${formatDistance(d.distance)}`));
   });
 }
@@ -459,7 +465,7 @@ function showDriverDetail(driverId){
             <div class="pt-2"><h2 class="font-800 text-xl">${driver.nama}</h2><div class="flex items-center gap-1 mt-1">${renderStars(driver.rating)}<span class="text-sm font-700 text-ink-900 ml-1">${driver.rating}</span></div></div>
           </div>
           <div class="space-y-3">
-            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-bicycle text-brand-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Jenis Becak</div><div class="text-sm font-600">${driver.jenisBeca}</div></div></div>
+            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita.png" alt="" class="w-4 h-4 object-contain"></div><div><div class="text-xs text-ink-500">Jenis Becak</div><div class="text-sm font-600">${driver.jenisBeca}</div></div></div>
             <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-medal text-amber-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Pengalaman</div><div class="text-sm font-600">${driver.pengalaman} tahun</div></div></div>
             <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-map-pin text-blue-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Area Layanan</div><div class="text-sm font-600">${driver.areaLayanan}</div></div></div>
           </div>
@@ -575,7 +581,6 @@ async function saveDriverProfile(){
   d.pengalaman=parseInt(document.getElementById('edit-pengalaman').value)||0;
   d.areaLayanan=document.getElementById('edit-area').value.trim();d.deskripsi=document.getElementById('edit-deskripsi').value.trim();
   if(!d.nama){showToast('Nama wajib diisi','warning');return;}
-  // fotoURL sudah diupdate oleh handlePhotoSelect jika ada upload baru
   if(!isDemoMode&&db&&d.id){
     try{await db.collection('drivers').doc(d.id).update({nama:d.nama,jenisBeca:d.jenisBeca,pengalaman:d.pengalaman,areaLayanan:d.areaLayanan,deskripsi:d.deskripsi,fotoURL:d.fotoURL});}
     catch(e){showToast('Gagal menyimpan','error');return;}
@@ -621,166 +626,70 @@ function updateGpsStatus(active,count){
 
 // ============================================================
 // UPLOAD FOTO — CLOUDINARY
-// Kompresi otomatis sebelum upload:
-//   1. Baca file gambar
-//   2. Resize ke max 400px (proporsional)
-//   3. Konversi ke JPEG quality 70%
-//   4. Upload blob hasil kompresi ke Cloudinary
 // ============================================================
-
 async function handlePhotoSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
-
-  // Validasi tipe
-  if (!file.type.startsWith('image/')) {
-    showToast('Pilih file gambar (JPG, PNG, WEBP)', 'warning');
-    event.target.value = '';
-    return;
-  }
-
-  // Validasi ukuran mentah max 10MB
-  if (file.size > 10 * 1024 * 1024) {
-    showToast('Ukuran foto maksimal 10MB', 'warning');
-    event.target.value = '';
-    return;
-  }
-
+  if (!file.type.startsWith('image/')) { showToast('Pilih file gambar (JPG, PNG, WEBP)', 'warning'); event.target.value = ''; return; }
+  if (file.size > 10 * 1024 * 1024) { showToast('Ukuran foto maksimal 10MB', 'warning'); event.target.value = ''; return; }
   const overlay = document.getElementById('upload-overlay');
   overlay.classList.remove('hidden');
-
   try {
-    // Langkah 1: Kompresi gambar
     const compressedBlob = await compressImage(file);
-
-    // Log ukuran untuk monitoring
-    const originalKB = Math.round(file.size / 1024);
     const compressedKB = Math.round(compressedBlob.size / 1024);
-    console.log(`[BecaKita Upload] Kompresi: ${originalKB}KB → ${compressedKB}KB`);
-
-    // Langkah 2: Upload ke Cloudinary
+    console.log(`[BecaKita Upload] Kompresi: ${Math.round(file.size/1024)}KB → ${compressedKB}KB`);
     const secureURL = await uploadToCloudinary(compressedBlob);
-
-    // Langkah 3: Update preview & state
     document.getElementById('edit-foto').src = secureURL;
     state.currentDriver.fotoURL = secureURL;
-
     overlay.classList.add('hidden');
     showToast(`Foto diupload (${compressedKB}KB)`, 'success');
-
   } catch (err) {
     overlay.classList.add('hidden');
     console.error('[BecaKita Upload] Gagal:', err);
-
-    if (err.message && err.message.includes('Upload preset')) {
-      showToast('Upload preset belum dibuat di Cloudinary', 'error');
-    } else {
-      showToast('Gagal upload foto, coba lagi', 'error');
-    }
+    if (err.message && err.message.includes('Upload preset')) showToast('Upload preset belum dibuat di Cloudinary', 'error');
+    else showToast('Gagal upload foto, coba lagi', 'error');
   }
-
-  // Reset input supaya bisa pilih file yang sama lagi
   event.target.value = '';
 }
 
-/**
- * Kompresi gambar menggunakan Canvas API.
- * - Resize proporsional ke maxWidth
- * - Konversi ke JPEG dengan quality tertentu
- * - Return Blob yang siap diupload
- */
 function compressImage(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-
     reader.onerror = () => reject(new Error('Gagal membaca file'));
     reader.onload = (e) => {
       const img = new Image();
-
       img.onerror = () => reject(new Error('File bukan gambar valid'));
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        let w = img.naturalWidth;
-        let h = img.naturalHeight;
-
-        // Resize proporsional jika lebar melebihi maxWidth
-        if (w > CLOUDINARY_MAX_WIDTH) {
-          h = Math.round((h * CLOUDINARY_MAX_WIDTH) / w);
-          w = CLOUDINARY_MAX_WIDTH;
-        }
-
-        // Juga batasi tinggi max 400px (untuk foto portrait)
-        if (h > CLOUDINARY_MAX_WIDTH) {
-          w = Math.round((w * CLOUDINARY_MAX_WIDTH) / h);
-          h = CLOUDINARY_MAX_WIDTH;
-        }
-
-        canvas.width = Math.max(1, w);
-        canvas.height = Math.max(1, h);
-
+        let w = img.naturalWidth, h = img.naturalHeight;
+        if (w > CLOUDINARY_MAX_WIDTH) { h = Math.round((h * CLOUDINARY_MAX_WIDTH) / w); w = CLOUDINARY_MAX_WIDTH; }
+        if (h > CLOUDINARY_MAX_WIDTH) { w = Math.round((w * CLOUDINARY_MAX_WIDTH) / h); h = CLOUDINARY_MAX_WIDTH; }
+        canvas.width = Math.max(1, w); canvas.height = Math.max(1, h);
         const ctx = canvas.getContext('2d');
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
+        ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        canvas.toBlob(
-          (blob) => {
-            if (blob) resolve(blob);
-            else reject(new Error('Kompresi gagal'));
-          },
-          'image/jpeg',
-          CLOUDINARY_QUALITY
-        );
+        canvas.toBlob((blob) => { if (blob) resolve(blob); else reject(new Error('Kompresi gagal')); }, 'image/jpeg', CLOUDINARY_QUALITY);
       };
-
       img.src = e.target.result;
     };
-
     reader.readAsDataURL(file);
   });
 }
 
-/**
- * Upload blob ke Cloudinary via unsigned upload.
- * Menggunakan XHR untuk kompatibilitas maksimal.
- */
 function uploadToCloudinary(blob) {
   return new Promise((resolve, reject) => {
     const formData = new FormData();
     formData.append('file', blob, 'driver-photo.jpg');
     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
     const xhr = new XMLHttpRequest();
-    const endpoint = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`;
-
-    xhr.open('POST', endpoint);
-
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`);
     xhr.onload = () => {
-      if (xhr.status === 200) {
-        try {
-          const res = JSON.parse(xhr.responseText);
-          if (res.secure_url) {
-            resolve(res.secure_url);
-          } else {
-            reject(new Error('URL tidak ditemukan di respons'));
-          }
-        } catch (e) {
-          reject(new Error('Gagal parse respons Cloudinary'));
-        }
-      } else {
-        try {
-          const errRes = JSON.parse(xhr.responseText);
-          reject(new Error(errRes.error?.message || `HTTP ${xhr.status}`));
-        } catch (e) {
-          reject(new Error(`Upload gagal: HTTP ${xhr.status}`));
-        }
-      }
+      if (xhr.status === 200) { try { const r = JSON.parse(xhr.responseText); if (r.secure_url) resolve(r.secure_url); else reject(new Error('URL tidak ditemukan')); } catch(e) { reject(new Error('Gagal parse respons')); } }
+      else { try { const er = JSON.parse(xhr.responseText); reject(new Error(er.error?.message || `HTTP ${xhr.status}`)); } catch(e) { reject(new Error(`Upload gagal: HTTP ${xhr.status}`)); } }
     };
-
-    xhr.onerror = () => reject(new Error('Koneksi gagal, periksa internet'));
-    xhr.ontimeout = () => reject(new Error('Upload timeout, coba lagi'));
-    xhr.timeout = 30000; // 30 detik max
-
+    xhr.onerror = () => reject(new Error('Koneksi gagal'));
+    xhr.ontimeout = () => reject(new Error('Upload timeout'));
+    xhr.timeout = 30000;
     xhr.send(formData);
   });
 }
@@ -801,10 +710,10 @@ function setupUpdateCheck(){
 function applyUpdate(){if(swRegistration&&swRegistration.waiting)swRegistration.waiting.postMessage({type:'SKIP_WAITING'});window.location.reload();}
 
 // ============================================================
-// PWA MANIFEST (inline)
+// PWA MANIFEST
 // ============================================================
 function setupManifest(){
-  const m={name:'BecaKita — Becak Dekat, Mudah, Cepat',short_name:'BecaKita',description:'Layanan becak lokal berbasis lokasi di Kabupaten Kepulauan Meranti',start_url:'/index.html',scope:'/',display:'standalone',orientation:'portrait',theme_color:'#00A651',background_color:'#F8F9FC',categories:['transportation','lifestyle'],icons:[{src:'https://img.icons8.com/fluency/192/bicycle.png',sizes:'192x192',type:'image/png'},{src:'https://img.icons8.com/fluency/512/bicycle.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+  const m={name:'BecaKita — Becak Dekat, Mudah, Cepat',short_name:'BecaKita',description:'Layanan becak lokal berbasis lokasi di Kabupaten Kepulauan Meranti',start_url:'/index.html',scope:'/',display:'standalone',orientation:'portrait',theme_color:'#00A651',background_color:'#F8F9FC',categories:['transportation','lifestyle'],icons:[{src:'/icon-becakita.png',sizes:'192x192',type:'image/png'},{src:'/icon-becakita.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
   const blob=new Blob([JSON.stringify(m)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('link');
   link.rel='manifest';link.href=url;document.head.appendChild(link);
 }
