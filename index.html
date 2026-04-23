@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BecaKita — Becak Dekat, Mudah, Cepat</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Leaflet Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { 50:'#e6f9ee', 100:'#b3efd3', 200:'#80e4b7', 300:'#4dd99c', 400:'#26d38a', 500:'#00A651', 600:'#008a43', 700:'#006e35', 800:'#005228', 900:'#00361a' },
+        surface: { 50:'#F8F9FC', 100:'#F1F3F8', 200:'#E4E7EF', 300:'#CDD2DE' },
+        ink: { 900:'#0F172A', 700:'#334155', 500:'#64748B', 300:'#94A3B8' }
+      },
+      fontFamily: { sans:['Plus Jakarta Sans','system-ui','sans-serif'] }
+    }
+  }
+}
+</script>
+
+<style>
+  * { -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
+  body { font-family:'Plus Jakarta Sans',sans-serif; overscroll-behavior:none; }
+  .page { display:none; min-height:100vh; }
+  .page.active { display:flex; flex-direction:column; animation:fadeUp .35s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse-ring { 0%{transform:scale(.8);opacity:.6} 100%{transform:scale(2.2);opacity:0} }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  @keyframes spin-slow { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+  /* Peta */
+  #map { width:100%; height:100%; border-radius:0 0 20px 20px; z-index:1; }
+  .user-dot { width:18px;height:18px;background:#3B82F6;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 0 rgba(59,130,246,.5);animation:pulse-ring 1.8s infinite; }
+  .user-dot-wrap { position:relative;display:flex;align-items:center;justify-content:center; }
+  .driver-pin { width:38px;height:38px;background:linear-gradient(135deg,#00A651,#00C853);border-radius:50% 50% 50% 4px;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,166,81,.4);border:2.5px solid #fff; }
+  .driver-pin i { transform:rotate(45deg);color:#fff;font-size:14px; }
+
+  /* Toggle Switch */
+  .toggle-track { width:52px;height:28px;border-radius:14px;background:#CBD5E1;position:relative;cursor:pointer;transition:background .3s; }
+  .toggle-track.on { background:#00A651; }
+  .toggle-thumb { width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.15); }
+  .toggle-track.on .toggle-thumb { transform:translateX(24px); }
+
+  /* Skeleton */
+  .skeleton { background:linear-gradient(90deg,#E4E7EF 25%,#F1F3F8 50%,#E4E7EF 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px; }
+
+  /* Toast */
+  .toast { transform:translateY(-100%);opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1); }
+  .toast.show { transform:translateY(0);opacity:1; }
+
+  /* Card Tap */
+  .card-tap { transition:transform .15s,box-shadow .15s; }
+  .card-tap:active { transform:scale(.97); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:#CBD5E1;border-radius:2px; }
+
+  /* Leaflet overrides */
+  .leaflet-control-zoom { border:none!important;box-shadow:0 2px 8px rgba(0,0,0,.12)!important;border-radius:12px!important;overflow:hidden; }
+  .leaflet-control-zoom a { width:36px!important;height:36px!important;line-height:36px!important;font-size:16px!important;color:#334155!important; }
+  .leaflet-control-attribution { display:none!important; }
+
+  /* Role cards stagger */
+  .role-card:nth-child(1){animation-delay:.1s}
+  .role-card:nth-child(2){animation-delay:.2s}
+  .role-card:nth-child(3){animation-delay:.3s}
+  .role-card { animation:fadeUp .5s ease both; }
+
+  /* Gradient text */
+  .text-gradient { background:linear-gradient(135deg,#00A651,#00C853,#4ADE80);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+  }
+</style>
+</head>
+
+<body class="bg-surface-50 text-ink-900 antialiased">
+
+<!-- ==================== SPLASH SCREEN ==================== -->
+<div id="splash" class="fixed inset-0 z-[999] bg-brand-500 flex flex-col items-center justify-center transition-opacity duration-500">
+  <div class="mb-4" style="animation:float 2s ease-in-out infinite">
+    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-brand-700/30">
+      <i class="fa-solid fa-bicycle text-brand-500 text-3xl"></i>
+    </div>
+  </div>
+  <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
+  <p class="text-brand-100 text-sm mt-1 font-500">Becak Dekat, Mudah, Cepat</p>
+  <div class="mt-8 w-8 h-8 border-3 border-white/30 border-t-white rounded-full" style="animation:spin-slow .8s linear infinite;border-width:3px"></div>
+</div>
+
+<!-- ==================== ROLE SELECT ==================== -->
+<div id="page-role" class="page">
+  <div class="flex-1 flex flex-col bg-gradient-to-b from-brand-600 via-brand-500 to-brand-700 relative overflow-hidden">
+    <!-- Dekorasi -->
+    <div class="absolute top-[-60px] right-[-40px] w-48 h-48 bg-white/5 rounded-full"></div>
+    <div class="absolute bottom-[20%] left-[-50px] w-64 h-64 bg-white/5 rounded-full"></div>
+
+    <div class="flex-1 flex flex-col items-center justify-center px-6 py-12 relative z-10">
+      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
+        <i class="fa-solid fa-bicycle text-brand-500 text-2xl"></i>
+      </div>
+      <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
+      <p class="text-brand-100 text-sm mt-1 font-500 mb-10">Becak Dekat, Mudah, Cepat</p>
+
+      <div class="w-full max-w-xs space-y-3">
+        <!-- Penumpang -->
+        <button onclick="selectRole('user')" class="role-card w-full bg-white rounded-2xl p-4 flex items-center gap-4 shadow-lg shadow-black/10 card-tap text-left">
+          <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-location-dot text-brand-500 text-lg"></i>
+          </div>
+          <div>
+            <div class="font-700 text-ink-900">Penumpang</div>
+            <div class="text-xs text-ink-500 mt-0.5">Cari becak terdekat</div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-ink-300 ml-auto text-sm"></i>
+        </button>
+
+        <!-- Driver -->
+        <button onclick="selectRole('driver')" class="role-card w-full bg-white rounded-2xl p-4 flex items-center gap-4 shadow-lg shadow-black/10 card-tap text-left">
+          <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-bicycle text-amber-500 text-lg"></i>
+          </div>
+          <div>
+            <div class="font-700 text-ink-900">Tukang Becak</div>
+            <div class="text-xs text-ink-500 mt-0.5">Dashboard driver</div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-ink-300 ml-auto text-sm"></i>
+        </button>
+
+        <!-- Admin -->
+        <button onclick="selectRole('admin')" class="role-card w-full bg-white/90 rounded-2xl p-4 flex items-center gap-4 shadow-lg shadow-black/5 card-tap text-left">
+          <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-shield-halved text-slate-500 text-lg"></i>
+          </div>
+          <div>
+            <div class="font-700 text-ink-900">Admin</div>
+            <div class="text-xs text-ink-500 mt-0.5">Kelola driver</div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-ink-300 ml-auto text-sm"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="text-center pb-6 text-brand-200 text-xs">
+      Kabupaten Kepulauan Meranti
+    </div>
+  </div>
+</div>
+
+<!-- ==================== USER APP ==================== -->
+<div id="page-user" class="page">
+  <!-- Header -->
+  <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm relative z-20 flex-shrink-0">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+        <i class="fa-solid fa-bicycle text-white text-xs"></i>
+      </div>
+      <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
+    </div>
+    <button onclick="goBack()" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center">
+      <i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-xs"></i>
+    </button>
+  </header>
+
+  <!-- Konten -->
+  <main class="flex-1 overflow-y-auto pb-20">
+    <!-- HOME -->
+    <div id="user-home" class="view">
+      <!-- Peta -->
+      <div class="relative" style="height:42vh;min-height:240px">
+        <div id="map" class="absolute inset-0"></div>
+        <!-- Overlay lokasi -->
+        <div class="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center gap-2 shadow-lg z-[1000]">
+          <i class="fa-solid fa-location-crosshairs text-brand-500 text-sm"></i>
+          <span id="location-text" class="text-xs text-ink-700 font-500 truncate">Mencari lokasi...</span>
+        </div>
+      </div>
+
+      <!-- Driver List -->
+      <div class="px-4 -mt-3 relative z-10">
+        <div class="bg-white rounded-2xl shadow-lg shadow-black/5 p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-700 text-base">Beca Terdekat</h2>
+            <span id="driver-count" class="text-xs text-ink-500 bg-surface-100 px-2 py-0.5 rounded-full">0 ditemukan</span>
+          </div>
+          <div id="driver-list" class="space-y-3">
+            <!-- Skeleton loading -->
+            <div class="flex items-center gap-3 p-2"><div class="skeleton w-12 h-12 rounded-full flex-shrink-0"></div><div class="flex-1 space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div></div>
+            <div class="flex items-center gap-3 p-2"><div class="skeleton w-12 h-12 rounded-full flex-shrink-0"></div><div class="flex-1 space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div></div>
+            <div class="flex items-center gap-3 p-2"><div class="skeleton w-12 h-12 rounded-full flex-shrink-0"></div><div class="flex-1 space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div></div>
+          </div>
+          <div id="no-drivers" class="hidden text-center py-8">
+            <i class="fa-solid fa-bicycle text-4xl text-surface-200 mb-3"></i>
+            <p class="text-sm text-ink-500">Belum ada becak aktif di sekitar Anda</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demo badge -->
+      <div id="demo-badge-user" class="hidden mx-4 mt-3 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Mode demo — data menggunakan lokasi simulasi Selat Panjang</span>
+      </div>
+    </div>
+
+    <!-- RIWAYAT -->
+    <div id="user-history" class="view hidden">
+      <div class="px-4 py-4">
+        <h2 class="font-700 text-lg mb-4">Riwayat Perjalanan</h2>
+        <div id="history-list" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- PROFIL -->
+    <div id="user-profile" class="view hidden">
+      <div class="px-4 py-4">
+        <div class="bg-white rounded-2xl p-6 shadow-sm text-center mb-4">
+          <div class="w-20 h-20 bg-brand-50 rounded-full mx-auto flex items-center justify-center mb-3">
+            <i class="fa-solid fa-user text-brand-500 text-2xl"></i>
+          </div>
+          <h3 class="font-700 text-lg">Pengguna BecaKita</h3>
+          <p class="text-sm text-ink-500 mt-1">Tidak perlu login untuk menggunakan layanan</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm divide-y divide-surface-100">
+          <div class="px-4 py-3 flex items-center gap-3">
+            <i class="fa-solid fa-circle-info text-ink-500 w-5 text-center"></i>
+            <span class="text-sm font-500">Tentang BecaKita</span>
+          </div>
+          <div class="px-4 py-3 flex items-center gap-3">
+            <i class="fa-solid fa-map-location-dot text-ink-500 w-5 text-center"></i>
+            <span class="text-sm font-500">Area Layanan</span>
+            <span class="text-xs text-ink-300 ml-auto">Kep. Meranti</span>
+          </div>
+          <div class="px-4 py-3 flex items-center gap-3">
+            <i class="fa-solid fa-shield-halved text-ink-500 w-5 text-center"></i>
+            <span class="text-sm font-500">Kebijakan Privasi</span>
+          </div>
+          <div class="px-4 py-3 flex items-center gap-3">
+            <i class="fa-solid fa-phone text-ink-500 w-5 text-center"></i>
+            <span class="text-sm font-500">Hubungi Admin</span>
+            <i class="fa-solid fa-chevron-right text-ink-300 ml-auto text-xs"></i>
+          </div>
+        </div>
+        <p class="text-center text-xs text-ink-300 mt-6">BecaKita v1.0 — Kabupaten Kepulauan Meranti</p>
+      </div>
+    </div>
+
+    <!-- DRIVER DETAIL -->
+    <div id="user-driver-detail" class="view hidden"></div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-surface-200 flex items-center justify-around py-2 z-30" style="padding-bottom:max(8px,env(safe-area-inset-bottom))">
+    <button onclick="switchUserTab('home')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="home">
+      <i class="fa-solid fa-house text-lg"></i>
+      <span class="text-[10px] font-600">Beranda</span>
+    </button>
+    <button onclick="switchUserTab('history')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="history">
+      <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+      <span class="text-[10px] font-600">Riwayat</span>
+    </button>
+    <button onclick="switchUserTab('profile')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="profile">
+      <i class="fa-solid fa-circle-user text-lg"></i>
+      <span class="text-[10px] font-600">Profil</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ==================== DRIVER APP ==================== -->
+<div id="page-driver" class="page">
+  <!-- Driver Login -->
+  <div id="driver-login" class="view flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col items-center justify-center px-6">
+      <div class="w-16 h-16 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 mb-4">
+        <i class="fa-solid fa-bicycle text-white text-2xl"></i>
+      </div>
+      <h1 class="text-2xl font-800 tracking-tight">Masuk Driver</h1>
+      <p class="text-sm text-ink-500 mt-1 mb-8">Masukkan nomor HP untuk melanjutkan</p>
+
+      <div class="w-full max-w-xs space-y-4">
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">Nomor HP</label>
+          <div class="flex items-center bg-white border border-surface-200 rounded-xl px-4 py-3 gap-2 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 transition-all">
+            <span class="text-sm text-ink-500 font-500">+62</span>
+            <input id="driver-phone" type="tel" maxlength="12" placeholder="8123456789" class="flex-1 outline-none text-sm bg-transparent font-500" inputmode="numeric">
+          </div>
+        </div>
+        <button onclick="driverLogin()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap">
+          Masuk
+        </button>
+      </div>
+
+      <button onclick="goBack()" class="mt-8 text-sm text-ink-500 flex items-center gap-1 card-tap">
+        <i class="fa-solid fa-arrow-left text-xs"></i> Kembali
+      </button>
+    </div>
+  </div>
+
+  <!-- Driver Dashboard -->
+  <div id="driver-dashboard" class="view flex-1 overflow-y-auto">
+    <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-bicycle text-white text-xs"></i>
+        </div>
+        <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
+      </div>
+      <span class="text-xs font-600 text-ink-500 bg-surface-100 px-2 py-1 rounded-full">Driver</span>
+    </header>
+
+    <div class="px-4 py-4 space-y-4">
+      <!-- Status Card -->
+      <div id="driver-status-card" class="rounded-2xl p-4 shadow-sm border"></div>
+
+      <!-- Online Toggle -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
+        <div>
+          <div class="font-700 text-sm">Status Online</div>
+          <div class="text-xs text-ink-500 mt-0.5" id="online-desc">Aktifkan untuk muncul ke penumpang</div>
+        </div>
+        <div id="online-toggle" class="toggle-track" onclick="toggleOnline()">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+
+      <!-- Info Masa Aktif -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fa-solid fa-calendar-check text-brand-500 text-sm"></i>
+          <span class="font-700 text-sm">Masa Aktif Langganan</span>
+        </div>
+        <div id="expiry-info" class="text-sm text-ink-700"></div>
+      </div>
+
+      <!-- Aksi -->
+      <div class="space-y-3">
+        <button id="btn-extend" onclick="extendSubscription()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2">
+          <i class="fa-solid fa-rotate-right"></i>
+          Perpanjang (Rp10.000/bulan)
+        </button>
+        <button onclick="showDriverEdit()" class="w-full bg-white text-ink-700 font-600 py-3 rounded-xl border border-surface-200 card-tap flex items-center justify-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-sm"></i>
+          Edit Profil
+        </button>
+      </div>
+
+      <!-- Demo Badge -->
+      <div id="demo-badge-driver" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Mode demo — data menggunakan akun simulasi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Driver Edit Profile -->
+  <div id="driver-edit" class="view flex-1 overflow-y-auto">
+    <header class="bg-white px-4 py-3 flex items-center gap-3 shadow-sm flex-shrink-0">
+      <button onclick="showDriverDashboard()" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center">
+        <i class="fa-solid fa-arrow-left text-ink-700 text-xs"></i>
+      </button>
+      <span class="font-700">Edit Profil</span>
+    </header>
+    <div class="px-4 py-4 space-y-4">
+      <!-- Foto -->
+      <div class="flex justify-center">
+        <div class="relative">
+          <img id="edit-foto" src="https://picsum.photos/seed/becak1/200/200" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
+          <div class="absolute -bottom-1 -right-1 w-8 h-8 bg-brand-500 rounded-full flex items-center justify-center border-2 border-white">
+            <i class="fa-solid fa-camera text-white text-xs"></i>
+          </div>
+        </div>
+      </div>
+      <!-- Form -->
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">Nama Lengkap</label>
+          <input id="edit-nama" type="text" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all">
+        </div>
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">Jenis Becak</label>
+          <select id="edit-jenis" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all">
+            <option value="Becak Motor">Becak Motor</option>
+            <option value="Becak Kayuh">Becak Kayuh</option>
+            <option value="Becak Listrik">Becak Listrik</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">Pengalaman (tahun)</label>
+          <input id="edit-pengalaman" type="number" min="0" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all">
+        </div>
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">Area Layanan</label>
+          <input id="edit-area" type="text" placeholder="cth: Selat Panjang, Tanjung Samak" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all">
+        </div>
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">Deskripsi Singkat</label>
+          <textarea id="edit-deskripsi" rows="3" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all resize-none"></textarea>
+        </div>
+      </div>
+      <button onclick="saveDriverProfile()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap">
+        Simpan Perubahan
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN APP ==================== -->
+<div id="page-admin" class="page">
+  <!-- Admin Login -->
+  <div id="admin-login" class="view flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col items-center justify-center px-6">
+      <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center shadow-lg mb-4">
+        <i class="fa-solid fa-shield-halved text-white text-2xl"></i>
+      </div>
+      <h1 class="text-2xl font-800 tracking-tight">Admin Panel</h1>
+      <p class="text-sm text-ink-500 mt-1 mb-8">BecaKita Management</p>
+
+      <div class="w-full max-w-xs space-y-4">
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">Username</label>
+          <input id="admin-user" type="text" placeholder="admin" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all">
+        </div>
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">Password</label>
+          <input id="admin-pass" type="password" placeholder="********" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all">
+        </div>
+        <button onclick="adminLogin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-700 py-3 rounded-xl transition-colors shadow-lg card-tap">
+          Masuk
+        </button>
+      </div>
+
+      <button onclick="goBack()" class="mt-8 text-sm text-ink-500 flex items-center gap-1 card-tap">
+        <i class="fa-solid fa-arrow-left text-xs"></i> Kembali
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" class="view flex-1 overflow-y-auto">
+    <header class="bg-slate-800 px-4 py-3 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-white text-sm"></i>
+        <span class="font-700 text-white">Admin BecaKita</span>
+      </div>
+      <button onclick="adminLogout()" class="text-slate-400 text-xs font-500 card-tap">Keluar</button>
+    </header>
+
+    <!-- Stats -->
+    <div class="px-4 py-4">
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="bg-white rounded-xl p-3 shadow-sm text-center">
+          <div id="stat-total" class="text-xl font-800 text-ink-900">0</div>
+          <div class="text-[10px] text-ink-500 font-500">Total Driver</div>
+        </div>
+        <div class="bg-brand-50 rounded-xl p-3 shadow-sm text-center">
+          <div id="stat-aktif" class="text-xl font-800 text-brand-600">0</div>
+          <div class="text-[10px] text-ink-500 font-500">Aktif</div>
+        </div>
+        <div class="bg-red-50 rounded-xl p-3 shadow-sm text-center">
+          <div id="stat-nonaktif" class="text-xl font-800 text-red-500">0</div>
+          <div class="text-[10px] text-ink-500 font-500">Nonaktif</div>
+        </div>
+      </div>
+
+      <h3 class="font-700 text-sm mb-3">Daftar Driver</h3>
+      <div id="admin-driver-list" class="space-y-3"></div>
+    </div>
+
+    <div id="demo-badge-admin" class="hidden mx-4 mb-4 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Mode demo — perubahan hanya berlaku sesi ini</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TOAST ==================== -->
+<div id="toast-container" class="fixed top-4 left-4 right-4 z-[9999] flex flex-col items-center gap-2 pointer-events-none"></div>
+
+<!-- ==================== MODAL KONFIRMASI ==================== -->
+<div id="modal-overlay" class="fixed inset-0 bg-black/40 z-[9998] hidden flex items-end justify-center" onclick="closeModal()">
+  <div id="modal-content" class="bg-white rounded-t-3xl w-full max-w-lg p-6 pb-8 transform translate-y-full transition-transform duration-300" onclick="event.stopPropagation()">
+    <div class="w-10 h-1 bg-surface-200 rounded-full mx-auto mb-4"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 🔧 KONFIGURASI FIREBASE
+// Ganti dengan konfigurasi Firebase Anda.
+// Jika belum diisi, aplikasi otomatis berjalan dalam MODE DEMO.
+// ============================================================
+const FIREBASE_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+
+// Nomor WhatsApp admin (format internasional tanpa +)
+const ADMIN_WA_NUMBER = "6281234567890";
+
+// ============================================================
+// 📦 DATA DEMO
+// ============================================================
+const DEMO_DRIVERS = [
+  {
+    id: 'drv001', nama: 'Pak Hamid', nomorHP: '6281276543210',
+    fotoURL: 'https://picsum.photos/seed/becakdriver1/200/200',
+    jenisBeca: 'Becak Motor', pengalaman: 8,
+    deskripsi: 'Becak bersih dan nyaman. Melayani area Selat Panjang dan sekitarnya. Rapi dan ramah.',
+    status: 'aktif', expired_at: new Date(Date.now() + 25*24*60*60*1000).toISOString(),
+    online: true, rating: 4.8, areaLayanan: 'Selat Panjang, Tanjung Samak',
+    lat: 1.1482, lng: 102.3510
+  },
+  {
+    id: 'drv002', nama: 'Pak Usman', nomorHP: '6281398765432',
+    fotoURL: 'https://picsum.photos/seed/becakdriver2/200/200',
+    jenisBeca: 'Becak Kayuh', pengalaman: 12,
+    deskripsi: 'Pengalaman 12 tahun mengayuh becak di Meranti. Kenal semua lorong dan jalan tikus.',
+    status: 'aktif', expired_at: new Date(Date.now() + 15*24*60*60*1000).toISOString(),
+    online: true, rating: 4.5, areaLayanan: 'Tanjung Samak, Selat Panjang',
+    lat: 1.1460, lng: 102.3480
+  },
+  {
+    id: 'drv003', nama: 'Buk Dewi', nomorHP: '6281554321098',
+    fotoURL: 'https://picsum.photos/seed/becakdriver3/200/200',
+    jenisBeca: 'Becak Motor', pengalaman: 5,
+    deskripsi: 'Driver becak perempuan pertama di Selat Panjang. Becak motoris bersih, wangi, dan aman.',
+    status: 'aktif', expired_at: new Date(Date.now() + 28*24*60*60*1000).toISOString(),
+    online: true, rating: 4.9, areaLayanan: 'Selat Panjang Pusat',
+    lat: 1.1440, lng: 102.3530
+  },
+  {
+    id: 'drv004', nama: 'Pak Surya', nomorHP: '6281667890123',
+    fotoURL: 'https://picsum.photos/seed/becakdriver4/200/200',
+    jenisBeca: 'Becak Kayuh', pengalaman: 15,
+    deskripsi: 'Becak kayuh klasik, tarif murah meriah. Cocok untuk jalan dekat dan santai.',
+    status: 'aktif', expired_at: new Date(Date.now() + 5*24*60*60*1000).toISOString(),
+    online: false, rating: 4.3, areaLayanan: 'Teluk Belengkong',
+    lat: 1.1420, lng: 102.3460
+  },
+  {
+    id: 'drv005', nama: 'Pak Rizal', nomorHP: '6281789012345',
+    fotoURL: 'https://picsum.photos/seed/becakdriver5/200/200',
+    jenisBeca: 'Becak Motor', pengalaman: 3,
+    deskripsi: 'Driver muda, becak motoris baru. Semangat tinggi dan pelayanan cepat.',
+    status: 'nonaktif', expired_at: new Date(Date.now() - 5*24*60*60*1000).toISOString(),
+    online: true, rating: 4.7, areaLayanan: 'Selat Panjang',
+    lat: 1.1350, lng: 102.3550
+  }
+];
+
+const DEMO_HISTORY = [
+  { driver: 'Pak Hamid', dari: 'Selat Panjang', ke: 'Pasar', tanggal: '2 hari lalu', tarif: 'Rp15.000' },
+  { driver: 'Buk Dewi', dari: 'Tanjung Samak', ke: 'Pelabuhan', tanggal: '5 hari lalu', tarif: 'Rp20.000' },
+  { driver: 'Pak Usman', dari: 'Pasar', ke: 'Selat Panjang Pusat', tanggal: '1 minggu lalu', tarif: 'Rp10.000' },
+];
+
+// Lokasi default demo (Selat Panjang, Kep. Meranti)
+const DEFAULT_LOCATION = { lat: 1.1500, lng: 102.3500 };
+
+// ============================================================
+// 🌐 STATUS APLIKASI
+// ============================================================
+let isDemoMode = false;
+let db = null;
+let auth = null;
+let map = null;
+let mapInitialized = false;
+let userMarker = null;
+let driverMarkers = [];
+let watchId = null;
+
+const state = {
+  userLocation: null,
+  nearbyDrivers: [],
+  allDrivers: [],
+  currentDriver: null,
+  selectedDriver: null,
+  isOnline: false,
+  currentPage: 'role'
+};
+
+// ============================================================
+// 🔧 INISIALISASI FIREBASE
+// ============================================================
+function initFirebase() {
+  if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === "") {
+    isDemoMode = true;
+    console.log('[BecaKita] Firebase tidak dikonfigurasi — mode demo aktif');
+    return;
+  }
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.firestore();
+    auth = firebase.auth();
+    isDemoMode = false;
+    console.log('[BecaKita] Firebase terhubung');
+  } catch (e) {
+    console.warn('[BecaKita] Gagal inisialisasi Firebase, fallback ke demo mode:', e);
+    isDemoMode = true;
+  }
+}
+
+// ============================================================
+// 📐 FORMULA HAVERSINE (hitung jarak antar 2 koordinat)
+// ============================================================
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius bumi dalam km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // jarak dalam km
+}
+
+function toRad(deg) { return deg * (Math.PI / 180); }
+
+function formatDistance(km) {
+  if (km < 1) return Math.round(km * 1000) + ' m';
+  return km.toFixed(1) + ' km';
+}
+
+function formatDate(isoString) {
+  const d = new Date(isoString);
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function daysUntil(isoString) {
+  const now = new Date();
+  const target = new Date(isoString);
+  const diff = target - now;
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
+
+// ============================================================
+// 🍞 TOAST NOTIFICATION
+// ============================================================
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const colors = {
+    success: 'bg-brand-500 text-white',
+    error: 'bg-red-500 text-white',
+    info: 'bg-slate-800 text-white',
+    warning: 'bg-amber-500 text-white'
+  };
+  const icons = {
+    success: 'fa-circle-check',
+    error: 'fa-circle-xmark',
+    info: 'fa-circle-info',
+    warning: 'fa-triangle-exclamation'
+  };
+  const toast = document.createElement('div');
+  toast.className = `toast ${colors[type]} px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm font-500 pointer-events-auto w-full max-w-sm`;
+  toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${message}</span>`;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
+}
+
+// ============================================================
+// 📋 MODAL
+// ============================================================
+function showModal(html) {
+  const overlay = document.getElementById('modal-overlay');
+  const content = document.getElementById('modal-content');
+  document.getElementById('modal-body').innerHTML = html;
+  overlay.classList.remove('hidden');
+  requestAnimationFrame(() => content.style.transform = 'translateY(0)');
+}
+
+function closeModal() {
+  const content = document.getElementById('modal-content');
+  content.style.transform = 'translateY(100%)';
+  setTimeout(() => document.getElementById('modal-overlay').classList.add('hidden'), 300);
+}
+
+// ============================================================
+// 🧭 NAVIGASI / ROUTER
+// ============================================================
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) {
+    page.classList.add('active');
+    state.currentPage = pageId;
+  }
+}
+
+function goBack() {
+  stopLocationWatch();
+  showPage('role');
+}
+
+// ============================================================
+// 📱 ROLE SELECTION
+// ============================================================
+function selectRole(role) {
+  if (role === 'user') {
+    showPage('user');
+    showDemoBadge('user');
+    initUserHome();
+  } else if (role === 'driver') {
+    showPage('driver');
+    showDriverView('login');
+  } else if (role === 'admin') {
+    showPage('admin');
+    showAdminView('login');
+  }
+}
+
+function showDemoBadge(context) {
+  if (!isDemoMode) return;
+  if (context === 'user') document.getElementById('demo-badge-user').classList.remove('hidden');
+  if (context === 'driver') document.getElementById('demo-badge-driver').classList.remove('hidden');
+  if (context === 'admin') document.getElementById('demo-badge-admin').classList.remove('hidden');
+}
+
+// ============================================================
+// 👤 USER — HOME
+// ============================================================
+function switchUserTab(tab) {
+  document.querySelectorAll('#page-user .view').forEach(v => v.classList.add('hidden'));
+  document.getElementById('user-' + tab).classList.remove('hidden');
+  // Update tab style
+  document.querySelectorAll('.user-tab').forEach(t => {
+    const isActive = t.dataset.tab === tab;
+    t.classList.toggle('text-brand-500', isActive);
+    t.classList.toggle('text-ink-300', !isActive);
+  });
+  if (tab === 'home' && map) {
+    setTimeout(() => map.invalidateSize(), 100);
+  }
+  if (tab === 'history') renderHistory();
+}
+
+async function initUserHome() {
+  switchUserTab('home');
+  await getUserLocation();
+  await loadNearbyDrivers();
+  initMap();
+}
+
+function getUserLocation() {
+  return new Promise((resolve) => {
+    if (isDemoMode) {
+      state.userLocation = DEFAULT_LOCATION;
+      document.getElementById('location-text').textContent = 'Selat Panjang, Kep. Meranti (demo)';
+      resolve();
+      return;
+    }
+    if (!navigator.geolocation) {
+      state.userLocation = DEFAULT_LOCATION;
+      document.getElementById('location-text').textContent = 'Geolokasi tidak didukung';
+      resolve();
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        state.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        document.getElementById('location-text').textContent =
+          `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+        resolve();
+      },
+      () => {
+        // Ditolak atau gagal — gunakan default
+        state.userLocation = DEFAULT_LOCATION;
+        document.getElementById('location-text').textContent = 'Lokasi default: Selat Panjang';
+        resolve();
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+    );
+  });
+}
+
+async function loadNearbyDrivers() {
+  let drivers = [];
+  if (isDemoMode) {
+    drivers = [...DEMO_DRIVERS];
+  } else {
+    try {
+      const snap = await db.collection('drivers').where('status', '==', 'aktif').get();
+      snap.forEach(doc => drivers.push({ id: doc.id, ...doc.data() }));
+    } catch (e) {
+      console.error('Gagal memuat driver:', e);
+      showToast('Gagal memuat data driver', 'error');
+    }
+  }
+
+  // Filter: aktif + online + belum expired
+  const now = new Date();
+  const filtered = drivers.filter(d => {
+    if (d.status !== 'aktif') return false;
+    if (!d.online) return false;
+    if (!d.lat || !d.lng) return false;
+    const exp = new Date(d.expired_at);
+    if (exp < now) return false;
+    return true;
+  });
+
+  // Hitung jarak & sort
+  filtered.forEach(d => {
+    d.distance = haversineDistance(state.userLocation.lat, state.userLocation.lng, d.lat, d.lng);
+  });
+  filtered.sort((a, b) => a.distance - b.distance);
+
+  state.nearbyDrivers = filtered.slice(0, 3);
+  renderDriverList();
+}
+
+function renderDriverList() {
+  const container = document.getElementById('driver-list');
+  const noDrivers = document.getElementById('no-drivers');
+  const countEl = document.getElementById('driver-count');
+
+  countEl.textContent = state.nearbyDrivers.length + ' ditemukan';
+
+  if (state.nearbyDrivers.length === 0) {
+    container.innerHTML = '';
+    noDrivers.classList.remove('hidden');
+    return;
+  }
+  noDrivers.classList.add('hidden');
+
+  container.innerHTML = state.nearbyDrivers.map(d => `
+    <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface-50 card-tap cursor-pointer" onclick="showDriverDetail('${d.id}')">
+      <img src="${d.fotoURL}" alt="${d.nama}" class="w-12 h-12 rounded-full object-cover flex-shrink-0 border-2 border-surface-100"
+        onerror="this.src='https://picsum.photos/seed/fallback/200/200'">
+      <div class="flex-1 min-w-0">
+        <div class="font-700 text-sm truncate">${d.nama}</div>
+        <div class="flex items-center gap-2 mt-0.5">
+          <span class="text-xs text-ink-500">${d.jenisBeca}</span>
+          <span class="text-ink-300">·</span>
+          <span class="text-xs text-amber-500"><i class="fa-solid fa-star text-[10px]"></i> ${d.rating}</span>
+        </div>
+        <div class="text-xs text-brand-500 font-600 mt-0.5"><i class="fa-solid fa-location-dot text-[10px]"></i> ${formatDistance(d.distance)}</div>
+      </div>
+      <a href="https://wa.me/${d.nomorHP}?text=${encodeURIComponent(getWaMessage())}" target="_blank" rel="noopener"
+        onclick="event.stopPropagation()" class="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md shadow-green-500/25 transition-colors">
+        <i class="fa-brands fa-whatsapp text-white text-lg"></i>
+      </a>
+    </div>
+  `).join('');
+}
+
+function getWaMessage() {
+  const loc = state.userLocation;
+  const mapsLink = `https://www.google.com/maps?q=${loc.lat},${loc.lng}`;
+  return `Halo pak, saya mau pesan beca. Lokasi saya: ${mapsLink}`;
+}
+
+// ============================================================
+// 🗺️ PETA LEAFLET
+// ============================================================
+function initMap() {
+  if (mapInitialized) {
+    if (map) {
+      map.setView([state.userLocation.lat, state.userLocation.lng], 15);
+      updateMapMarkers();
+    }
+    return;
+  }
+
+  setTimeout(() => {
+    const container = document.getElementById('map');
+    if (!container) return;
+
+    map = L.map('map', {
+      center: [state.userLocation.lat, state.userLocation.lng],
+      zoom: 15,
+      zoomControl: true,
+      attributionControl: false
+    });
+
+    // Tile layer CartoDB Positron (clean & modern)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19
+    }).addTo(map);
+
+    updateMapMarkers();
+    mapInitialized = true;
+  }, 200);
+}
+
+function updateMapMarkers() {
+  if (!map) return;
+
+  // Hapus marker lama
+  if (userMarker) map.removeLayer(userMarker);
+  driverMarkers.forEach(m => map.removeLayer(m));
+  driverMarkers = [];
+
+  // Marker user (blue pulsing dot)
+  const userIcon = L.divIcon({
+    className: '',
+    html: '<div class="user-dot-wrap"><div class="user-dot"></div></div>',
+    iconSize: [18, 18],
+    iconAnchor: [9, 9]
+  });
+  userMarker = L.marker([state.userLocation.lat, state.userLocation.lng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
+
+  // Marker driver
+  state.nearbyDrivers.forEach(d => {
+    const driverIcon = L.divIcon({
+      className: '',
+      html: `<div class="driver-pin"><i class="fa-solid fa-bicycle"></i></div>`,
+      iconSize: [38, 38],
+      iconAnchor: [19, 38]
+    });
+    const marker = L.marker([d.lat, d.lng], { icon: driverIcon })
+      .addTo(map)
+      .bindPopup(`<b>${d.nama}</b><br>${d.jenisBeca} · ${formatDistance(d.distance)}`);
+    driverMarkers.push(marker);
+  });
+}
+
+// ============================================================
+// 📋 USER — DRIVER DETAIL
+// ============================================================
+function showDriverDetail(driverId) {
+  const driver = state.nearbyDrivers.find(d => d.id === driverId) ||
+                 DEMO_DRIVERS.find(d => d.id === driverId);
+  if (!driver) return;
+  state.selectedDriver = driver;
+
+  const container = document.getElementById('user-driver-detail');
+  container.innerHTML = `
+    <div class="relative">
+      <!-- Header foto -->
+      <div class="h-56 bg-surface-100 relative overflow-hidden">
+        <img src="${driver.fotoURL}" class="w-full h-full object-cover"
+          onerror="this.src='https://picsum.photos/seed/fallback/400/300'">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+        <button onclick="switchUserTab('home')" class="absolute top-4 left-4 w-9 h-9 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow card-tap">
+          <i class="fa-solid fa-arrow-left text-ink-900 text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Info -->
+      <div class="px-4 -mt-12 relative z-10">
+        <div class="bg-white rounded-2xl shadow-lg shadow-black/5 p-5">
+          <div class="flex items-start gap-4 mb-4">
+            <img src="${driver.fotoURL}" class="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-md -mt-14 flex-shrink-0"
+              onerror="this.src='https://picsum.photos/seed/fallback/200/200'">
+            <div class="pt-2">
+              <h2 class="font-800 text-xl">${driver.nama}</h2>
+              <div class="flex items-center gap-1 mt-1">
+                ${renderStars(driver.rating)}
+                <span class="text-sm font-700 text-ink-900 ml-1">${driver.rating}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-bicycle text-brand-500 text-xs"></i>
+              </div>
+              <div>
+                <div class="text-xs text-ink-500">Jenis Becak</div>
+                <div class="text-sm font-600">${driver.jenisBeca}</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-medal text-amber-500 text-xs"></i>
+              </div>
+              <div>
+                <div class="text-xs text-ink-500">Pengalaman</div>
+                <div class="text-sm font-600">${driver.pengalaman} tahun</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-map-pin text-blue-500 text-xs"></i>
+              </div>
+              <div>
+                <div class="text-xs text-ink-500">Area Layanan</div>
+                <div class="text-sm font-600">${driver.areaLayanan}</div>
+              </div>
+            </div>
+          </div>
+
+          ${driver.deskripsi ? `
+          <div class="mt-4 pt-4 border-t border-surface-100">
+            <div class="text-xs text-ink-500 mb-1">Deskripsi</div>
+            <p class="text-sm text-ink-700 leading-relaxed">${driver.deskripsi}</p>
+          </div>` : ''}
+
+          ${driver.distance !== undefined ? `
+          <div class="mt-3 flex items-center gap-1 text-brand-500">
+            <i class="fa-solid fa-route text-xs"></i>
+            <span class="text-xs font-600">${formatDistance(driver.distance)} dari lokasi Anda</span>
+          </div>` : ''}
+        </div>
+      </div>
+
+      <!-- CTA WhatsApp -->
+      <div class="px-4 py-5">
+        <a href="https://wa.me/${driver.nomorHP}?text=${encodeURIComponent(getWaMessage())}" target="_blank" rel="noopener"
+          class="w-full bg-green-500 hover:bg-green-600 text-white font-700 py-4 rounded-2xl transition-colors shadow-lg shadow-green-500/30 flex items-center justify-center gap-3 text-base card-tap">
+          <i class="fa-brands fa-whatsapp text-2xl"></i>
+          Hubungi via WhatsApp
+        </a>
+      </div>
+    </div>
+  `;
+
+  document.querySelectorAll('#page-user .view').forEach(v => v.classList.add('hidden'));
+  container.classList.remove('hidden');
+  // Sembunyikan bottom nav saat detail
+  document.querySelector('#page-user nav').style.display = 'none';
+  // Tampilkan lagi saat kembali
+  const origSwitch = window.switchUserTab;
+  window.switchUserTab = function(tab) {
+    document.querySelector('#page-user nav').style.display = '';
+    window.switchUserTab = origSwitch;
+    origSwitch(tab);
+  };
+}
+
+function renderStars(rating) {
+  let html = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= Math.floor(rating)) {
+      html += '<i class="fa-solid fa-star text-amber-400 text-xs"></i>';
+    } else if (i - 0.5 <= rating) {
+      html += '<i class="fa-solid fa-star-half-stroke text-amber-400 text-xs"></i>';
+    } else {
+      html += '<i class="fa-regular fa-star text-amber-300 text-xs"></i>';
+    }
+  }
+  return html;
+}
+
+// ============================================================
+// 📜 USER — RIWAYAT (dummy)
+// ============================================================
+function renderHistory() {
+  const container = document.getElementById('history-list');
+  if (isDemoMode || DEMO_HISTORY.length > 0) {
+    container.innerHTML = DEMO_HISTORY.map(h => `
+      <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
+        <div class="w-10 h-10 bg-surface-100 rounded-xl flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-route text-ink-500 text-sm"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="font-600 text-sm">${h.dari} → ${h.ke}</div>
+          <div class="text-xs text-ink-500 mt-0.5">${h.driver} · ${h.tanggal}</div>
+        </div>
+        <div class="text-sm font-700 text-brand-600">${h.tarif}</div>
+      </div>
+    `).join('');
+  } else {
+    container.innerHTML = `
+      <div class="text-center py-12">
+        <i class="fa-solid fa-clock-rotate-left text-4xl text-surface-200 mb-3"></i>
+        <p class="text-sm text-ink-500">Belum ada riwayat perjalanan</p>
+      </div>`;
+  }
+}
+
+// ============================================================
+// 🚲 DRIVER — LOGIN
+// ============================================================
+function showDriverView(view) {
+  document.querySelectorAll('#page-driver .view').forEach(v => v.classList.add('hidden'));
+  document.getElementById('driver-' + view).classList.remove('hidden');
+  if (view === 'dashboard') showDemoBadge('driver');
+}
+
+async function driverLogin() {
+  const phone = document.getElementById('driver-phone').value.trim();
+  if (!phone || phone.length < 8) {
+    showToast('Masukkan nomor HP yang valid', 'warning');
+    return;
+  }
+
+  if (isDemoMode) {
+    // Mode demo: load driver pertama
+    state.currentDriver = { ...DEMO_DRIVERS[0] };
+    state.isOnline = state.currentDriver.online;
+    showDriverView('dashboard');
+    renderDriverDashboard();
+    showToast('Login berhasil (mode demo)', 'success');
+    startLocationWatch();
+    return;
+  }
+
+  // Firebase login
+  try {
+    const fullPhone = '+62' + phone;
+    // Gunakan phone auth atau simple lookup
+    const snap = await db.collection('drivers').where('nomorHP', '==', fullPhone).limit(1).get();
+    if (snap.empty) {
+      showToast('Nomor HP tidak terdaftar sebagai driver', 'error');
+      return;
+    }
+    state.currentDriver = { id: snap.docs[0].id, ...snap.docs[0].data() };
+    state.isOnline = state.currentDriver.online || false;
+    showDriverView('dashboard');
+    renderDriverDashboard();
+    showToast('Login berhasil', 'success');
+    startLocationWatch();
+  } catch (e) {
+    console.error('Login gagal:', e);
+    showToast('Gagal login, coba lagi', 'error');
+  }
+}
+
+// ============================================================
+// 📊 DRIVER — DASHBOARD
+// ============================================================
+function renderDriverDashboard() {
+  const d = state.currentDriver;
+  if (!d) return;
+
+  const isExpired = new Date(d.expired_at) < new Date();
+  const isActive = d.status === 'aktif' && !isExpired;
+  const days = daysUntil(d.expired_at);
+
+  // Status card
+  const statusCard = document.getElementById('driver-status-card');
+  if (isActive) {
+    statusCard.className = 'rounded-2xl p-4 shadow-sm border border-brand-200 bg-brand-50';
+    statusCard.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center">
+          <i class="fa-solid fa-circle-check text-white"></i>
+        </div>
+        <div>
+          <div class="font-700 text-brand-700">Akun Aktif</div>
+          <div class="text-xs text-brand-600/70">Langganan berlaku</div>
+        </div>
+      </div>`;
+  } else {
+    statusCard.className = 'rounded-2xl p-4 shadow-sm border border-red-200 bg-red-50';
+    statusCard.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center">
+          <i class="fa-solid fa-circle-xmark text-white"></i>
+        </div>
+        <div>
+          <div class="font-700 text-red-700">${isExpired ? 'Langganan Expired' : 'Akun Nonaktif'}</div>
+          <div class="text-xs text-red-600/70">Hubungi admin untuk perpanjang</div>
+        </div>
+      </div>`;
+  }
+
+  // Online toggle
+  const toggle = document.getElementById('online-toggle');
+  const onlineDesc = document.getElementById('online-desc');
+  if (state.isOnline) {
+    toggle.classList.add('on');
+    onlineDesc.textContent = 'Anda sedang online — muncul ke penumpang';
+  } else {
+    toggle.classList.remove('on');
+    onlineDesc.textContent = 'Aktifkan untuk muncul ke penumpang';
+  }
+
+  // Expiry info
+  const expiryInfo = document.getElementById('expiry-info');
+  if (isActive) {
+    expiryInfo.innerHTML = `<span class="font-700 text-brand-600">${formatDate(d.expired_at)}</span>
+      <span class="text-ink-500"> (${days} hari lagi)</span>`;
+  } else if (isExpired) {
+    expiryInfo.innerHTML = `<span class="font-700 text-red-500">${formatDate(d.expired_at)}</span>
+      <span class="text-red-400"> (sudah expired)</span>`;
+  } else {
+    expiryInfo.innerHTML = `<span class="font-700 text-ink-500">${formatDate(d.expired_at)}</span>
+      <span class="text-ink-500"> (nonaktif)</span>`;
+  }
+
+  // Tombol perpanjang — nonaktif jika masih aktif lama
+  const btnExtend = document.getElementById('btn-extend');
+  if (isActive && days > 7) {
+    btnExtend.className = 'w-full bg-surface-100 text-ink-300 font-600 py-3.5 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed';
+    btnExtend.disabled = true;
+  } else {
+    btnExtend.className = 'w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2';
+    btnExtend.disabled = false;
+  }
+}
+
+function toggleOnline() {
+  if (!state.currentDriver) return;
+  const isActive = state.currentDriver.status === 'aktif' && new Date(state.currentDriver.expired_at) >= new Date();
+  if (!isActive) {
+    showToast('Akun harus aktif untuk online', 'warning');
+    return;
+  }
+  state.isOnline = !state.isOnline;
+  renderDriverDashboard();
+
+  // Update ke Firestore
+  if (!isDemoMode && db && state.currentDriver.id) {
+    db.collection('drivers').doc(state.currentDriver.id).update({ online: state.isOnline })
+      .catch(e => console.error('Gagal update online:', e));
+  }
+  showToast(state.isOnline ? 'Anda sekarang online' : 'Anda sekarang offline', 'info');
+}
+
+function extendSubscription() {
+  const d = state.currentDriver;
+  const msg = `Halo Admin BecaKita, saya ingin memperpanjang langganan driver.\n\nNama: ${d.nama}\nNo HP: ${d.nomorHP}\n\nTerima kasih.`;
+  window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  showToast('Membuka WhatsApp ke admin...', 'info');
+}
+
+function showDriverEdit() {
+  const d = state.currentDriver;
+  if (!d) return;
+  document.getElementById('edit-foto').src = d.fotoURL;
+  document.getElementById('edit-nama').value = d.nama;
+  document.getElementById('edit-jenis').value = d.jenisBeca;
+  document.getElementById('edit-pengalaman').value = d.pengalaman;
+  document.getElementById('edit-area').value = d.areaLayanan || '';
+  document.getElementById('edit-deskripsi').value = d.deskripsi || '';
+  showDriverView('edit');
+}
+
+async function saveDriverProfile() {
+  const d = state.currentDriver;
+  d.nama = document.getElementById('edit-nama').value.trim();
+  d.jenisBeca = document.getElementById('edit-jenis').value;
+  d.pengalaman = parseInt(document.getElementById('edit-pengalaman').value) || 0;
+  d.areaLayanan = document.getElementById('edit-area').value.trim();
+  d.deskripsi = document.getElementById('edit-deskripsi').value.trim();
+
+  if (!d.nama) {
+    showToast('Nama wajib diisi', 'warning');
+    return;
+  }
+
+  if (!isDemoMode && db && d.id) {
+    try {
+      await db.collection('drivers').doc(d.id).update({
+        nama: d.nama, jenisBeca: d.jenisBeca, pengalaman: d.pengalaman,
+        areaLayanan: d.areaLayanan, deskripsi: d.deskripsi
+      });
+    } catch (e) {
+      showToast('Gagal menyimpan', 'error');
+      return;
+    }
+  }
+
+  showDriverView('dashboard');
+  renderDriverDashboard();
+  showToast('Profil berhasil disimpan', 'success');
+}
+
+function showDriverDashboard() {
+  showDriverView('dashboard');
+  renderDriverDashboard();
+}
+
+// ============================================================
+// 📍 GPS TRACKING DRIVER
+// ============================================================
+function startLocationWatch() {
+  if (watchId) return;
+  if (!navigator.geolocation) return;
+
+  watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      state.currentDriver.lat = lat;
+      state.currentDriver.lng = lng;
+
+      // Update ke Firestore
+      if (!isDemoMode && db && state.currentDriver.id && state.isOnline) {
+        db.collection('drivers').doc(state.currentDriver.id).update({
+          lat, lng, online: true, lastSeen: new Date().toISOString()
+        }).catch(() => {});
+      }
+    },
+    () => {},
+    { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
+  );
+}
+
+function stopLocationWatch() {
+  if (watchId) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+  }
+  // Set offline
+  if (!isDemoMode && db && state.currentDriver && state.currentDriver.id) {
+    db.collection('drivers').doc(state.currentDriver.id).update({ online: false }).catch(() => {});
+  }
+  state.isOnline = false;
+}
+
+// ============================================================
+// 🛡️ ADMIN — LOGIN
+// ============================================================
+function showAdminView(view) {
+  document.querySelectorAll('#page-admin .view').forEach(v => v.classList.add('hidden'));
+  document.getElementById('admin-' + view).classList.remove('hidden');
+  if (view === 'dashboard') showDemoBadge('admin');
+}
+
+function adminLogin() {
+  const user = document.getElementById('admin-user').value.trim();
+  const pass = document.getElementById('admin-pass').value.trim();
+
+  if (isDemoMode) {
+    // Mode demo: terima apa saja
+    loadAllDrivers();
+    showAdminView('dashboard');
+    showToast('Login admin berhasil (mode demo)', 'success');
+    return;
+  }
+
+  // Firebase auth atau hardcoded sederhana
+  if (user === 'admin' && pass === 'becakita2024') {
+    loadAllDrivers();
+    showAdminView('dashboard');
+    showToast('Login berhasil', 'success');
+  } else {
+    showToast('Username atau password salah', 'error');
+  }
+}
+
+function adminLogout() {
+  showAdminView('login');
+  document.getElementById('admin-user').value = '';
+  document.getElementById('admin-pass').value = '';
+}
+
+async function loadAllDrivers() {
+  let drivers = [];
+  if (isDemoMode) {
+    drivers = [...DEMO_DRIVERS];
+  } else {
+    try {
+      const snap = await db.collection('drivers').get();
+      snap.forEach(doc => drivers.push({ id: doc.id, ...doc.data() }));
+    } catch (e) {
+      showToast('Gagal memuat data', 'error');
+    }
+  }
+  state.allDrivers = drivers;
+  renderAdminDashboard();
+}
+
+function renderAdminDashboard() {
+  const drivers = state.allDrivers;
+  const aktif = drivers.filter(d => d.status === 'aktif' && new Date(d.expired_at) >= new Date()).length;
+  const nonaktif = drivers.length - aktif;
+
+  document.getElementById('stat-total').textContent = drivers.length;
+  document.getElementById('stat-aktif').textContent = aktif;
+  document.getElementById('stat-nonaktif').textContent = nonaktif;
+
+  const container = document.getElementById('admin-driver-list');
+  if (drivers.length === 0) {
+    container.innerHTML = '<div class="text-center py-8 text-sm text-ink-500">Belum ada driver terdaftar</div>';
+    return;
+  }
+
+  container.innerHTML = drivers.map(d => {
+    const isExpired = new Date(d.expired_at) < new Date();
+    const isActive = d.status === 'aktif' && !isExpired;
+    const days = daysUntil(d.expired_at);
+
+    return `
+    <div class="bg-white rounded-2xl p-4 shadow-sm">
+      <div class="flex items-center gap-3 mb-3">
+        <img src="${d.fotoURL}" class="w-11 h-11 rounded-xl object-cover" onerror="this.src='https://picsum.photos/seed/fallback/200/200'">
+        <div class="flex-1 min-w-0">
+          <div class="font-700 text-sm truncate">${d.nama}</div>
+          <div class="text-xs text-ink-500">${d.nomorHP} · ${d.jenisBeca}</div>
+        </div>
+        <span class="text-[10px] font-600 px-2 py-0.5 rounded-full ${isActive ? 'bg-brand-50 text-brand-600' : 'bg-red-50 text-red-500'}">
+          ${isActive ? 'AKTIF' : 'NONAKTIF'}
+        </span>
+      </div>
+      <div class="flex items-center justify-between text-xs mb-3">
+        <span class="text-ink-500">
+          <i class="fa-regular fa-calendar"></i> ${formatDate(d.expired_at)}
+          <span class="${isExpired ? 'text-red-500 font-600' : 'text-ink-300'}">(${isExpired ? 'expired' : days + ' hari lagi'})</span>
+        </span>
+        <span class="${d.online ? 'text-brand-500' : 'text-ink-300'}">
+          <i class="fa-solid fa-circle text-[6px]"></i> ${d.online ? 'Online' : 'Offline'}
+        </span>
+      </div>
+      <div class="flex gap-2">
+        ${isActive ? `
+          <button onclick="adminToggleDriver('${d.id}', 'nonaktif')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-600 py-2 rounded-xl text-xs transition-colors card-tap">
+            Nonaktifkan
+          </button>` : `
+          <button onclick="adminToggleDriver('${d.id}', 'aktif')" class="flex-1 bg-brand-50 hover:bg-brand-100 text-brand-600 font-600 py-2 rounded-xl text-xs transition-colors card-tap">
+            Aktifkan
+          </button>`}
+        <button onclick="adminExtendDriver('${d.id}')" class="flex-1 bg-surface-100 hover:bg-surface-200 text-ink-700 font-600 py-2 rounded-xl text-xs transition-colors card-tap">
+          +30 Hari
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function adminToggleDriver(driverId, newStatus) {
+  const driver = state.allDrivers.find(d => d.id === driverId);
+  if (!driver) return;
+
+  showModal(`
+    <h3 class="font-700 text-lg mb-2">${newStatus === 'aktif' ? 'Aktifkan' : 'Nonaktifkan'} Driver</h3>
+    <p class="text-sm text-ink-500 mb-5">Yakin ingin ${newStatus === 'aktif' ? 'mengaktifkan' : 'menonaktifkan'} <b>${driver.nama}</b>?</p>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmToggleDriver('${driverId}','${newStatus}')" class="flex-1 ${newStatus === 'aktif' ? 'bg-brand-500' : 'bg-red-500'} text-white font-600 py-3 rounded-xl card-tap">Konfirmasi</button>
+    </div>
+  `);
+}
+
+async function confirmToggleDriver(driverId, newStatus) {
+  closeModal();
+  const driver = state.allDrivers.find(d => d.id === driverId);
+  if (!driver) return;
+
+  driver.status = newStatus;
+
+  if (!isDemoMode && db) {
+    try {
+      await db.collection('drivers').doc(driverId).update({ status: newStatus });
+    } catch (e) {
+      showToast('Gagal mengubah status', 'error');
+      return;
+    }
+  }
+
+  renderAdminDashboard();
+  showToast(`${driver.nama} berhasil ${newStatus === 'aktif' ? 'diaktifkan' : 'dinonaktifkan'}`, 'success');
+}
+
+async function adminExtendDriver(driverId) {
+  const driver = state.allDrivers.find(d => d.id === driverId);
+  if (!driver) return;
+
+  showModal(`
+    <h3 class="font-700 text-lg mb-2">Perpanjang 30 Hari</h3>
+    <p class="text-sm text-ink-500 mb-1">Driver: <b>${driver.nama}</b></p>
+    <p class="text-sm text-ink-500 mb-5">Masa aktif saat ini: ${formatDate(driver.expired_at)}</p>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmExtendDriver('${driverId}')" class="flex-1 bg-brand-500 text-white font-600 py-3 rounded-xl card-tap">Perpanjang</button>
+    </div>
+  `);
+}
+
+async function confirmExtendDriver(driverId) {
+  closeModal();
+  const driver = state.allDrivers.find(d => d.id === driverId);
+  if (!driver) return;
+
+  // Hitung expired baru: max dari sekarang atau expired lama + 30 hari
+  const now = new Date();
+  const currentExpiry = new Date(driver.expired_at);
+  const base = currentExpiry > now ? currentExpiry : now;
+  const newExpiry = new Date(base.getTime() + 30 * 24 * 60 * 60 * 1000);
+  driver.expired_at = newExpiry.toISOString();
+
+  if (!isDemoMode && db) {
+    try {
+      await db.collection('drivers').doc(driverId).update({ expired_at: newExpiry });
+    } catch (e) {
+      showToast('Gagal memperpanjang', 'error');
+      return;
+    }
+  }
+
+  renderAdminDashboard();
+  showToast(`Masa aktif ${driver.nama} diperpanjang 30 hari`, 'success');
+}
+
+// ============================================================
+// 🚀 INISIALISASI APLIKASI
+// ============================================================
+function init() {
+  initFirebase();
+
+  // Splash screen selama 1.5 detik
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.style.opacity = '0';
+    setTimeout(() => {
+      splash.style.display = 'none';
+      showPage('role');
+    }, 500);
+  }, 1500);
+
+  // Set tab default style
+  document.querySelectorAll('.user-tab').forEach(t => {
+    t.classList.toggle('text-brand-500', t.dataset.tab === 'home');
+    t.classList.toggle('text-ink-300', t.dataset.tab !== 'home');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
