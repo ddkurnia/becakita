@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BecaKita Admin — Kelola Driver</title>
+<meta name="theme-color" content="#1E293B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BecaKita Admin">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{colors:{brand:{50:'#e6f9ee',100:'#b3efd3',200:'#80e4b7',300:'#4dd99c',400:'#26d38a',500:'#00A651',600:'#008a43',700:'#006e35',800:'#005228',900:'#00361a'},surface:{50:'#F8F9FC',100:'#F1F3F8',200:'#E4E7EF',300:'#CDD2DE'},ink:{900:'#0F172A',700:'#334155',500:'#64748B',300:'#94A3B8'},slate:{750:'#1E293B'}},fontFamily:{sans:['Plus Jakarta Sans','system-ui','sans-serif']}}}}
+</script>
+<style>
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
+.view{display:none;flex-direction:column}.view.active{display:flex;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes spin-slow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+@keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+.card-tap{transition:transform .15s,box-shadow .15s}.card-tap:active{transform:scale(.97)}
+.toast{transform:translateY(-100%);opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1)}.toast.show{transform:translateY(0);opacity:1}
+.update-banner{animation:slideDown .4s ease,bounceIn .3s ease .4s}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+</style>
+</head>
+<body class="bg-surface-50 text-ink-900 antialiased">
+
+<!-- UPDATE BANNER -->
+<div id="update-banner" class="hidden fixed top-0 left-0 right-0 z-[10000] bg-brand-600 text-white px-4 py-3 flex items-center justify-between shadow-lg update-banner" style="padding-top:max(12px,env(safe-area-inset-top))">
+  <div class="flex items-center gap-2"><i class="fa-solid fa-rotate text-sm"></i><span class="text-sm font-600">Versi baru tersedia</span></div>
+  <button onclick="applyUpdate()" class="bg-white text-brand-600 text-xs font-700 px-3 py-1.5 rounded-lg card-tap">Update</button>
+</div>
+
+<!-- SPLASH -->
+<div id="splash" class="fixed inset-0 z-[999] bg-slate-800 flex flex-col items-center justify-center transition-opacity duration-500">
+  <div class="mb-4" style="animation:float 2s ease-in-out infinite">
+    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-black/30"><i class="fa-solid fa-shield-halved text-slate-700 text-3xl"></i></div>
+  </div>
+  <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
+  <p class="text-slate-400 text-sm mt-1 font-500">Admin Panel</p>
+  <div class="mt-8 w-8 h-8 border-3 border-white/30 border-t-white rounded-full" style="animation:spin-slow .8s linear infinite;border-width:3px"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="view-login" class="view min-h-screen">
+  <div class="flex-1 flex flex-col items-center justify-center px-6">
+    <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center shadow-lg mb-4"><i class="fa-solid fa-shield-halved text-white text-2xl"></i></div>
+    <h1 class="text-2xl font-800 tracking-tight">Admin BecaKita</h1>
+    <p class="text-sm text-ink-500 mt-1 mb-8">Kelola driver & langganan</p>
+    <div class="w-full max-w-xs space-y-4">
+      <div>
+        <label class="text-xs font-600 text-ink-700 mb-1 block">Username</label>
+        <input id="admin-user" type="text" placeholder="admin" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all">
+      </div>
+      <div>
+        <label class="text-xs font-600 text-ink-700 mb-1 block">Password</label>
+        <input id="admin-pass" type="password" placeholder="********" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all">
+      </div>
+      <button onclick="adminLogin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg card-tap">Masuk</button>
+    </div>
+    <a href="/index.html" class="mt-6 text-sm text-ink-500 flex items-center gap-1 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke BecaKita</a>
+  </div>
+  <div class="text-center pb-6 text-ink-300 text-xs">BecaKita Admin v1.1</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="view-dashboard" class="view min-h-screen">
+  <!-- Header -->
+  <header class="bg-slate-800 px-4 py-3 flex items-center justify-between flex-shrink-0 sticky top-0 z-20">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center"><i class="fa-solid fa-shield-halved text-white text-xs"></i></div>
+      <span class="font-700 text-white text-sm">BecaKita Admin</span>
+    </div>
+    <button onclick="adminLogout()" class="text-slate-400 hover:text-white text-xs font-500 card-tap flex items-center gap-1"><i class="fa-solid fa-arrow-right-from-bracket text-[10px]"></i> Keluar</button>
+  </header>
+
+  <!-- Konten -->
+  <main class="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-6">
+    <!-- Stats -->
+    <div class="grid grid-cols-4 gap-2">
+      <div class="bg-white rounded-xl p-3 shadow-sm text-center">
+        <div id="stat-total" class="text-xl font-800 text-ink-900">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Total</div>
+      </div>
+      <div class="bg-brand-50 rounded-xl p-3 shadow-sm text-center">
+        <div id="stat-aktif" class="text-xl font-800 text-brand-600">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Aktif</div>
+      </div>
+      <div class="bg-red-50 rounded-xl p-3 shadow-sm text-center">
+        <div id="stat-nonaktif" class="text-xl font-800 text-red-500">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Nonaktif</div>
+      </div>
+      <div class="bg-blue-50 rounded-xl p-3 shadow-sm text-center">
+        <div id="stat-online" class="text-xl font-800 text-blue-500">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Online</div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="bg-white rounded-xl shadow-sm flex items-center gap-2 px-3 py-2.5">
+      <i class="fa-solid fa-magnifying-glass text-ink-300 text-sm"></i>
+      <input id="search-input" type="text" placeholder="Cari nama driver..." class="flex-1 outline-none text-sm bg-transparent" oninput="filterDrivers()">
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="flex gap-2">
+      <button onclick="setFilter('all')" class="filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="all">Semua</button>
+      <button onclick="setFilter('aktif')" class="filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="aktif">Aktif</button>
+      <button onclick="setFilter('nonaktif')" class="filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="nonaktif">Nonaktif</button>
+      <button onclick="setFilter('expired')" class="filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="expired">Expired</button>
+    </div>
+
+    <!-- Refresh -->
+    <div class="flex items-center justify-between">
+      <h3 class="font-700 text-sm text-ink-900">Daftar Driver</h3>
+      <button onclick="loadAllDrivers()" class="text-xs text-brand-500 font-600 flex items-center gap-1 card-tap"><i class="fa-solid fa-rotate-right text-[10px]"></i> Refresh</button>
+    </div>
+
+    <!-- Driver List -->
+    <div id="admin-driver-list" class="space-y-3"></div>
+
+    <!-- Empty -->
+    <div id="empty-state" class="hidden text-center py-8">
+      <i class="fa-solid fa-user-slash text-4xl text-surface-200 mb-3 block"></i>
+      <p class="text-sm text-ink-500">Tidak ada driver yang cocok</p>
+    </div>
+
+    <!-- Demo Badge -->
+    <div id="demo-badge" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+      <i class="fa-solid fa-circle-info"></i><span>Mode demo — perubahan hanya berlaku sesi ini. Hubungkan Firebase untuk data real.</span>
+    </div>
+
+    <!-- Link -->
+    <div class="text-center pt-2">
+      <a href="/index.html" class="text-xs text-ink-300 hover:text-ink-500 card-tap">Buka BecaKita User &rarr;</a>
+    </div>
+  </main>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container" class="fixed top-4 left-4 right-0 z-[9999] flex flex-col items-center gap-2 pointer-events-none" style="right:16px"></div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="fixed inset-0 bg-black/40 z-[9998] hidden flex items-end justify-center" onclick="closeModal()">
+  <div id="modal-content" class="bg-white rounded-t-3xl w-full max-w-lg p-6 pb-8 transform translate-y-full transition-transform duration-300" onclick="event.stopPropagation()">
+    <div class="w-10 h-1 bg-surface-200 rounded-full mx-auto mb-4"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// KONFIGURASI FIREBASE — SAMAKAN DENGAN index.html
+// ============================================================
+const FIREBASE_CONFIG={apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""};
+
+// ============================================================
+// DATA DEMO — SAMAKAN DENGAN index.html
+// ============================================================
+const DEMO_DRIVERS=[
+  {id:'drv001',nama:'Pak Hamid',nomorHP:'6281276543210',fotoURL:'https://picsum.photos/seed/becakdriver1/200/200',jenisBeca:'Becak Motor',pengalaman:8,deskripsi:'Becak bersih dan nyaman.',status:'aktif',expired_at:new Date(Date.now()+25*24*60*60*1000).toISOString(),online:true,rating:4.8,areaLayanan:'Selat Panjang, Tanjung Samak',lat:1.1482,lng:102.3510,lastSeen:new Date(Date.now()-120000).toISOString()},
+  {id:'drv002',nama:'Pak Usman',nomorHP:'6281398765432',fotoURL:'https://picsum.photos/seed/becakdriver2/200/200',jenisBeca:'Becak Kayuh',pengalaman:12,deskripsi:'Pengalaman 12 tahun.',status:'aktif',expired_at:new Date(Date.now()+15*24*60*60*1000).toISOString(),online:true,rating:4.5,areaLayanan:'Tanjung Samak',lat:1.1460,lng:102.3480,lastSeen:new Date(Date.now()-60000).toISOString()},
+  {id:'drv003',nama:'Buk Dewi',nomorHP:'6281554321098',fotoURL:'https://picsum.photos/seed/becakdriver3/200/200',jenisBeca:'Becak Motor',pengalaman:5,deskripsi:'Driver perempuan pertama.',status:'aktif',expired_at:new Date(Date.now()+28*24*60*60*1000).toISOString(),online:true,rating:4.9,areaLayanan:'Selat Panjang Pusat',lat:1.1440,lng:102.3530,lastSeen:new Date(Date.now()-30000).toISOString()},
+  {id:'drv004',nama:'Pak Surya',nomorHP:'6281667890123',fotoURL:'https://picsum.photos/seed/becakdriver4/200/200',jenisBeca:'Becak Kayuh',pengalaman:15,deskripsi:'Becak kayuh klasik.',status:'aktif',expired_at:new Date(Date.now()+5*24*60*60*1000).toISOString(),online:false,rating:4.3,areaLayanan:'Teluk Belengkong',lat:1.1420,lng:102.3460,lastSeen:new Date(Date.now()-86400000).toISOString()},
+  {id:'drv005',nama:'Pak Rizal',nomorHP:'6281789012345',fotoURL:'https://picsum.photos/seed/becakdriver5/200/200',jenisBeca:'Becak Motor',pengalaman:3,deskripsi:'Driver muda.',status:'nonaktif',expired_at:new Date(Date.now()-5*24*60*60*1000).toISOString(),online:false,rating:4.7,areaLayanan:'Selat Panjang',lat:1.1350,lng:102.3550,lastSeen:new Date(Date.now()-604800000).toISOString()}
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let isDemoMode=false, db=null, swRegistration=null, currentVersionHash='', updateAvailable=false;
+let allDrivers=[], currentFilter='all', searchQuery='';
+
+// ============================================================
+// FIREBASE
+// ============================================================
+function initFirebase(){
+  if(!FIREBASE_CONFIG.apiKey||FIREBASE_CONFIG.apiKey===""){isDemoMode=true;console.log('[BecaKita Admin] Mode demo aktif');return;}
+  try{firebase.initializeApp(FIREBASE_CONFIG);db=firebase.firestore();isDemoMode=false;console.log('[BecaKita Admin] Firebase terhubung');}
+  catch(e){console.warn('[BecaKita Admin] Firebase gagal, demo mode:',e);isDemoMode=true;}
+}
+
+// ============================================================
+// UTILITAS
+// ============================================================
+function formatDate(iso){return new Date(iso).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}
+function daysUntil(iso){return Math.ceil((new Date(iso)-new Date())/(864e5))}
+function timeAgo(iso){
+  const s=Math.floor((Date.now()-new Date(iso))/1000);
+  if(s<60)return 'baru saja';if(s<3600)return Math.floor(s/60)+' menit lalu';
+  if(s<86400)return Math.floor(s/3600)+' jam lalu';return Math.floor(s/86400)+' hari lalu';
+}
+
+function getDriverStatus(d){
+  const isExpired=new Date(d.expired_at)<new Date();
+  if(d.status==='nonaktif')return 'nonaktif';
+  if(isExpired)return 'expired';
+  return 'aktif';
+}
+
+// ============================================================
+// TOAST & MODAL
+// ============================================================
+function showToast(msg,type='info'){
+  const c=document.getElementById('toast-container');
+  const cl={success:'bg-brand-500 text-white',error:'bg-red-500 text-white',info:'bg-slate-800 text-white',warning:'bg-amber-500 text-white'};
+  const ic={success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};
+  const t=document.createElement('div');
+  t.className=`toast ${cl[type]} px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm font-500 pointer-events-auto w-full max-w-sm`;
+  t.innerHTML=`<i class="fa-solid ${ic[type]}"></i><span>${msg}</span>`;
+  c.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},3000);
+}
+function showModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').classList.remove('hidden');requestAnimationFrame(()=>document.getElementById('modal-content').style.transform='translateY(0)');}
+function closeModal(){document.getElementById('modal-content').style.transform='translateY(100%)';setTimeout(()=>document.getElementById('modal-overlay').classList.add('hidden'),300);}
+
+// ============================================================
+// VIEW SWITCH
+// ============================================================
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');}
+
+// ============================================================
+// LOGIN
+// ============================================================
+function adminLogin(){
+  const u=document.getElementById('admin-user').value.trim(),p=document.getElementById('admin-pass').value.trim();
+  if(isDemoMode){loadAllDrivers();showView('dashboard');showToast('Login berhasil (mode demo)','success');return;}
+  if(u==='admin'&&p==='becakita2024'){loadAllDrivers();showView('dashboard');showToast('Login berhasil','success');}
+  else{showToast('Username atau password salah','error');}
+}
+function adminLogout(){showView('login');document.getElementById('admin-user').value='';document.getElementById('admin-pass').value='';}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadAllDrivers(){
+  let drivers=[];
+  if(isDemoMode){drivers=[...DEMO_DRIVERS];}
+  else{
+    try{const s=await db.collection('drivers').orderBy('nama','asc').get();s.forEach(doc=>drivers.push({id:doc.id,...doc.data()}));}
+    catch(e){showToast('Gagal memuat data','error');return;}
+  }
+  allDrivers=drivers;
+  renderDashboard();
+}
+
+// ============================================================
+// FILTER & SEARCH
+// ============================================================
+function setFilter(f){currentFilter=f;renderDriverList();}
+function filterDrivers(){searchQuery=document.getElementById('search-input').value.trim().toLowerCase();renderDriverList();}
+
+function getFilteredDrivers(){
+  return allDrivers.filter(d=>{
+    const status=getDriverStatus(d);
+    // Filter status
+    if(currentFilter!=='all'&&status!==currentFilter)return false;
+    // Search
+    if(searchQuery&&!d.nama.toLowerCase().includes(searchQuery)&&!d.nomorHP.includes(searchQuery))return false;
+    return true;
+  });
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderDashboard(){
+  const total=allDrivers.length;
+  const aktif=allDrivers.filter(d=>getDriverStatus(d)==='aktif').length;
+  const nonaktif=allDrivers.filter(d=>getDriverStatus(d)!=='aktif').length;
+  const online=allDrivers.filter(d=>d.online).length;
+
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-aktif').textContent=aktif;
+  document.getElementById('stat-nonaktif').textContent=nonaktif;
+  document.getElementById('stat-online').textContent=online;
+
+  // Update filter button styles
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    const f=btn.dataset.filter;
+    const isActive=f===currentFilter;
+    btn.className=`filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors ${isActive?'bg-slate-800 text-white':'bg-white text-ink-500 border border-surface-200 hover:bg-surface-100'}`;
+  });
+
+  renderDriverList();
+}
+
+function renderDriverList(){
+  const filtered=getFilteredDrivers();
+  const container=document.getElementById('admin-driver-list');
+  const emptyState=document.getElementById('empty-state');
+
+  if(!filtered.length){
+    container.innerHTML='';emptyState.classList.remove('hidden');return;
+  }
+  emptyState.classList.add('hidden');
+
+  container.innerHTML=filtered.map(d=>{
+    const status=getDriverStatus(d);
+    const days=daysUntil(d.expired_at);
+    const isExpired=status==='expired';
+
+    const statusBadge={
+      aktif:'bg-brand-50 text-brand-600',
+      nonaktif:'bg-red-50 text-red-500',
+      expired:'bg-amber-50 text-amber-600'
+    };
+    const statusLabel={aktif:'AKTIF',nonaktif:'NONAKTIF',expired:'EXPIRED'};
+
+    return `
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-surface-100">
+      <!-- Row 1: Info -->
+      <div class="flex items-center gap-3 mb-3">
+        <div class="relative flex-shrink-0">
+          <img src="${d.fotoURL}" class="w-12 h-12 rounded-xl object-cover" onerror="this.src='https://picsum.photos/seed/fallback/200/200'">
+          <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white ${d.online?'bg-brand-500':'bg-ink-300'}"></div>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="font-700 text-sm truncate">${d.nama}</div>
+          <div class="text-xs text-ink-500 truncate">${d.nomorHP} · ${d.jenisBeca} · ${d.pengalaman}th</div>
+        </div>
+        <span class="text-[10px] font-700 px-2 py-0.5 rounded-full ${statusBadge[status]}">${statusLabel[status]}</span>
+      </div>
+
+      <!-- Row 2: Detail -->
+      <div class="bg-surface-50 rounded-xl px-3 py-2 mb-3 space-y-1.5">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-ink-500"><i class="fa-regular fa-calendar w-4 text-center mr-1"></i>Masa aktif</span>
+          <span class="${isExpired?'text-red-500 font-600':'text-ink-700 font-500'}">${formatDate(d.expired_at)} ${isExpired?'(expired)':'('+days+' hari)'}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-ink-500"><i class="fa-solid fa-signal w-4 text-center mr-1"></i>Status</span>
+          <span class="${d.online?'text-brand-500 font-600':'text-ink-300'}">${d.online?'Online':'Offline'}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-ink-500"><i class="fa-solid fa-clock w-4 text-center mr-1"></i>Terakhir aktif</span>
+          <span class="text-ink-500">${d.lastSeen?timeAgo(d.lastSeen):'-'}</span>
+        </div>
+        ${d.areaLayanan?`<div class="flex items-center justify-between text-xs"><span class="text-ink-500"><i class="fa-solid fa-map-pin w-4 text-center mr-1"></i>Area</span><span class="text-ink-500 truncate ml-2 max-w-[50%] text-right">${d.areaLayanan}</span></div>`:''}
+      </div>
+
+      <!-- Row 3: Actions -->
+      <div class="flex gap-2">
+        ${status==='aktif'?`
+          <button onclick="adminToggleDriver('${d.id}','nonaktif')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-600 py-2.5 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid fa-ban text-[10px]"></i> Nonaktifkan</button>
+        `:`
+          <button onclick="adminToggleDriver('${d.id}','aktif')" class="flex-1 bg-brand-50 hover:bg-brand-100 text-brand-600 font-600 py-2.5 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid fa-check text-[10px]"></i> Aktifkan</button>
+        `}
+        <button onclick="adminExtendDriver('${d.id}')" class="flex-1 bg-surface-100 hover:bg-surface-200 text-ink-700 font-600 py-2.5 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid fa-plus text-[10px]"></i> +30 Hari</button>
+        <a href="https://wa.me/${d.nomorHP}" target="_blank" rel="noopener" class="w-10 bg-green-50 hover:bg-green-100 text-green-600 rounded-xl flex items-center justify-center transition-colors card-tap" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp text-base"></i></a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// AKSI ADMIN
+// ============================================================
+async function adminToggleDriver(id,newStatus){
+  const d=allDrivers.find(x=>x.id===id);if(!d)return;
+  const label=newStatus==='aktif'?'mengaktifkan':'menonaktifkan';
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 ${newStatus==='aktif'?'bg-brand-50':'bg-red-50'} rounded-2xl mx-auto flex items-center justify-center mb-3">
+        <i class="fa-solid ${newStatus==='aktif'?'fa-circle-check text-brand-500':'fa-circle-xmark text-red-500'} text-2xl"></i>
+      </div>
+      <h3 class="font-700 text-lg">${newStatus==='aktif'?'Aktifkan':'Nonaktifkan'} Driver</h3>
+      <p class="text-sm text-ink-500 mt-1">Yakin ingin ${label} <b>${d.nama}</b>?</p>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmToggle('${id}','${newStatus}')" class="flex-1 ${newStatus==='aktif'?'bg-brand-500 hover:bg-brand-600':'bg-red-500 hover:bg-red-600'} text-white font-600 py-3 rounded-xl card-tap transition-colors">Konfirmasi</button>
+    </div>
+  `);
+}
+
+async function confirmToggle(id,newStatus){
+  closeModal();
+  const d=allDrivers.find(x=>x.id===id);if(!d)return;
+  d.status=newStatus;
+  if(!isDemoMode&&db){
+    try{await db.collection('drivers').doc(id).update({status:newStatus});}
+    catch(e){showToast('Gagal mengubah status','error');d.status=newStatus==='aktif'?'nonaktif':'aktif';renderDashboard();return;}
+  }
+  renderDashboard();
+  showToast(`${d.nama} berhasil ${newStatus==='aktif'?'diaktifkan':'dinonaktifkan'}`,'success');
+}
+
+async function adminExtendDriver(id){
+  const d=allDrivers.find(x=>x.id===id);if(!d)return;
+  const days=daysUntil(d.expired_at);
+  const baseDate=new Date(Math.max(new Date(d.expired_at),new Date()));
+  const newExpiry=new Date(baseDate.getTime()+30*864e5);
+
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-brand-50 rounded-2xl mx-auto flex items-center justify-center mb-3">
+        <i class="fa-solid fa-calendar-plus text-brand-500 text-2xl"></i>
+      </div>
+      <h3 class="font-700 text-lg">Perpanjang 30 Hari</h3>
+      <p class="text-sm text-ink-500 mt-1">Driver: <b>${d.nama}</b></p>
+    </div>
+    <div class="bg-surface-50 rounded-xl p-3 mb-4 space-y-2">
+      <div class="flex justify-between text-sm"><span class="text-ink-500">Masa aktif sekarang</span><span class="font-600">${formatDate(d.expired_at)}</span></div>
+      <div class="flex justify-between text-sm"><span class="text-ink-500">Sisa waktu</span><span class="font-600 ${days<=0?'text-red-500':''}">${days<=0?'Expired':days+' hari'}</span></div>
+      <div class="border-t border-surface-200 pt-2 flex justify-between text-sm"><span class="text-ink-500">Menjadi</span><span class="font-700 text-brand-600">${formatDate(newExpiry.toISOString())}</span></div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmExtend('${id}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Perpanjang</button>
+    </div>
+  `);
+}
+
+async function confirmExtend(id){
+  closeModal();
+  const d=allDrivers.find(x=>x.id===id);if(!d)return;
+  const baseDate=new Date(Math.max(new Date(d.expired_at),new Date()));
+  d.expired_at=new Date(baseDate.getTime()+30*864e5).toISOString();
+  if(!isDemoMode&&db){
+    try{await db.collection('drivers').doc(id).update({expired_at:new Date(d.expired_at)});}
+    catch(e){showToast('Gagal memperpanjang','error');return;}
+  }
+  renderDashboard();
+  showToast(`Masa aktif ${d.nama} diperpanjang 30 hari`,'success');
+}
+
+// ============================================================
+// AUTO UPDATE
+// ============================================================
+function setupUpdateCheck(){
+  if(!swRegistration)return;
+  setInterval(()=>{if(swRegistration)swRegistration.update().catch(()=>{});},5*60*1000);
+  navigator.serviceWorker.addEventListener('message',e=>{
+    if(e.data&&e.data.type==='UPDATE_AVAILABLE'&&e.data.hash!==currentVersionHash){
+      updateAvailable=true;document.getElementById('update-banner').classList.remove('hidden');showToast('Versi baru tersedia','info');
+    }
+  });
+  fetch('/admin.html',{cache:'no-store'}).then(r=>r.text()).then(h=>{currentVersionHash=String(h.length);}).catch(()=>{});
+}
+function applyUpdate(){if(swRegistration&&swRegistration.waiting)swRegistration.waiting.postMessage({type:'SKIP_WAITING'});window.location.reload();}
+
+// ============================================================
+// PWA MANIFEST (inline, khusus admin)
+// ============================================================
+function setupManifest(){
+  const m={name:'BecaKita Admin',short_name:'BK Admin',description:'Panel admin BecaKita — Kelola driver becak',start_url:'/admin.html',scope:'/',display:'standalone',orientation:'portrait',theme_color:'#1E293B',background_color:'#F8F9FC',icons:[{src:'https://img.icons8.com/fluency/192/bicycle.png',sizes:'192x192',type:'image/png'},{src:'https://img.icons8.com/fluency/512/bicycle.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+  const blob=new Blob([JSON.stringify(m)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('link');
+  link.rel='manifest';link.href=url;document.head.appendChild(link);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  initFirebase();setupManifest();
+
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').then(reg=>{
+      swRegistration=reg;console.log('[BecaKita Admin] SW terdaftar');
+      if(reg.waiting){updateAvailable=true;setTimeout(()=>document.getElementById('update-banner').classList.remove('hidden'),2000);}
+      reg.addEventListener('updatefound',()=>{const nw=reg.installing;nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller){updateAvailable=true;document.getElementById('update-banner').classList.remove('hidden');showToast('Versi baru tersedia','info');}});});
+      setupUpdateCheck();
+    }).catch(e=>console.warn('[BecaKita Admin] SW gagal:',e));
+  }
+
+  if(isDemoMode)document.getElementById('demo-badge').classList.remove('hidden');
+
+  // Set default filter style
+  setFilter('all');
+
+  setTimeout(()=>{
+    const s=document.getElementById('splash');s.style.opacity='0';
+    setTimeout(()=>{s.style.display='none';showView('login');},500);
+  },1200);
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
