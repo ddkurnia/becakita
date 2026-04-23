@@ -68,7 +68,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   <button onclick="applyUpdate()" class="bg-white text-brand-600 text-xs font-700 px-3 py-1.5 rounded-lg card-tap">Update</button>
 </div>
 
-<!-- SPLASH -->
+<!-- SPLASH — bg hijau → icon-becakita.png -->
 <div id="splash" class="fixed inset-0 z-[999] bg-brand-500 flex flex-col items-center justify-center transition-opacity duration-500">
   <div class="mb-4" style="animation:float 2s ease-in-out infinite">
     <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-brand-700/30">
@@ -87,8 +87,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <div class="absolute bottom-[25%] left-[-50px] w-64 h-64 bg-white/5 rounded-full"></div>
     <div class="absolute top-[30%] right-[-30px] w-32 h-32 bg-white/5 rounded-full"></div>
     <div class="flex-1 flex flex-col items-center justify-center px-6 py-16 relative z-10">
+      <!-- bg putih → icon-becakita-hijau.png -->
       <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
-        <img src="/icon-becakita.png" alt="BecaKita" class="w-9 h-9 object-contain">
+        <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-9 h-9 object-contain">
       </div>
       <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
       <p class="text-brand-100 text-sm mt-1 font-500 mb-12">Becak Dekat, Mudah, Cepat</p>
@@ -99,7 +100,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
           <i class="fa-solid fa-chevron-right text-ink-300 text-sm"></i>
         </button>
         <button onclick="selectRole('driver')" class="role-card w-full bg-white rounded-2xl p-5 flex items-center gap-4 shadow-xl shadow-black/10 card-tap text-left">
-          <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita.png" alt="BecaKita" class="w-7 h-7 object-contain"></div>
+          <!-- card bg putih → icon-becakita-hijau.png -->
+          <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-7 h-7 object-contain"></div>
           <div class="flex-1"><div class="font-800 text-ink-900 text-lg">Tukang Becak</div><div class="text-xs text-ink-500 mt-0.5">Dashboard & lokasi GPS</div></div>
           <i class="fa-solid fa-chevron-right text-ink-300 text-sm"></i>
         </button>
@@ -111,6 +113,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 
 <!-- ==================== USER APP ==================== -->
 <div id="page-user" class="page">
+  <!-- bg hijau → icon-becakita.png -->
   <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm relative z-20 flex-shrink-0">
     <div class="flex items-center gap-2">
       <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
@@ -140,8 +143,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
             <div class="flex items-center gap-3 p-2"><div class="skeleton w-12 h-12 rounded-full flex-shrink-0"></div><div class="flex-1 space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div></div>
             <div class="flex items-center gap-3 p-2"><div class="skeleton w-12 h-12 rounded-full flex-shrink-0"></div><div class="flex-1 space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div></div>
           </div>
+          <!-- card bg putih → icon-becakita-hijau.png -->
           <div id="no-drivers" class="hidden text-center py-8">
-            <img src="/icon-becakita.png" alt="" class="w-12 h-12 object-contain mx-auto mb-3 opacity-20">
+            <img src="/icon-becakita-hijau.png" alt="" class="w-12 h-12 object-contain mx-auto mb-3 opacity-20">
             <p class="text-sm text-ink-500">Belum ada becak aktif di sekitar Anda</p>
           </div>
         </div>
@@ -187,6 +191,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 <div id="page-driver" class="page">
   <div id="driver-login" class="view flex-1 flex flex-col">
     <div class="flex-1 flex flex-col items-center justify-center px-6">
+      <!-- bg hijau → icon-becakita.png -->
       <div class="w-16 h-16 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 mb-4">
         <img src="/icon-becakita.png" alt="BecaKita" class="w-9 h-9 object-contain">
       </div>
@@ -206,6 +211,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     </div>
   </div>
   <div id="driver-dashboard" class="view flex-1 overflow-y-auto">
+    <!-- bg hijau → icon-becakita.png -->
     <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
@@ -440,6 +446,7 @@ function updateMapMarkers(){
   const ui=L.divIcon({className:'',html:'<div class="user-dot-wrap"><div class="user-dot"></div></div>',iconSize:[18,18],iconAnchor:[9,9]});
   userMarker=L.marker([state.userLocation.lat,state.userLocation.lng],{icon:ui,zIndexOffset:1000}).addTo(map);
   state.nearbyDrivers.forEach(d=>{
+    // pin bg hijau → icon-becakita.png
     const di=L.divIcon({className:'',html:'<div class="driver-pin"><img src="/icon-becakita.png" style="width:16px;height:auto;transform:rotate(45deg);object-fit:contain"></div>',iconSize:[38,38],iconAnchor:[19,38]});
     driverMarkers.push(L.marker([d.lat,d.lng],{icon:di}).addTo(map).bindPopup(`<b>${d.nama}</b><br>${d.jenisBeca} · ${formatDistance(d.distance)}`));
   });
@@ -465,7 +472,8 @@ function showDriverDetail(driverId){
             <div class="pt-2"><h2 class="font-800 text-xl">${driver.nama}</h2><div class="flex items-center gap-1 mt-1">${renderStars(driver.rating)}<span class="text-sm font-700 text-ink-900 ml-1">${driver.rating}</span></div></div>
           </div>
           <div class="space-y-3">
-            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita.png" alt="" class="w-4 h-4 object-contain"></div><div><div class="text-xs text-ink-500">Jenis Becak</div><div class="text-sm font-600">${driver.jenisBeca}</div></div></div>
+            <!-- card bg putih → icon-becakita-hijau.png -->
+            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita-hijau.png" alt="" class="w-4 h-4 object-contain"></div><div><div class="text-xs text-ink-500">Jenis Becak</div><div class="text-sm font-600">${driver.jenisBeca}</div></div></div>
             <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-medal text-amber-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Pengalaman</div><div class="text-sm font-600">${driver.pengalaman} tahun</div></div></div>
             <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-map-pin text-blue-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Area Layanan</div><div class="text-sm font-600">${driver.areaLayanan}</div></div></div>
           </div>
@@ -713,7 +721,7 @@ function applyUpdate(){if(swRegistration&&swRegistration.waiting)swRegistration.
 // PWA MANIFEST
 // ============================================================
 function setupManifest(){
-  const m={name:'BecaKita — Becak Dekat, Mudah, Cepat',short_name:'BecaKita',description:'Layanan becak lokal berbasis lokasi di Kabupaten Kepulauan Meranti',start_url:'/index.html',scope:'/',display:'standalone',orientation:'portrait',theme_color:'#00A651',background_color:'#F8F9FC',categories:['transportation','lifestyle'],icons:[{src:'/icon-becakita.png',sizes:'192x192',type:'image/png'},{src:'/icon-becakita.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+  const m={name:'BecaKita — Becak Dekat, Mudah, Cepat',short_name:'BecaKita',description:'Layanan becak lokal berbasis lokasi di Kabupaten Kepulauan Meranti',start_url:'/index.html',scope:'/',display:'standalone',orientation:'portrait',theme_color:'#00A651',background_color:'#F8F9FC',categories:['transportation','lifestyle'],icons:[{src:'/icon-becakita-hijau.png',sizes:'192x192',type:'image/png'},{src:'/icon-becakita-hijau.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
   const blob=new Blob([JSON.stringify(m)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('link');
   link.rel='manifest';link.href=url;document.head.appendChild(link);
 }
