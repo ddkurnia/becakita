@@ -8,7 +8,8 @@ const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/admin.html',
-  '/connecting.html'
+  '/connecting.html',
+  '/driver-ready.png'
 ];
 
 // Install
