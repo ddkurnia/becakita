@@ -57,6 +57,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 .update-banner{animation:slideDown .4s ease,bounceIn .3s ease .4s}
 .upload-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2}
 .upload-overlay i{animation:spin-icon 1s linear infinite}
+@keyframes disclaimerFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes disclaimerCardUp{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes disclaimerFadeOut{from{opacity:1}to{opacity:0}}
+@keyframes disclaimerCardDown{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(40px) scale(.95)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(0,166,81,.15)}50%{box-shadow:0 0 40px rgba(0,166,81,.3)}}
+@keyframes iconBounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}60%{transform:translateY(-3px)}}
+#disclaimer-overlay{opacity:0;pointer-events:none}
+#disclaimer-overlay.visible{opacity:1;pointer-events:auto;animation:disclaimerFadeIn .4s ease forwards}
+#disclaimer-overlay.visible #disclaimer-card{animation:disclaimerCardUp .5s cubic-bezier(.34,1.56,.64,1) .1s both}
+#disclaimer-overlay.closing{animation:disclaimerFadeOut .3s ease forwards}
+#disclaimer-overlay.closing #disclaimer-card{animation:disclaimerCardDown .3s ease forwards}
+.disclaimer-icon-wrap{animation:iconBounce 2s ease-in-out infinite, glowPulse 3s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
 </head>
@@ -78,6 +90,62 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
   <p class="text-brand-100 text-sm mt-1 font-500">Becak Dekat, Mudah, Cepat</p>
   <div class="mt-8 w-8 h-8 border-3 border-white/30 border-t-white rounded-full" style="animation:spin-slow .8s linear infinite;border-width:3px"></div>
+</div>
+
+<!-- DISCLAIMER POPUP -->
+<div id="disclaimer-overlay" class="fixed inset-0 z-[10001] flex items-center justify-center px-5" style="background:linear-gradient(135deg,rgba(0,166,81,.92) 0%,rgba(0,138,67,.96) 50%,rgba(0,110,53,.98) 100%);backdrop-filter:blur(12px)" onclick="event.stopPropagation()">
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full"></div>
+    <div class="absolute top-1/3 -left-16 w-48 h-48 bg-white/5 rounded-full"></div>
+    <div class="absolute -bottom-10 right-1/4 w-56 h-56 bg-white/5 rounded-full"></div>
+  </div>
+  <div id="disclaimer-card" class="relative z-10 bg-white rounded-3xl shadow-2xl shadow-black/20 max-w-sm w-full overflow-hidden">
+    <div class="bg-gradient-to-br from-brand-500 via-brand-500 to-brand-600 px-6 pt-8 pb-10 text-center relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-full bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
+      <div class="relative z-10">
+        <div class="disclaimer-icon-wrap w-20 h-20 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+          <i class="fa-solid fa-shield-halved text-white text-3xl"></i>
+        </div>
+        <h2 class="text-white text-xl font-800 tracking-tight">Disclaimer</h2>
+        <p class="text-brand-100 text-xs mt-1 font-500">Baca sebelum melanjutkan</p>
+      </div>
+    </div>
+    <div class="px-6 py-6">
+      <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 mb-5">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i>
+          </div>
+          <p class="text-sm text-amber-800 leading-relaxed font-500">BecaKita hanya sebagai platform penghubung antara penumpang dan driver becak, dan bukan merupakan penyedia layanan transportasi. Seluruh transaksi dan layanan dilakukan langsung antara penumpang dan driver becak.</p>
+        </div>
+      </div>
+      <div class="space-y-2.5 mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-7 h-7 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-handshake text-brand-500 text-xs"></i>
+          </div>
+          <p class="text-xs text-ink-500 leading-relaxed">BecaKita tidak bertanggung jawab atas kecelakaan, kerugian, atau sengketa selama perjalanan</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-7 h-7 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-money-bill-transfer text-brand-500 text-xs"></i>
+          </div>
+          <p class="text-xs text-ink-500 leading-relaxed">Transaksi pembayaran dilakukan langsung antara penumpang dan driver</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-7 h-7 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <i class="fa-brands fa-whatsapp text-brand-500 text-xs"></i>
+          </div>
+          <p class="text-xs text-ink-500 leading-relaxed">Negosiasi tarif dan koordinasi dilakukan melalui WhatsApp</p>
+        </div>
+      </div>
+      <button onclick="acceptDisclaimer()" class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-700 py-4 rounded-2xl transition-all shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-500/40 active:scale-[.98] flex items-center justify-center gap-2.5 text-sm">
+        <i class="fa-solid fa-circle-check text-base"></i>
+        <span>Setuju &amp; Lanjutkan</span>
+      </button>
+      <p class="text-center text-[10px] text-ink-300 mt-3">Dengan menekan tombol ini, Anda menyetujui ketentuan di atas</p>
+    </div>
+  </div>
 </div>
 
 <!-- ROLE SELECT -->
@@ -931,6 +999,19 @@ function showUserPrivacy(){
 }
 
 // ============================================================
+// DISCLAIMER
+// ============================================================
+function showDisclaimer(){
+  setTimeout(()=>{document.getElementById('disclaimer-overlay').classList.add('visible');},100);
+}
+function acceptDisclaimer(){
+  const el=document.getElementById('disclaimer-overlay');
+  el.classList.remove('visible');
+  el.classList.add('closing');
+  setTimeout(()=>{el.classList.remove('closing');el.style.display='none';showPage('role');},350);
+}
+
+// ============================================================
 // INIT
 // ============================================================
 function init(){
@@ -944,7 +1025,7 @@ function init(){
     }).catch(e=>console.warn('[BecaKita] SW gagal:',e));
   }
   document.querySelectorAll('.user-tab').forEach(t=>{t.classList.toggle('text-brand-500',t.dataset.tab==='home');t.classList.toggle('text-ink-300',t.dataset.tab!=='home');});
-  setTimeout(()=>{const s=document.getElementById('splash');s.style.opacity='0';setTimeout(()=>{s.style.display='none';showPage('role');},500);},1500);
+  setTimeout(()=>{const s=document.getElementById('splash');s.style.opacity='0';setTimeout(()=>{s.style.display='none';showDisclaimer();},500);},1500);
 }
 document.addEventListener('DOMContentLoaded',init);
 </script>
