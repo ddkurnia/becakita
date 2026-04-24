@@ -170,15 +170,73 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
           <p class="text-sm text-ink-500 mt-1">Tidak perlu login untuk menggunakan layanan</p>
         </div>
         <div class="bg-white rounded-2xl shadow-sm divide-y divide-surface-100">
-          <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-circle-info text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Tentang BecaKita</span></div>
+          <div class="px-4 py-3.5 flex items-center gap-3 cursor-pointer card-tap" onclick="showUserAbout()"><i class="fa-solid fa-circle-info text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Tentang BecaKita</span><i class="fa-solid fa-chevron-right text-ink-300 text-xs ml-auto"></i></div>
           <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-map-location-dot text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Area Layanan</span><span class="text-xs text-ink-300 ml-auto">Kep. Meranti</span></div>
           <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-bell text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Notifikasi</span><span id="notif-status" class="text-xs ml-auto font-500">-</span></div>
-          <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-shield-halved text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Kebijakan Privasi</span></div>
+          <div class="px-4 py-3.5 flex items-center gap-3 cursor-pointer card-tap" onclick="showUserPrivacy()"><i class="fa-solid fa-shield-halved text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Kebijakan Privasi</span><i class="fa-solid fa-chevron-right text-ink-300 text-xs ml-auto"></i></div>
         </div>
         <p class="text-center text-xs text-ink-300 mt-6">BecaKita v1.1 — by <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 text-brand-500 hover:text-brand-600 transition-colors font-600">KedaiMedia</a></p>
       </div>
     </div>
     <div id="user-driver-detail" class="view hidden"></div>
+
+    <!-- ==================== ABOUT BECAKITA ==================== -->
+    <div id="user-about" class="view hidden">
+      <div class="px-4 py-4">
+        <button onclick="switchUserTab('profile')" class="flex items-center gap-2 text-sm text-ink-500 font-500 mb-4 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Profil</button>
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-4">
+          <div class="bg-gradient-to-b from-brand-500 to-brand-600 px-5 py-6 text-center">
+            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-9 h-9 object-contain"></div>
+            <h2 class="text-white text-xl font-800">BecaKita</h2>
+            <p class="text-brand-100 text-sm mt-1">Becak Dekat, Mudah, Cepat</p>
+          </div>
+          <div class="px-5 py-5 space-y-4 text-sm text-ink-700 leading-relaxed">
+            <div><h3 class="font-700 text-ink-900 mb-1">Tentang Aplikasi</h3><p>BecaKita adalah aplikasi layanan pencarian becak berbasis lokasi yang dirancang khusus untuk masyarakat Kabupaten Kepulauan Meranti, Provinsi Riau. Aplikasi ini menghubungkan penumpang yang membutuhkan transportasi becak dengan tukang becak terdekat secara cepat dan mudah melalui teknologi GPS dan peta digital interaktif.</p></div>
+            <div><h3 class="font-700 text-ink-900 mb-1">Visi</h3><p>Menjadi platform digital utama yang mendukung dan melestarikan transportasi becak sebagai warisan budaya masyarakat Kepulauan Meranti, sekaligus meningkatkan kesejahteraan para tukang becak melalui teknologi modern yang mudah diakses oleh seluruh lapisan masyarakat.</p></div>
+            <div><h3 class="font-700 text-ink-900 mb-1">Misi</h3><ul class="list-disc list-inside space-y-1 text-ink-700"><li>Memudahkan masyarakat menemukan becak terdekat dengan cepat melalui peta GPS real-time.</li><li>Memberdayakan tukang becak dengan platform digital untuk menjangkau lebih banyak penumpang.</li><li>Menjaga keamanan dan kenyamanan penumpang melalui sistem verifikasi driver yang terstruktur.</li><li>Menyediakan sistem langganan yang transparan dan terjangkau bagi para tukang becak.</li></ul></div>
+            <div><h3 class="font-700 text-ink-900 mb-1">Cara Kerja</h3><p><b>Untuk Penumpang:</b> Buka aplikasi, izinkan akses lokasi, lalu lihat daftar becak terdekat. Hubungi driver melalui WhatsApp untuk negosiasi tarif dan koordinasi penjemputan. Tidak perlu mendaftar atau login.</p><p class="mt-2"><b>Untuk Tukang Becak:</b> Daftar akun terlebih dahulu melalui aplikasi. Setelah pendaftaran disetujui admin, login menggunakan nomor HP dan PIN, aktifkan status online, dan tunggu panggilan dari penumpang melalui WhatsApp.</p></div>
+            <div><h3 class="font-700 text-ink-900 mb-1">Model Layanan</h3><p>BecaKita beroperasi dengan sistem <b>langganan berbayar</b> bagi tukang becak. Tukang becak yang terdaftar membayar biaya langganan bulanan untuk tampil di aplikasi dan mendapatkan fitur dashboard driver termasuk GPS tracking, manajemen profil, dan papan informasi langganan.</p><p class="mt-2">Penting untuk diketahui bahwa <b>BecaKita tidak mengelola transaksi pembayaran</b> antara penumpang dan tukang becak. Seluruh komunikasi, negosiasi tarif, dan pembayaran dilakukan secara langsung antara penumpang dan tukang becak melalui WhatsApp. BecaKita hanya menyediakan platform informasi dan koneksi.</p></div>
+            <div><h3 class="font-700 text-ink-900 mb-1">Area Layanan</h3><p>Saat ini BecaKita melayani area Kabupaten Kepulauan Meranti dan sekitarnya, meliputi Kecamatan Tebing Tinggi, Selat Panjang, Tanjung Samak, Teluk Belengkong, dan daerah sekitarnya.</p></div>
+            <div><h3 class="font-700 text-ink-900 mb-1">Ketentuan Layanan</h3><p class="text-xs text-ink-500">Informasi lengkap mengenai ketentuan layanan tersedia di halaman <b>Kebijakan Privasi</b> yang dapat diakses dari menu Profil.</p></div>
+            <div class="border-t border-surface-100 pt-4 text-center"><p class="text-xs text-ink-300">BecaKita v1.1</p><p class="text-xs text-ink-300 mt-1">Dikembangkan oleh <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="text-brand-500 font-600 underline underline-offset-2">KedaiMedia</a></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PRIVACY POLICY ==================== -->
+    <div id="user-privacy" class="view hidden">
+      <div class="px-4 py-4">
+        <button onclick="switchUserTab('profile')" class="flex items-center gap-2 text-sm text-ink-500 font-500 mb-4 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Profil</button>
+        <div class="bg-white rounded-2xl shadow-sm px-5 py-5 space-y-5 text-sm text-ink-700 leading-relaxed">
+          <div class="text-center"><h2 class="font-800 text-lg text-ink-900">Kebijakan Privasi</h2><p class="text-xs text-ink-500 mt-1">Terakhir diperbarui: 24 April 2026</p></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">1. Pendahuluan</h3><p>BecaKita ("kami", "aplikasi") menghargai privasi Anda. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda ketika menggunakan aplikasi BecaKita, baik sebagai penumpang maupun tukang becak (driver). Dengan menggunakan aplikasi ini, Anda menyetujui praktik yang dijelaskan dalam kebijakan ini.</p><p class="mt-2">BecaKita dikembangkan dan dikelola oleh <b>KedaiMedia</b>, pengembang aplikasi web independen yang berbasis di Indonesia.</p></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">2. Informasi yang Kami Kumpulkan</h3><p><b>a. Informasi yang Anda Berikan Secara Langsung:</b></p><ul class="list-disc list-inside space-y-1 ml-2"><li><b>Bagi Driver:</b> Nama lengkap, nomor HP, PIN keamanan, jenis becak, pengalaman, area layanan, deskripsi, dan foto profil yang Anda berikan saat mendaftar atau mengedit profil.</li><li><b>Bagi Penumpang:</b> BecaKita tidak memerlukan pendaftaran atau login. Kami tidak mengumpulkan informasi identitas penumpang secara langsung melalui aplikasi.</li></ul><p class="mt-2"><b>b. Informasi yang Dikumpulkan Secara Otomatis:</b></p><ul class="list-disc list-inside space-y-1 ml-2"><li><b>Lokasi GPS:</b> Untuk penumpang, lokasi GPS digunakan secara sementara di browser Anda untuk menampilkan becak terdekat. Untuk driver, lokasi GPS dikirim ke server secara real-time ketika status online aktif, agar penumpang dapat menemukan Anda.</li><li><b>Data Penggunaan:</b> Kami dapat mengumpulkan data anonim tentang bagaimana aplikasi digunakan, seperti frekuensi akses dan fitur yang digunakan, untuk tujuan peningkatan layanan.</li></ul></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">3. Penggunaan Informasi</h3><p>Informasi yang kami kumpulkan digunakan untuk tujuan berikut:</p><ul class="list-disc list-inside space-y-1 ml-2"><li>Menampilkan lokasi driver terdekat kepada penumpang yang menggunakan aplikasi.</li><li>Menampilkan profil driver kepada penumpang untuk membantu keputusan memilih layanan.</li><li>Memverifikasi dan mengelola pendaftaran driver baru melalui proses persetujuan admin.</li><li>Mengelola status langganan dan akun driver (aktif, nonaktif, expired).</li><li>Mengirimkan notifikasi push terkait informasi penting mengenai layanan.</li><li>Meningkatkan kualitas dan performa aplikasi berdasarkan data penggunaan anonim.</li></ul></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">4. Pembagian Informasi kepada Pihak Ketiga</h3><p>Kami memahami bahwa privasi Anda sangat penting. Berikut adalah kebijakan pembagian informasi kami:</p><ul class="list-disc list-inside space-y-1 ml-2"><li><b>Nomor HP Driver:</b> Ditampilkan kepada penumpang melalui tombol WhatsApp agar penumpang dapat menghubungi driver. Ini adalah bagian inti dari fungsi aplikasi.</li><li><b>Lokasi Driver:</b> Ditampilkan kepada penumpang melalui peta interaktif ketika driver dalam status online.</li><li>Kami <b>tidak menjual</b> data pribadi Anda kepada pihak ketiga mana pun untuk tujuan pemasaran atau komersial.</li><li>Kami <b>tidak membagikan</b> data Anda kepada perusahaan periklanan atau data broker.</li><li>Data dapat dibagikan jika diwajibkan oleh hukum atau peraturan yang berlaku di Indonesia.</li></ul></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">5. Transaksi dan Pembayaran</h3><p>PENTING: BecaKita <b>tidak mengelola, memproses, atau menyimpan</b> transaksi pembayaran apa pun antara penumpang dan tukang becak.</p><ul class="list-disc list-inside space-y-1 ml-2"><li>Seluruh negosiasi tarif terjadi langsung antara penumpang dan tukang becak.</li><li>Seluruh pembayaran dilakukan secara langsung antara penumpang dan tukang becak, umumnya secara tunai.</li><p class="mt-2">BecaKita sama sekali tidak terlibat dalam kesepakatan tarif, pembayaran, maupun sengketa keuangan antara penumpang dan tukang becak. Kami hanya menyediakan platform informasi dan koneksi.</p></ul></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">6. Keamanan Data</h3><p>Kami menerapkan langkah-langkah keamanan yang wajar untuk melindungi informasi Anda, termasuk:</p><ul class="list-disc list-inside space-y-1 ml-2"><li>Enkripsi data dalam transit menggunakan protokol HTTPS/SSL.</li><li>Penggunaan PIN untuk autentikasi login driver (tidak disimpan dalam bentuk plain text).</li><li>Pembatasan akses data hanya kepada admin yang berwenang.</li></ul><p class="mt-2">Meskipun demikian, tidak ada metode transmisi data melalui internet yang 100% aman. Kami tidak dapat menjamin keamanan absolut dari data yang ditransmisikan kepada kami.</p></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">7. Hak Anda</h3><p>Sebagai pengguna, Anda memiliki hak untuk:</p><ul class="list-disc list-inside space-y-1 ml-2"><li>Mengakses dan memperbarui data profil Anda (bagi driver) melalui fitur Edit Profil.</li><li>Meminta penghapusan data akun Anda dengan menghubungi admin melalui WhatsApp.</li><li>Menolak atau mematikan notifikasi push melalui pengaturan browser Anda.</li><li>Menolak akses lokasi GPS melalui pengaturan perangkat Anda (hal ini akan memengaruhi fungsi utama aplikasi).</li></ul></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">8. Penyimpanan Data</h3><p>Data Anda disimpan pada server Firebase Cloud Firestore yang dikelola oleh Google Cloud Platform. Data disimpan selama akun Anda aktif atau selama diperlukan untuk tujuan yang dijelaskan dalam kebijakan ini. Jika Anda meminta penghapusan akun, kami akan menghapus data pribadi Anda dalam waktu 30 hari kerja, kecuali jika diwajibkan oleh hukum untuk menyimpannya lebih lama.</p></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">9. Perubahan Kebijakan</h3><p>Kami dapat memperbarui Kebijakan Privasi ini dari waktu ke waktu. Perubahan akan diumumkan melalui aplikasi atau halaman ini. Penggunaan aplikasi yang berkelanjutan setelah perubahan kebijakan berarti Anda menyetujui kebijakan yang diperbarui.</p></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">10. Ketentuan Layanan (Syarat dan Ketentuan)</h3><p><b>10.1 Penerimaan Ketentuan</b></p><p>Dengan mengakses dan menggunakan aplikasi BecaKita, Anda mengakui bahwa Anda telah membaca, memahami, dan menyetujui untuk terikat oleh Ketentuan Layanan ini. Jika Anda tidak menyetujui ketentuan ini, harap tidak menggunakan aplikasi ini.</p><p class="mt-2"><b>10.2 Kelayakan Penggunaan</b></p><p>Aplikasi BecaKita ditujukan untuk digunakan oleh individu yang berusia minimal 17 tahun. Penggunaan oleh anak di bawah umur harus dengan pengawasan orang tua atau wali. Driver yang mendaftar harus memiliki usia minimal 18 tahun dan memiliki identitas yang valid.</p><p class="mt-2"><b>10.3 Kewajiban Driver</b></p><ul class="list-disc list-inside space-y-1 ml-2"><li>Memberikan informasi yang benar dan akurat saat mendaftar.</li><li>Menjaga keamanan dan kenyamanan penumpang selama perjalanan.</li><li>Mematuhi peraturan lalu lintas yang berlaku di wilayah Kabupaten Kepulauan Meranti.</li><li>Menjaga kondisi becak dalam keadaan layak dan bersih.</li><li>Tidak menampilkan perilaku yang tidak pantas, diskriminatif, atau merugikan penumpang.</li><li>Membayar biaya langganan tepat waktu untuk menjaga akun tetap aktif.</li></ul><p class="mt-2"><b>10.4 Kewajiban Penumpang</b></p><ul class="list-disc list-inside space-y-1 ml-2"><li>Memberikan informasi lokasi yang akurat untuk memudahkan penjemputan.</li><li>Menghargai driver dan becak sebagai alat transportasi umum.</li><li>Mematuhi kesepakatan tarif yang telah disepakati bersama driver.</li><li>Tidak merusak atau mencuri properti driver.</li></ul><p class="mt-2"><b>10.5 Batasan Tanggung Jawab</b></p><ul class="list-disc list-inside space-y-1 ml-2"><li>BecaKita <b>bukan</b> penyedia layanan transportasi. BecaKita hanya menyediakan platform digital untuk menghubungkan penumpang dan tukang becak.</li><li>BecaKita <b>tidak bertanggung jawab</b> atas kecelakaan, kerugian, cedera, atau insiden yang terjadi selama perjalanan antara penumpang dan tukang becak.</li><li>BecaKita <b>tidak bertanggung jawab</b> atas sengketa tarif, pembayaran, atau transaksi keuangan antara penumpang dan tukang becak.</li><li>BecaKita <b>tidak bertanggung jawab</b> atas perilaku atau tindakan penumpang maupun tukang becak yang melanggar hukum.</li><li>BecaKita <b>tidak menjamin</b> ketersediaan driver setiap saat.</li></ul><p class="mt-2"><b>10.6 Biaya Langganan Driver</b></p><p>Biaya langganan berlaku bagi tukang becak yang terdaftar untuk tampil di aplikasi. Besaran biaya dan mekanisme pembayaran akan diinformasikan melalui dashboard driver atau langsung oleh admin BecaKita. Biaya langganan bersifat non-refundable (tidak dapat dikembalikan) kecuali ditentukan lain oleh admin.</p><p class="mt-2"><b>10.7 Penghentian Akun</b></p><p>Admin BecaKita berhak menangguhkan atau menghentikan akun driver yang melanggar ketentuan layanan ini, termasuk namun tidak terbatas pada: pemberian informasi palsu, pelanggaran berulang, perilaku yang merugikan pengguna lain, atau pelanggaran hukum yang berlaku.</p><p class="mt-2"><b>10.8 Hukum yang Berlaku</b></p><p>Ketentuan Layanan dan Kebijakan Privasi ini tunduk pada dan ditafsirkan sesuai dengan hukum Republik Indonesia. Setiap perselisihan akan diselesaikan melalui musyawarah terlebih dahulu, dan jika tidak tercapai kesepakatan, akan diselesaikan melalui Pengadilan Negeri yang berwenang di wilayah Kabupaten Kepulauan Meranti.</p></div>
+
+          <div><h3 class="font-700 text-ink-900 mb-2">11. Hubungi Kami</h3><p>Jika Anda memiliki pertanyaan, keluhan, atau permintaan terkait privasi data dan ketentuan layanan, silakan hubungi kami melalui:</p><div class="bg-surface-50 rounded-xl p-4 mt-2 space-y-2"><div class="flex items-center gap-2 text-xs"><i class="fa-solid fa-building w-4 text-center text-brand-500"></i><span><b>Developer:</b> KedaiMedia</span></div><div class="flex items-center gap-2 text-xs"><i class="fa-solid fa-globe w-4 text-center text-brand-500"></i><span><b>Website:</b> <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="text-brand-600 underline">kedaimedia.com</a></span></div><div class="flex items-center gap-2 text-xs"><i class="fa-brands fa-whatsapp w-4 text-center text-brand-500"></i><span><b>WhatsApp Admin:</b> Hubungi melalui fitur yang tersedia di aplikasi</span></div></div></div>
+
+          <div class="border-t border-surface-100 pt-4 text-center"><p class="text-xs text-ink-300">BecaKita &copy; 2026. Hak cipta dilindungi undang-undang.</p></div>
+        </div>
+      </div>
+    </div>
   </main>
   <nav id="user-bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-surface-200 flex items-center justify-around py-2 z-30" style="padding-bottom:max(8px,env(safe-area-inset-bottom))">
     <button onclick="switchUserTab('home')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="home"><i class="fa-solid fa-house text-lg"></i><span class="text-[10px] font-600">Beranda</span></button>
@@ -196,7 +254,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         <img src="/icon-becakita.png" alt="BecaKita" class="w-9 h-9 object-contain">
       </div>
       <h1 class="text-2xl font-800 tracking-tight">Masuk Driver</h1>
-      <p class="text-sm text-ink-500 mt-1 mb-8">Masukkan nomor HP untuk melanjutkan</p>
+      <p class="text-sm text-ink-500 mt-1 mb-8">Masukkan nomor HP dan PIN untuk melanjutkan</p>
       <div class="w-full max-w-xs space-y-4">
         <div>
           <label class="text-xs font-600 text-ink-700 mb-1 block">Nomor HP</label>
@@ -205,8 +263,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
             <input id="driver-phone" type="tel" maxlength="12" placeholder="8123456789" class="flex-1 outline-none text-sm bg-transparent font-500" inputmode="numeric">
           </div>
         </div>
+        <div>
+          <label class="text-xs font-600 text-ink-700 mb-1 block">PIN</label>
+          <input id="driver-pin" type="password" maxlength="6" placeholder="Masukkan 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric">
+        </div>
         <button onclick="driverLogin()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap">Masuk</button>
       </div>
+      <p class="text-sm text-ink-500 mt-4">Belum punya akun? <button onclick="showDriverRegister()" class="text-brand-600 font-700 underline underline-offset-2">Daftar Sekarang</button></p>
       <button onclick="goBack()" class="mt-8 text-sm text-ink-500 flex items-center gap-1 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali</button>
     </div>
   </div>
@@ -267,6 +330,34 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         <div><label class="text-xs font-600 text-ink-700 mb-1 block">Deskripsi Singkat</label><textarea id="edit-deskripsi" rows="3" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all resize-none"></textarea></div>
       </div>
       <button onclick="saveDriverProfile()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap">Simpan Perubahan</button>
+    </div>
+  </div>
+
+  <!-- ==================== DRIVER REGISTER ==================== -->
+  <div id="driver-register" class="view flex-1 overflow-y-auto">
+    <header class="bg-white px-4 py-3 flex items-center gap-3 shadow-sm flex-shrink-0">
+      <button onclick="showDriverView('login')" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-ink-700 text-xs"></i></button>
+      <span class="font-700">Daftar Driver Baru</span>
+    </header>
+    <div class="px-4 py-4 space-y-4">
+      <div class="bg-brand-50 border border-brand-200 rounded-xl px-3 py-2.5 text-xs text-brand-700 flex items-start gap-2">
+        <i class="fa-solid fa-circle-info mt-0.5 flex-shrink-0"></i>
+        <span>Isi data dengan benar. Pendaftaran akan ditinjau oleh admin sebelum akun Anda aktif. Proses verifikasi biasanya 1x24 jam.</span>
+      </div>
+      <div class="space-y-3">
+        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Nama Lengkap <span class="text-red-400">*</span></label><input id="reg-nama" type="text" placeholder="Masukkan nama lengkap" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Nomor HP <span class="text-red-400">*</span></label><div class="flex items-center bg-white border border-surface-200 rounded-xl px-4 py-3 gap-2 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 transition-all"><span class="text-sm text-ink-500 font-500">+62</span><input id="reg-phone" type="tel" maxlength="12" placeholder="8123456789" class="flex-1 outline-none text-sm bg-transparent font-500" inputmode="numeric"></div></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Buat PIN (6 digit) <span class="text-red-400">*</span></label><input id="reg-pin" type="password" maxlength="6" placeholder="Masukkan 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Konfirmasi PIN <span class="text-red-400">*</span></label><input id="reg-pin-confirm" type="password" maxlength="6" placeholder="Ulangi 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Jenis Becak <span class="text-red-400">*</span></label><select id="reg-jenis" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"><option value="">Pilih jenis becak</option><option value="Becak Motor">Becak Motor</option><option value="Becak Kayuh">Becak Kayuh</option><option value="Becak Listrik">Becak Listrik</option></select></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Pengalaman (tahun)</label><input id="reg-pengalaman" type="number" min="0" placeholder="0" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Area Layanan</label><input id="reg-area" type="text" placeholder="cth: Selat Panjang, Tanjung Samak" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Deskripsi Singkat</label><textarea id="reg-deskripsi" rows="3" placeholder="Ceritakan sedikit tentang Anda dan layanan Anda" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all resize-none"></textarea></div>
+      </div>
+      <div class="bg-surface-50 rounded-xl p-3 space-y-2">
+        <div class="flex items-start gap-2"><input type="checkbox" id="reg-agree" class="mt-1 accent-brand-500"><label for="reg-agree" class="text-xs text-ink-700 leading-relaxed">Saya menyetujui <button onclick="showUserAbout()" class="text-brand-600 font-600 underline">Ketentuan Layanan</button> dan <button onclick="showUserPrivacy()" class="text-brand-600 font-600 underline">Kebijakan Privasi</button> BecaKita <span class="text-red-400">*</span></label></div>
+      </div>
+      <button id="btn-register" onclick="driverRegister()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap">Kirim Pendaftaran</button>
     </div>
   </div>
 </div>
@@ -533,10 +624,29 @@ function showDriverView(v){document.querySelectorAll('#page-driver .view').forEa
 
 async function driverLogin(){
   const phone=document.getElementById('driver-phone').value.trim();
+  const pin=document.getElementById('driver-pin').value.trim();
   if(!phone||phone.length<8){showToast('Masukkan nomor HP yang valid','warning');return;}
+  if(!pin||pin.length!==6||!/^\d{6}$/.test(pin)){showToast('Masukkan PIN 6 digit yang valid','warning');return;}
   if(isDemoMode){state.currentDriver={...DEMO_DRIVERS[0]};state.isOnline=state.currentDriver.online;showDriverView('dashboard');renderDriverDashboard();showToast('Login berhasil (mode demo)','success');startLocationWatch();startLocationInterval();return;}
-  try{const s=await db.collection('drivers').where('nomorHP','==','+62'+phone).limit(1).get();if(s.empty){showToast('Nomor HP tidak terdaftar sebagai driver','error');return;}state.currentDriver={id:s.docs[0].id,...s.docs[0].data()};state.isOnline=state.currentDriver.online||false;showDriverView('dashboard');renderDriverDashboard();showToast('Login berhasil','success');startLocationWatch();startLocationInterval();}
-  catch(e){showToast('Gagal login, coba lagi','error');}
+  try{
+    const s=await db.collection('drivers').where('nomorHP','==','+62'+phone).limit(1).get();
+    if(s.empty){
+      // Cek apakah ada pendaftaran pending
+      const reg=await db.collection('registrations').where('nomorHP','==','+62'+phone).orderBy('createdAt','desc').limit(1).get();
+      if(!reg.empty){
+        const regData=reg.docs[0].data();
+        if(regData.status==='pending'){showToast('Pendaftaran Anda sedang ditinjau admin. Silakan tunggu.','warning');}
+        else if(regData.status==='rejected'){showToast('Pendaftaran Anda ditolak oleh admin. Hubungi admin untuk info lebih lanjut.','error');}
+        else{showToast('Pendaftaran Anda sudah diproses. Silakan hubungi admin.','info');}
+      }else{showToast('Nomor HP tidak terdaftar. Silakan daftar terlebih dahulu.','error');}
+      return;
+    }
+    // Verifikasi PIN
+    const driverData={id:s.docs[0].id,...s.docs[0].data()};
+    if(driverData.pin&&driverData.pin!==pin){showToast('PIN salah. Silakan coba lagi.','error');return;}
+    state.currentDriver=driverData;state.isOnline=state.currentDriver.online||false;
+    showDriverView('dashboard');renderDriverDashboard();showToast('Login berhasil','success');startLocationWatch();startLocationInterval();
+  }catch(e){showToast('Gagal login, coba lagi','error');}
 }
 
 // ============================================================
@@ -724,6 +834,77 @@ function setupManifest(){
   const m={name:'BecaKita — Becak Dekat, Mudah, Cepat',short_name:'BecaKita',description:'Layanan becak lokal berbasis lokasi di Kabupaten Kepulauan Meranti',start_url:'/index.html',scope:'/',display:'standalone',orientation:'portrait',theme_color:'#00A651',background_color:'#F8F9FC',categories:['transportation','lifestyle'],icons:[{src:'/icon-becakita-hijau.png',sizes:'192x192',type:'image/png'},{src:'/icon-becakita-hijau.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
   const blob=new Blob([JSON.stringify(m)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('link');
   link.rel='manifest';link.href=url;document.head.appendChild(link);
+}
+
+// ============================================================
+// DRIVER — REGISTER
+// ============================================================
+function showDriverRegister(){showDriverView('register');}
+
+async function driverRegister(){
+  const nama=document.getElementById('reg-nama').value.trim();
+  const phone=document.getElementById('reg-phone').value.trim();
+  const pin=document.getElementById('reg-pin').value.trim();
+  const pinConfirm=document.getElementById('reg-pin-confirm').value.trim();
+  const jenis=document.getElementById('reg-jenis').value;
+  const pengalaman=parseInt(document.getElementById('reg-pengalaman').value)||0;
+  const area=document.getElementById('reg-area').value.trim();
+  const deskripsi=document.getElementById('reg-deskripsi').value.trim();
+  const agree=document.getElementById('reg-agree').checked;
+
+  if(!nama){showToast('Nama lengkap wajib diisi','warning');return;}
+  if(!phone||phone.length<8){showToast('Masukkan nomor HP yang valid','warning');return;}
+  if(!pin||pin.length!==6||!/^\d{6}$/.test(pin)){showToast('PIN harus 6 digit angka','warning');return;}
+  if(pin!==pinConfirm){showToast('PIN dan konfirmasi PIN tidak cocok','warning');return;}
+  if(!jenis){showToast('Pilih jenis becak','warning');return;}
+  if(!agree){showToast('Anda harus menyetujui Ketentuan Layanan dan Kebijakan Privasi','warning');return;}
+
+  const btn=document.getElementById('btn-register');
+  btn.disabled=true;btn.textContent='Mengirim...';
+
+  const regData={
+    nama, nomorHP:'+62'+phone, pin, jenisBeca:jenis, pengalaman,
+    areaLayanan:area, deskripsi, status:'pending',
+    fotoURL:'https://picsum.photos/seed/'+phone+'/200/200',
+    createdAt:new Date().toISOString(),
+    rating:0
+  };
+
+  if(isDemoMode){
+    showToast('Pendaftaran berhasil dikirim (mode demo). Admin akan meninjau pendaftaran Anda.','success');
+    setTimeout(()=>showDriverView('login'),1500);
+    btn.disabled=false;btn.textContent='Kirim Pendaftaran';return;
+  }
+
+  try{
+    // Cek apakah nomor HP sudah terdaftar di drivers
+    const existDriver=await db.collection('drivers').where('nomorHP','==','+62'+phone).limit(1).get();
+    if(!existDriver.empty){showToast('Nomor HP ini sudah terdaftar sebagai driver. Silakan login.','warning');btn.disabled=false;btn.textContent='Kirim Pendaftaran';return;}
+    // Cek apakah sudah ada pendaftaran pending
+    const existReg=await db.collection('registrations').where('nomorHP','==','+62'+phone).where('status','==','pending').limit(1).get();
+    if(!existReg.empty){showToast('Anda sudah memiliki pendaftaran yang sedang ditinjau. Silakan tunggu.','warning');btn.disabled=false;btn.textContent='Kirim Pendaftaran';return;}
+    await db.collection('registrations').add(regData);
+    showToast('Pendaftaran berhasil dikirim! Admin akan meninjau dalam 1x24 jam.','success');
+    setTimeout(()=>showDriverView('login'),1500);
+  }catch(e){
+    console.error('[BecaKita] Gagal mendaftar:',e);
+    showToast('Gagal mengirim pendaftaran. Coba lagi.','error');
+  }
+  btn.disabled=false;btn.textContent='Kirim Pendaftaran';
+}
+
+// ============================================================
+// USER — ABOUT & PRIVACY NAVIGATION
+// ============================================================
+function showUserAbout(){
+  document.querySelectorAll('#page-user .view').forEach(v=>v.classList.add('hidden'));
+  document.getElementById('user-about').classList.remove('hidden');
+  document.getElementById('user-bottom-nav').style.display='none';
+}
+function showUserPrivacy(){
+  document.querySelectorAll('#page-user .view').forEach(v=>v.classList.add('hidden'));
+  document.getElementById('user-privacy').classList.remove('hidden');
+  document.getElementById('user-bottom-nav').style.display='none';
 }
 
 // ============================================================
