@@ -454,6 +454,31 @@ function showModal(html){document.getElementById('modal-body').innerHTML=html;do
 function closeModal(){document.getElementById('modal-content').style.transform='translateY(100%)';setTimeout(()=>document.getElementById('modal-overlay').classList.add('hidden'),300);}
 
 // ============================================================
+// TRACKING AKTIVITAS DRIVER
+// ============================================================
+async function trackProfileView(driverId){
+  try{
+    if(isDemoMode){
+      const d=DEMO_DRIVERS.find(x=>x.id===driverId);if(d){d.profileViews=(d.profileViews||0)+1;}
+      return;
+    }
+    if(!db)return;
+    await db.collection('drivers').doc(driverId).update({profileViews:firebase.firestore.FieldValue.increment(1)});
+  }catch(e){console.warn('[Tracking] Gagal track profile view:',e);}
+}
+
+async function trackWaClick(driverId){
+  try{
+    if(isDemoMode){
+      const d=DEMO_DRIVERS.find(x=>x.id===driverId);if(d){d.waClicks=(d.waClicks||0)+1;}
+      return;
+    }
+    if(!db)return;
+    await db.collection('drivers').doc(driverId).update({waClicks:firebase.firestore.FieldValue.increment(1)});
+  }catch(e){console.warn('[Tracking] Gagal track WA click:',e);}
+}
+
+// ============================================================
 // NAVIGASI
 // ============================================================
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+id)?.classList.add('active');state.currentPage=id;}
@@ -506,14 +531,14 @@ function renderDriverList(){
   if(!state.nearbyDrivers.length){c.innerHTML='';nd.classList.remove('hidden');return;}
   nd.classList.add('hidden');
   c.innerHTML=state.nearbyDrivers.map(d=>`
-    <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface-50 card-tap cursor-pointer" onclick="showDriverDetail('${d.id}')">
+    <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-surface-50 card-tap cursor-pointer" onclick="showDriverDetail('${d.id}');trackProfileView('${d.id}')">
       <img src="${d.fotoURL}" alt="${d.nama}" class="w-12 h-12 rounded-full object-cover flex-shrink-0 border-2 border-surface-100" onerror="this.src='https://picsum.photos/seed/fallback/200/200'">
       <div class="flex-1 min-w-0">
         <div class="font-700 text-sm truncate">${d.nama}</div>
         <div class="flex items-center gap-2 mt-0.5"><span class="text-xs text-ink-500">${d.jenisBeca}</span><span class="text-ink-300">·</span><span class="text-xs text-amber-500"><i class="fa-solid fa-star text-[10px]"></i> ${d.rating}</span></div>
         <div class="text-xs text-brand-500 font-600 mt-0.5"><i class="fa-solid fa-location-dot text-[10px]"></i> ${formatDistance(d.distance)}</div>
       </div>
-      <a href="https://wa.me/${d.nomorHP}?text=${encodeURIComponent(getWaMessage())}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md shadow-green-500/25 transition-colors" aria-label="Hubungi WhatsApp"><i class="fa-brands fa-whatsapp text-white text-lg"></i></a>
+      <a href="https://wa.me/${d.nomorHP}?text=${encodeURIComponent(getWaMessage())}" target="_blank" rel="noopener" onclick="event.stopPropagation();trackWaClick('${d.id}')" class="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md shadow-green-500/25 transition-colors" aria-label="Hubungi WhatsApp"><i class="fa-brands fa-whatsapp text-white text-lg"></i></a>
     </div>`).join('');
 }
 
@@ -573,7 +598,7 @@ function showDriverDetail(driverId){
         </div>
       </div>
       <div class="px-4 py-5">
-        <a href="https://wa.me/${driver.nomorHP}?text=${encodeURIComponent(getWaMessage())}" target="_blank" rel="noopener" class="w-full bg-green-500 hover:bg-green-600 text-white font-700 py-4 rounded-2xl transition-colors shadow-lg shadow-green-500/30 flex items-center justify-center gap-3 text-base card-tap"><i class="fa-brands fa-whatsapp text-2xl"></i>Hubungi via WhatsApp</a>
+        <a href="https://wa.me/${driver.nomorHP}?text=${encodeURIComponent(getWaMessage())}" target="_blank" rel="noopener" onclick="trackWaClick('${driver.id}')" class="w-full bg-green-500 hover:bg-green-600 text-white font-700 py-4 rounded-2xl transition-colors shadow-lg shadow-green-500/30 flex items-center justify-center gap-3 text-base card-tap"><i class="fa-brands fa-whatsapp text-2xl"></i>Hubungi via WhatsApp</a>
       </div>
     </div>`;
   document.querySelectorAll('#page-user .view').forEach(v=>v.classList.add('hidden'));
