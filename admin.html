@@ -229,11 +229,11 @@ const FIREBASE_CONFIG={apiKey:"",authDomain:"",projectId:"",storageBucket:"",mes
 // DATA DEMO — SAMAKAN DENGAN index.html
 // ============================================================
 const DEMO_DRIVERS=[
-  {id:'drv001',nama:'Pak Hamid',nomorHP:'6281276543210',fotoURL:'https://picsum.photos/seed/becakdriver1/200/200',jenisBeca:'Becak Motor',pengalaman:8,deskripsi:'Becak bersih dan nyaman.',status:'aktif',expired_at:new Date(Date.now()+25*24*60*60*1000).toISOString(),online:true,rating:4.8,areaLayanan:'Selat Panjang, Tanjung Samak',lat:1.1482,lng:102.3510,lastSeen:new Date(Date.now()-120000).toISOString()},
-  {id:'drv002',nama:'Pak Usman',nomorHP:'6281398765432',fotoURL:'https://picsum.photos/seed/becakdriver2/200/200',jenisBeca:'Becak Kayuh',pengalaman:12,deskripsi:'Pengalaman 12 tahun.',status:'aktif',expired_at:new Date(Date.now()+15*24*60*60*1000).toISOString(),online:true,rating:4.5,areaLayanan:'Tanjung Samak',lat:1.1460,lng:102.3480,lastSeen:new Date(Date.now()-60000).toISOString()},
-  {id:'drv003',nama:'Buk Dewi',nomorHP:'6281554321098',fotoURL:'https://picsum.photos/seed/becakdriver3/200/200',jenisBeca:'Becak Motor',pengalaman:5,deskripsi:'Driver perempuan pertama.',status:'aktif',expired_at:new Date(Date.now()+28*24*60*60*1000).toISOString(),online:true,rating:4.9,areaLayanan:'Selat Panjang Pusat',lat:1.1440,lng:102.3530,lastSeen:new Date(Date.now()-30000).toISOString()},
-  {id:'drv004',nama:'Pak Surya',nomorHP:'6281667890123',fotoURL:'https://picsum.photos/seed/becakdriver4/200/200',jenisBeca:'Becak Kayuh',pengalaman:15,deskripsi:'Becak kayuh klasik.',status:'aktif',expired_at:new Date(Date.now()+5*24*60*60*1000).toISOString(),online:false,rating:4.3,areaLayanan:'Teluk Belengkong',lat:1.1420,lng:102.3460,lastSeen:new Date(Date.now()-86400000).toISOString()},
-  {id:'drv005',nama:'Pak Rizal',nomorHP:'6281789012345',fotoURL:'https://picsum.photos/seed/becakdriver5/200/200',jenisBeca:'Becak Motor',pengalaman:3,deskripsi:'Driver muda.',status:'nonaktif',expired_at:new Date(Date.now()-5*24*60*60*1000).toISOString(),online:false,rating:4.7,areaLayanan:'Selat Panjang',lat:1.1350,lng:102.3550,lastSeen:new Date(Date.now()-604800000).toISOString()}
+  {id:'drv001',nama:'Pak Hamid',nomorHP:'6281276543210',fotoURL:'https://picsum.photos/seed/becakdriver1/200/200',jenisBeca:'Becak Motor',pengalaman:8,deskripsi:'Becak bersih dan nyaman.',status:'aktif',expired_at:new Date(Date.now()+25*24*60*60*1000).toISOString(),online:true,rating:4.8,areaLayanan:'Selat Panjang, Tanjung Samak',lat:1.1482,lng:102.3510,lastSeen:new Date(Date.now()-120000).toISOString(),profileViews:142,waClicks:38},
+  {id:'drv002',nama:'Pak Usman',nomorHP:'6281398765432',fotoURL:'https://picsum.photos/seed/becakdriver2/200/200',jenisBeca:'Becak Kayuh',pengalaman:12,deskripsi:'Pengalaman 12 tahun.',status:'aktif',expired_at:new Date(Date.now()+15*24*60*60*1000).toISOString(),online:true,rating:4.5,areaLayanan:'Tanjung Samak',lat:1.1460,lng:102.3480,lastSeen:new Date(Date.now()-60000).toISOString(),profileViews:89,waClicks:22},
+  {id:'drv003',nama:'Buk Dewi',nomorHP:'6281554321098',fotoURL:'https://picsum.photos/seed/becakdriver3/200/200',jenisBeca:'Becak Motor',pengalaman:5,deskripsi:'Driver perempuan pertama.',status:'aktif',expired_at:new Date(Date.now()+28*24*60*60*1000).toISOString(),online:true,rating:4.9,areaLayanan:'Selat Panjang Pusat',lat:1.1440,lng:102.3530,lastSeen:new Date(Date.now()-30000).toISOString(),profileViews:215,waClicks:67},
+  {id:'drv004',nama:'Pak Surya',nomorHP:'6281667890123',fotoURL:'https://picsum.photos/seed/becakdriver4/200/200',jenisBeca:'Becak Kayuh',pengalaman:15,deskripsi:'Becak kayuh klasik.',status:'aktif',expired_at:new Date(Date.now()+5*24*60*60*1000).toISOString(),online:false,rating:4.3,areaLayanan:'Teluk Belengkong',lat:1.1420,lng:102.3460,lastSeen:new Date(Date.now()-86400000).toISOString(),profileViews:34,waClicks:8},
+  {id:'drv005',nama:'Pak Rizal',nomorHP:'6281789012345',fotoURL:'https://picsum.photos/seed/becakdriver5/200/200',jenisBeca:'Becak Motor',pengalaman:3,deskripsi:'Driver muda.',status:'nonaktif',expired_at:new Date(Date.now()-5*24*60*60*1000).toISOString(),online:false,rating:4.7,areaLayanan:'Selat Panjang',lat:1.1350,lng:102.3550,lastSeen:new Date(Date.now()-604800000).toISOString(),profileViews:56,waClicks:12}
 ];
 
 // ============================================================
@@ -408,6 +408,24 @@ function renderDriverList(){
           <span class="text-ink-500">${d.lastSeen?timeAgo(d.lastSeen):'-'}</span>
         </div>
         ${d.areaLayanan?`<div class="flex items-center justify-between text-xs"><span class="text-ink-500"><i class="fa-solid fa-map-pin w-4 text-center mr-1"></i>Area</span><span class="text-ink-500 truncate ml-2 max-w-[50%] text-right">${d.areaLayanan}</span></div>`:''}
+      </div>
+
+      <!-- Row 2b: Aktivitas Statistik -->
+      <div class="grid grid-cols-2 gap-2 mb-3">
+        <div class="bg-blue-50 rounded-xl px-3 py-2 flex items-center gap-2">
+          <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-eye text-blue-500 text-[10px]"></i></div>
+          <div>
+            <div class="text-[10px] text-blue-400 font-500">Profil Dilihat</div>
+            <div class="text-sm font-800 text-blue-600">${d.profileViews||0}</div>
+          </div>
+        </div>
+        <div class="bg-green-50 rounded-xl px-3 py-2 flex items-center gap-2">
+          <div class="w-7 h-7 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0"><i class="fa-brands fa-whatsapp text-green-500 text-xs"></i></div>
+          <div>
+            <div class="text-[10px] text-green-500 font-500">Klik WA</div>
+            <div class="text-sm font-800 text-green-600">${d.waClicks||0}</div>
+          </div>
+        </div>
       </div>
 
       <!-- Row 3: Actions -->
