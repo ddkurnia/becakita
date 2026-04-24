@@ -68,6 +68,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
       <button onclick="adminLogin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg card-tap">Masuk</button>
     </div>
     <a href="/index.html" class="mt-6 text-sm text-ink-500 flex items-center gap-1 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke BecaKita</a>
+    <p class="text-xs text-ink-400 mt-1">Default: admin / becakita2024</p>
   </div>
   <div class="text-center pb-6 text-ink-300 text-xs">BecaKita Admin v1.1</div>
 </div>
@@ -125,6 +126,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
       <button onclick="loadAllDrivers()" class="text-xs text-brand-500 font-600 flex items-center gap-1 card-tap"><i class="fa-solid fa-rotate-right text-[10px]"></i> Refresh</button>
     </div>
 
+    <!-- Registrations Shortcut -->
+    <div onclick="showRegistrations()" class="bg-white rounded-xl shadow-sm p-3 flex items-center gap-3 cursor-pointer card-tap border border-surface-100 hover:border-amber-300 transition-colors">
+      <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-user-plus text-amber-500 text-sm"></i></div>
+      <div class="flex-1">
+        <div class="font-700 text-sm">Pendaftaran Driver</div>
+        <div class="text-xs text-ink-500">Kelola pendaftaran driver baru</div>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span id="pending-badge" class="hidden text-[10px] font-700 bg-amber-500 text-white px-2 py-0.5 rounded-full">0</span>
+        <i class="fa-solid fa-chevron-right text-ink-300 text-xs"></i>
+      </div>
+    </div>
+
     <!-- Driver List -->
     <div id="admin-driver-list" class="space-y-3"></div>
 
@@ -142,6 +156,54 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <!-- Link -->
     <div class="text-center pt-2">
       <a href="/index.html" class="text-xs text-ink-300 hover:text-ink-500 card-tap">Buka BecaKita User &rarr;</a>
+    </div>
+  </main>
+</div>
+
+<!-- REGISTRATIONS VIEW -->
+<div id="view-registrations" class="view min-h-screen">
+  <header class="bg-slate-800 px-4 py-3 flex items-center justify-between flex-shrink-0 sticky top-0 z-20">
+    <div class="flex items-center gap-3">
+      <button onclick="showView('dashboard')" class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center"><i class="fa-solid fa-arrow-left text-white text-xs"></i></button>
+      <span class="font-700 text-white text-sm">Pendaftaran Driver</span>
+    </div>
+    <button onclick="loadRegistrations()" class="text-slate-400 hover:text-white text-xs font-500 card-tap flex items-center gap-1"><i class="fa-solid fa-rotate-right text-[10px]"></i> Refresh</button>
+  </header>
+  <main class="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-6">
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-2">
+      <div class="bg-amber-50 rounded-xl p-3 shadow-sm text-center">
+        <div id="reg-stat-pending" class="text-xl font-800 text-amber-600">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Pending</div>
+      </div>
+      <div class="bg-brand-50 rounded-xl p-3 shadow-sm text-center">
+        <div id="reg-stat-approved" class="text-xl font-800 text-brand-600">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Disetujui</div>
+      </div>
+      <div class="bg-red-50 rounded-xl p-3 shadow-sm text-center">
+        <div id="reg-stat-rejected" class="text-xl font-800 text-red-500">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Ditolak</div>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="flex gap-2">
+      <button onclick="setRegFilter('all')" class="reg-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="all">Semua</button>
+      <button onclick="setRegFilter('pending')" class="reg-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="pending">Pending</button>
+      <button onclick="setRegFilter('approved')" class="reg-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="approved">Disetujui</button>
+      <button onclick="setRegFilter('rejected')" class="reg-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="rejected">Ditolak</button>
+    </div>
+
+    <!-- Registration List -->
+    <div id="registration-list" class="space-y-3"></div>
+    <div id="reg-empty-state" class="hidden text-center py-8">
+      <i class="fa-solid fa-inbox text-4xl text-surface-200 mb-3 block"></i>
+      <p class="text-sm text-ink-500">Tidak ada pendaftaran</p>
+    </div>
+
+    <!-- Demo Badge -->
+    <div id="demo-badge-reg" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+      <i class="fa-solid fa-circle-info"></i><span>Mode demo — data simulasi pendaftaran.</span>
     </div>
   </main>
 </div>
@@ -233,8 +295,8 @@ function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.
 // ============================================================
 function adminLogin(){
   const u=document.getElementById('admin-user').value.trim(),p=document.getElementById('admin-pass').value.trim();
-  if(isDemoMode){loadAllDrivers();showView('dashboard');showToast('Login berhasil (mode demo)','success');return;}
-  if(u==='admin'&&p==='becakita2024'){loadAllDrivers();showView('dashboard');showToast('Login berhasil','success');}
+  if(isDemoMode){loadAllDrivers();showView('dashboard');showToast('Login berhasil (mode demo)','success');loadRegistrationsSilent();return;}
+  if(u==='admin'&&p==='becakita2024'){loadAllDrivers();showView('dashboard');showToast('Login berhasil','success');loadRegistrationsSilent();}
   else{showToast('Username atau password salah','error');}
 }
 function adminLogout(){showView('login');document.getElementById('admin-user').value='';document.getElementById('admin-pass').value='';}
@@ -432,6 +494,174 @@ async function confirmExtend(id){
   }
   renderDashboard();
   showToast(`Masa aktif ${d.nama} diperpanjang 30 hari`,'success');
+}
+
+// ============================================================
+// REGISTRATIONS
+// ============================================================
+let allRegistrations=[], currentRegFilter='all';
+
+async function loadRegistrationsSilent(){try{await loadRegistrations();}catch(e){}}
+
+async function loadRegistrations(){
+  let regs=[];
+  if(isDemoMode){
+    regs=[
+      {id:'reg001',nama:'Pak Budiman',nomorHP:'6281298765432',pin:'123456',jenisBeca:'Becak Motor',pengalaman:10,areaLayanan:'Selat Panjang Pusat',deskripsi:'Becak motor terawat, siap melayani.',status:'pending',createdAt:new Date(Date.now()-2*3600000).toISOString(),fotoURL:'https://picsum.photos/seed/regdriver1/200/200',rating:0},
+      {id:'reg002',nama:'Buk Sari',nomorHP:'6281354321098',pin:'654321',jenisBeca:'Becak Kayuh',pengalaman:7,areaLayanan:'Tanjung Samak',deskripsi:'Becak kayuh ramah lingkungan.',status:'pending',createdAt:new Date(Date.now()-5*3600000).toISOString(),fotoURL:'https://picsum.photos/seed/regdriver2/200/200',rating:0},
+      {id:'reg003',nama:'Pak Joko',nomorHP:'6281456789012',pin:'111222',jenisBeca:'Becak Listrik',pengalaman:3,areaLayanan:'Teluk Belengkong',deskripsi:'Becak listrik modern dan hemat.',status:'approved',createdAt:new Date(Date.now()-3*86400000).toISOString(),fotoURL:'https://picsum.photos/seed/regdriver3/200/200',rating:0},
+      {id:'reg004',nama:'Pak Agus',nomorHP:'6281567890123',pin:'333444',jenisBeca:'Becak Motor',pengalaman:1,areaLayanan:'Selat Panjang',deskripsi:'Driver baru, semangat tinggi.',status:'rejected',createdAt:new Date(Date.now()-5*86400000).toISOString(),fotoURL:'https://picsum.photos/seed/regdriver4/200/200',rating:0}
+    ];
+  }else{
+    try{const s=await db.collection('registrations').orderBy('createdAt','desc').get();s.forEach(doc=>regs.push({id:doc.id,...doc.data()}));}
+    catch(e){showToast('Gagal memuat pendaftaran','error');return;}
+  }
+  allRegistrations=regs;
+  renderRegStats();
+  renderRegistrationList();
+  // Update pending badge in dashboard
+  const pendingCount=allRegistrations.filter(r=>r.status==='pending').length;
+  const badge=document.getElementById('pending-badge');
+  if(badge){if(pendingCount>0){badge.textContent=pendingCount;badge.classList.remove('hidden');}else{badge.classList.add('hidden');}}
+  if(isDemoMode){const dbr=document.getElementById('demo-badge-reg');if(dbr)dbr.classList.remove('hidden');}
+}
+
+function showRegistrations(){showView('registrations');loadRegistrations();}
+
+function setRegFilter(f){currentRegFilter=f;renderRegStats();renderRegistrationList();}
+
+function renderRegStats(){
+  const pending=allRegistrations.filter(r=>r.status==='pending').length;
+  const approved=allRegistrations.filter(r=>r.status==='approved').length;
+  const rejected=allRegistrations.filter(r=>r.status==='rejected').length;
+  document.getElementById('reg-stat-pending').textContent=pending;
+  document.getElementById('reg-stat-approved').textContent=approved;
+  document.getElementById('reg-stat-rejected').textContent=rejected;
+  document.querySelectorAll('.reg-filter-btn').forEach(btn=>{
+    const f=btn.dataset.filter;const isActive=f===currentRegFilter;
+    btn.className=`reg-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors ${isActive?'bg-slate-800 text-white':'bg-white text-ink-500 border border-surface-200 hover:bg-surface-100'}`;
+  });
+}
+
+function renderRegistrationList(){
+  const filtered=currentRegFilter==='all'?allRegistrations:allRegistrations.filter(r=>r.status===currentRegFilter);
+  const container=document.getElementById('registration-list');
+  const emptyState=document.getElementById('reg-empty-state');
+  if(!filtered.length){container.innerHTML='';emptyState.classList.remove('hidden');return;}
+  emptyState.classList.add('hidden');
+  container.innerHTML=filtered.map(r=>{
+    const statusBadge={pending:'bg-amber-50 text-amber-600',approved:'bg-brand-50 text-brand-600',rejected:'bg-red-50 text-red-500'};
+    const statusLabel={pending:'PENDING',approved:'DITERIMA',rejected:'DITOLAK'};
+    const statusDesc={pending:'Menunggu peninjauan admin',approved:'Pendaftaran diterima, driver sudah dibuatkan akun',rejected:'Pendaftaran ditolak oleh admin'};
+    const timeAgoStr=timeAgo(r.createdAt);
+    return `
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-surface-100">
+      <div class="flex items-center gap-3 mb-3">
+        <img src="${r.fotoURL}" class="w-12 h-12 rounded-xl object-cover" onerror="this.src='https://picsum.photos/seed/fallback/200/200'">
+        <div class="flex-1 min-w-0">
+          <div class="font-700 text-sm truncate">${r.nama}</div>
+          <div class="text-xs text-ink-500 truncate">${r.nomorHP} · ${r.jenisBeca}</div>
+        </div>
+        <span class="text-[10px] font-700 px-2 py-0.5 rounded-full ${statusBadge[r.status]}">${statusLabel[r.status]}</span>
+      </div>
+      <div class="bg-surface-50 rounded-xl px-3 py-2 mb-3 space-y-1.5">
+        <div class="flex items-center justify-between text-xs"><span class="text-ink-500">Pengalaman</span><span class="text-ink-700 font-500">${r.pengalaman||0} tahun</span></div>
+        ${r.areaLayanan?`<div class="flex items-center justify-between text-xs"><span class="text-ink-500">Area Layanan</span><span class="text-ink-500 truncate ml-2 max-w-[50%] text-right">${r.areaLayanan}</span></div>`:''}
+        ${r.deskripsi?`<div class="text-xs text-ink-500"><i class="fa-solid fa-quote-left text-[8px] mr-1"></i>${r.deskripsi}</div>`:''}
+        <div class="flex items-center justify-between text-xs"><span class="text-ink-500">Daftar</span><span class="text-ink-500">${timeAgoStr}</span></div>
+        ${r.status!=='pending'?`<div class="flex items-center justify-between text-xs"><span class="text-ink-500">Status</span><span class="text-xs ${r.status==='approved'?'text-brand-500':'text-red-500'}">${statusDesc[r.status]}</span></div>`:''}
+      </div>
+      ${r.status==='pending'?`
+      <div class="flex gap-2">
+        <button onclick="approveRegistration('${r.id}')" class="flex-1 bg-brand-50 hover:bg-brand-100 text-brand-600 font-600 py-2.5 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid fa-check text-[10px]"></i> Terima</button>
+        <button onclick="rejectRegistration('${r.id}')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-600 py-2.5 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid fa-xmark text-[10px]"></i> Tolak</button>
+        <a href="https://wa.me/${r.nomorHP}" target="_blank" rel="noopener" class="w-10 bg-green-50 hover:bg-green-100 text-green-600 rounded-xl flex items-center justify-center transition-colors card-tap" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp text-base"></i></a>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+async function approveRegistration(regId){
+  const r=allRegistrations.find(x=>x.id===regId);if(!r)return;
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-brand-50 rounded-2xl mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-user-check text-brand-500 text-2xl"></i></div>
+      <h3 class="font-700 text-lg">Terima Pendaftaran</h3>
+      <p class="text-sm text-ink-500 mt-1">Terima pendaftaran <b>${r.nama}</b>? Akun driver akan langsung dibuatkan.</p>
+    </div>
+    <div class="bg-surface-50 rounded-xl p-3 mb-4 space-y-2">
+      <div class="flex justify-between text-sm"><span class="text-ink-500">Nama</span><span class="font-600">${r.nama}</span></div>
+      <div class="flex justify-between text-sm"><span class="text-ink-500">No HP</span><span class="font-600">${r.nomorHP}</span></div>
+      <div class="flex justify-between text-sm"><span class="text-ink-500">Jenis</span><span class="font-600">${r.jenisBeca}</span></div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmApproveReg('${regId}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Terima</button>
+    </div>
+  `);
+}
+
+async function confirmApproveReg(regId){
+  closeModal();
+  const r=allRegistrations.find(x=>x.id===regId);if(!r)return;
+  const now=new Date();
+  const expiredAt=new Date(now.getTime()+30*86400000); // 30 hari gratis pertama
+  const driverData={
+    nama:r.nama, nomorHP:r.nomorHP, pin:r.pin,
+    fotoURL:r.fotoURL, jenisBeca:r.jenisBeca,
+    pengalaman:r.pengalaman||0, deskripsi:r.deskripsi||'',
+    areaLayanan:r.areaLayanan||'', rating:0,
+    status:'aktif', online:false, lat:null, lng:null,
+    expired_at:expiredAt.toISOString(),
+    lastSeen:now.toISOString(), createdAt:now.toISOString()
+  };
+  if(isDemoMode){
+    r.status='approved';
+    DEMO_DRIVERS.push({...driverData,id:'drv'+String(DEMO_DRIVERS.length+1).padStart(3,'0')});
+    showToast(`${r.nama} berhasil diterima. Akun driver dibuat.`,'success');
+    loadRegistrations();return;
+  }
+  try{
+    await db.collection('drivers').add(driverData);
+    await db.collection('registrations').doc(regId).update({status:'approved',reviewedAt:new Date().toISOString()});
+    showToast(`${r.nama} berhasil diterima. Akun driver dibuat.`,'success');
+    loadRegistrations();
+  }catch(e){showToast('Gagal menerima pendaftaran','error');}
+}
+
+async function rejectRegistration(regId){
+  const r=allRegistrations.find(x=>x.id===regId);if(!r)return;
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-red-50 rounded-2xl mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-user-xmark text-red-500 text-2xl"></i></div>
+      <h3 class="font-700 text-lg">Tolak Pendaftaran</h3>
+      <p class="text-sm text-ink-500 mt-1">Tolak pendaftaran <b>${r.nama}</b>?</p>
+    </div>
+    <div class="mb-4">
+      <label class="text-xs font-600 text-ink-700 mb-1 block">Alasan penolakan (opsional)</label>
+      <textarea id="reject-reason" rows="3" placeholder="Berikan alasan penolakan..." class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all resize-none"></textarea>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmRejectReg('${regId}')" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Tolak</button>
+    </div>
+  `);
+}
+
+async function confirmRejectReg(regId){
+  closeModal();
+  const r=allRegistrations.find(x=>x.id===regId);if(!r)return;
+  const reason=document.getElementById('reject-reason')?.value?.trim()||'';
+  if(isDemoMode){
+    r.status='rejected';
+    showToast(`Pendaftaran ${r.nama} ditolak.`,'info');
+    loadRegistrations();return;
+  }
+  try{
+    await db.collection('registrations').doc(regId).update({status:'rejected',rejectionReason:reason,reviewedAt:new Date().toISOString()});
+    showToast(`Pendaftaran ${r.nama} ditolak.`,'info');
+    loadRegistrations();
+  }catch(e){showToast('Gagal menolak pendaftaran','error');}
 }
 
 // ============================================================
