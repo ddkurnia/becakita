@@ -3,11 +3,12 @@
 // Menangani cache untuk index.html DAN admin.html
 // ============================================================
 
-const CACHE_NAME = 'becakita-v1.1.0';
+const CACHE_NAME = 'becakita-v1.2.0';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/admin.html'
+  '/admin.html',
+  '/connecting.html'
 ];
 
 // Install
