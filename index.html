@@ -30,6 +30,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
 @keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+/* Splash screen animations */
+@keyframes splash-logo{0%{transform:translateY(-180px) scale(.6);opacity:0}55%{transform:translateY(18px) scale(1.05);opacity:1}70%{transform:translateY(-8px) scale(.98)}85%{transform:translateY(4px) scale(1.01)}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes splash-text{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes splash-fade{0%{opacity:0}100%{opacity:1}}
 @keyframes spin-icon{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 #map{width:100%;height:100%;border-radius:0 0 20px 20px;z-index:1}
 .user-dot{width:18px;height:18px;background:#3B82F6;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 0 rgba(59,130,246,.5);animation:pulse-ring 1.8s infinite}
@@ -70,14 +74,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 
 <!-- SPLASH — bg hijau → icon-becakita.png -->
 <div id="splash" class="fixed inset-0 z-[999] bg-brand-500 flex flex-col items-center justify-center transition-opacity duration-500">
-  <div class="mb-4" style="animation:float 2s ease-in-out infinite">
+  <!-- Logo: jatuh dari atas + bounce -->
+  <div class="mb-5" style="animation:splash-logo 1.2s cubic-bezier(.22,1.2,.36,1) both">
     <div class="w-32 h-32 bg-white rounded-3xl flex items-center justify-center shadow-lg shadow-brand-700/30 overflow-hidden">
       <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain p-3">
     </div>
   </div>
-  <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
-  <p class="text-brand-100 text-sm mt-1 font-500">Becak Dekat, Mudah, Cepat</p>
-  <div class="mt-8 w-8 h-8 border-3 border-white/30 border-t-white rounded-full" style="animation:spin-slow .8s linear infinite;border-width:3px"></div>
+  <!-- Title: slide up + fade in -->
+  <h1 class="text-white text-3xl font-800 tracking-tight" style="animation:splash-text 0.8s ease-out 0.6s both">BecaKita</h1>
+  <!-- Subtitle: slide up + fade in -->
+  <p class="text-brand-100 text-sm mt-1 font-500" style="animation:splash-text 0.8s ease-out 0.8s both">Becak Dekat, Mudah, Cepat</p>
+  <!-- Spinner: fade in -->
+  <div class="mt-8 w-8 h-8 border-3 border-white/30 border-t-white rounded-full" style="animation:splash-fade 0.6s ease-out 1s both, spin-slow .8s linear infinite 1s;border-width:3px"></div>
 </div>
 
 <!-- ROLE SELECT -->
