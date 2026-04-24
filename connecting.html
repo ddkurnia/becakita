@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BecaKita — Menghubungkan...</title>
+<meta name="theme-color" content="#ffffff">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.wrap{text-align:center;padding:24px;max-width:340px;width:100%}
+/* SVG float animation */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.illust{animation:float 2s ease-in-out infinite;margin:0 auto 28px;width:220px;height:220px}
+/* Title */
+h1{font-size:1.65rem;font-weight:800;color:#0F172A;margin-bottom:10px;letter-spacing:-0.02em}
+/* Desc */
+p.desc{font-size:.875rem;color:#64748B;line-height:1.6;margin-bottom:32px}
+/* Spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader{width:28px;height:28px;border:3px solid #E4E7EF;border-top-color:#00A651;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
+.loading-text{font-size:.75rem;color:#94A3B8;font-weight:500}
+/* Progress bar */
+@keyframes progress{from{width:0}to{width:100%}}
+.bar-track{width:100%;height:3px;background:#E4E7EF;border-radius:2px;margin-top:20px;overflow:hidden}
+.bar-fill{height:100%;background:#00A651;border-radius:2px;animation:progress 2s ease-out forwards}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Illustration: Becak driver waving -->
+  <div class="illust">
+    <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background circle -->
+      <circle cx="110" cy="110" r="100" fill="#E6F9EE"/>
+      <!-- Becak body -->
+      <rect x="42" y="105" width="110" height="52" rx="14" fill="#00A651"/>
+      <rect x="52" y="112" width="90" height="38" rx="8" fill="#00C853"/>
+      <!-- Wheel -->
+      <circle cx="72" cy="162" r="16" fill="#334155"/>
+      <circle cx="72" cy="162" r="7" fill="#94A3B8"/>
+      <circle cx="142" cy="162" r="16" fill="#334155"/>
+      <circle cx="142" cy="162" r="7" fill="#94A3B8"/>
+      <!-- Roof/canopy -->
+      <path d="M38 105 L52 78 H160 L175 105" fill="#008a43"/>
+      <path d="M46 105 L58 82 H154 L166 105" fill="#00A651"/>
+      <!-- Driver head -->
+      <circle cx="105" cy="62" r="22" fill="#FBBF24"/>
+      <!-- Driver cap -->
+      <path d="M82 56 Q105 32 128 56" fill="#334155"/>
+      <rect x="82" y="52" width="46" height="8" rx="4" fill="#334155"/>
+      <!-- Face -->
+      <circle cx="96" cy="62" r="2.5" fill="#334155"/>
+      <circle cx="114" cy="62" r="2.5" fill="#334155"/>
+      <path d="M98 72 Q105 78 112 72" stroke="#334155" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <!-- Waving hand -->
+      <g transform="translate(138, 48)">
+        <circle cx="8" cy="8" r="8" fill="#FBBF24"/>
+        <rect x="0" y="8" width="16" height="12" rx="4" fill="#FBBF24"/>
+        <rect x="2" y="18" width="3" height="7" rx="1.5" fill="#FBBF24"/>
+        <rect x="6" y="19" width="3" height="7" rx="1.5" fill="#FBBF24"/>
+        <rect x="10" y="18" width="3" height="7" rx="1.5" fill="#FBBF24"/>
+      </g>
+      <!-- Motion lines -->
+      <line x1="28" y1="130" x2="18" y2="130" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+      <line x1="24" y1="142" x2="12" y2="142" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" opacity=".3"/>
+      <line x1="28" y1="154" x2="18" y2="154" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" opacity=".4"/>
+      <!-- WhatsApp indicator -->
+      <g transform="translate(170, 35)">
+        <circle cx="14" cy="14" r="16" fill="#25D366"/>
+        <path d="M14 6C9.58 6 6 9.58 6 14c0 1.6.42 3.1 1.15 4.4L6 24l5.8-1.1c1.2.65 2.6 1.1 4.2 1.1 4.42 0 8-3.58 8-8s-3.58-8-8-8zm4.8 10.8c-.2.55-1.1 1.05-1.5 1.1-.4.05-.9.07-1.45-.08-.35-.1-.8-.22-1.37-.43-2.4-.9-3.98-3.3-4.1-3.45-.12-.15-1-1.3-1-2.5s.63-1.77.86-2.02c.22-.24.49-.3.65-.3.17 0 .33 0 .47.01.15.01.36-.06.56.43.2.5.7 1.68.76 1.8.06.12.1.26.02.42-.08.16-.12.26-.24.4-.12.14-.25.31-.36.42-.12.12-.24.25-.1.48.14.24.62 1.03 1.34 1.66.92.82 1.7 1.08 1.92 1.2.22.12.35.1.48-.06.13-.16.55-.64.7-.86.14-.22.29-.18.49-.11.2.07 1.27.6 1.49.71.22.11.36.16.42.25.05.1.05.53-.15 1.08z" fill="white" transform="translate(2,2) scale(0.85)"/>
+      </g>
+    </svg>
+  </div>
+
+  <h1>Siap diantar!</h1>
+  <p class="desc">Hubungi tukang beca dan negosiasikan tarif langsung melalui WhatsApp.</p>
+
+  <div class="loader"></div>
+  <div class="loading-text">Menghubungkan...</div>
+
+  <div class="bar-track">
+    <div class="bar-fill"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const phone=params.get('phone');
+  const msg=params.get('msg')||'Halo pak, saya mau pesan beca';
+
+  if(!phone){
+    window.location.href='/index.html';
+    return;
+  }
+
+  // Redirect setelah 2 detik
+  setTimeout(function(){
+    window.location.href='https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
+  },2000);
+})();
+</script>
+</body>
+</html>
