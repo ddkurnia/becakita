@@ -30,10 +30,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
 @keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-/* Splash screen animations */
-@keyframes splash-logo{0%{transform:translateY(-180px) scale(.6);opacity:0}55%{transform:translateY(18px) scale(1.05);opacity:1}70%{transform:translateY(-8px) scale(.98)}85%{transform:translateY(4px) scale(1.01)}100%{transform:translateY(0) scale(1);opacity:1}}
-@keyframes splash-text{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
-@keyframes splash-fade{0%{opacity:0}100%{opacity:1}}
 @keyframes spin-icon{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 #map{width:100%;height:100%;border-radius:0 0 20px 20px;z-index:1}
 .user-dot{width:18px;height:18px;background:#3B82F6;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 0 rgba(59,130,246,.5);animation:pulse-ring 1.8s infinite}
@@ -74,18 +70,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 
 <!-- SPLASH — bg hijau → icon-becakita.png -->
 <div id="splash" class="fixed inset-0 z-[999] bg-brand-500 flex flex-col items-center justify-center transition-opacity duration-500">
-  <!-- Logo: jatuh dari atas + bounce -->
-  <div class="mb-5" style="animation:splash-logo 1.2s cubic-bezier(.22,1.2,.36,1) both">
-    <div class="w-32 h-32 bg-white rounded-3xl flex items-center justify-center shadow-lg shadow-brand-700/30 overflow-hidden">
-      <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain p-3">
+  <div class="mb-4" style="animation:float 2s ease-in-out infinite">
+    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-brand-700/30">
+      <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-[52px] h-[52px] object-contain">
     </div>
   </div>
-  <!-- Title: slide up + fade in -->
-  <h1 class="text-white text-3xl font-800 tracking-tight" style="animation:splash-text 0.8s ease-out 0.6s both">BecaKita</h1>
-  <!-- Subtitle: slide up + fade in -->
-  <p class="text-brand-100 text-sm mt-1 font-500" style="animation:splash-text 0.8s ease-out 0.8s both">Becak Dekat, Mudah, Cepat</p>
-  <!-- Spinner: fade in -->
-  <div class="mt-8 w-8 h-8 border-3 border-white/30 border-t-white rounded-full" style="animation:splash-fade 0.6s ease-out 1s both, spin-slow .8s linear infinite 1s;border-width:3px"></div>
+  <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
+  <p class="text-brand-100 text-sm mt-1 font-500">Becak Dekat, Mudah, Cepat</p>
+  <div class="mt-8 w-8 h-8 border-3 border-white/30 border-t-white rounded-full" style="animation:spin-slow .8s linear infinite;border-width:3px"></div>
 </div>
 
 <!-- ROLE SELECT -->
@@ -96,19 +88,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <div class="absolute top-[30%] right-[-30px] w-32 h-32 bg-white/5 rounded-full"></div>
     <div class="flex-1 flex flex-col items-center justify-center px-6 py-16 relative z-10">
       <!-- bg putih → icon-becakita-hijau.png -->
-      <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-4 overflow-hidden">
-        <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain p-2">
+      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
+        <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-[46px] h-[46px] object-contain">
       </div>
       <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
       <p class="text-brand-100 text-sm mt-1 font-500 mb-12">Becak Dekat, Mudah, Cepat</p>
       <div class="w-full max-w-xs space-y-4">
         <button onclick="selectRole('user')" class="role-card w-full bg-white rounded-2xl p-5 flex items-center gap-4 shadow-xl shadow-black/10 card-tap text-left">
-          <div class="w-14 h-14 rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-location-dot text-brand-500 text-xl"></i></div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-location-dot text-brand-500 text-2xl"></i></div>
           <div class="flex-1"><div class="font-800 text-ink-900 text-lg">Penumpang</div><div class="text-xs text-ink-500 mt-0.5">Cari becak terdekat tanpa login</div></div>
         </button>
         <button onclick="selectRole('driver')" class="role-card w-full bg-white rounded-2xl p-5 flex items-center gap-4 shadow-xl shadow-black/10 card-tap text-left">
           <!-- card bg putih → icon-becakita-hijau.png -->
-          <div class="w-[72px] h-[72px] rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0 overflow-hidden"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain p-1"></div>
+          <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-9 h-9 object-contain"></div>
           <div class="flex-1"><div class="font-800 text-ink-900 text-lg">Driver Becak</div><div class="text-xs text-ink-500 mt-0.5">Dashboard & lokasi GPS</div></div>
         </button>
       </div>
@@ -122,8 +114,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   <!-- bg hijau → icon-becakita.png -->
   <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm relative z-20 flex-shrink-0">
     <div class="flex items-center gap-2">
-      <div class="w-12 h-12 bg-brand-500 rounded-xl flex items-center justify-center overflow-hidden">
-        <img src="/icon-becakita.png" alt="BecaKita" class="w-full h-full object-contain p-1.5">
+      <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+        <img src="/icon-becakita.png" alt="BecaKita" class="w-5 h-5 object-contain">
       </div>
       <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
     </div>
@@ -151,7 +143,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
           </div>
           <!-- card bg putih → icon-becakita-hijau.png -->
           <div id="no-drivers" class="hidden text-center py-8">
-            <img src="/icon-becakita-hijau.png" alt="" class="w-24 h-24 object-contain mx-auto mb-3 opacity-20">
+            <img src="/icon-becakita-hijau.png" alt="" class="w-12 h-12 object-contain mx-auto mb-3 opacity-20">
             <p class="text-sm text-ink-500">Belum ada becak aktif di sekitar Anda</p>
           </div>
         </div>
@@ -192,7 +184,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         <button onclick="switchUserTab('profile')" class="flex items-center gap-2 text-sm text-ink-500 font-500 mb-4 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Profil</button>
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-4">
           <div class="bg-gradient-to-b from-brand-500 to-brand-600 px-5 py-6 text-center">
-            <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg overflow-hidden"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain p-1.5"></div>
+            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-9 h-9 object-contain"></div>
             <h2 class="text-white text-xl font-800">BecaKita</h2>
             <p class="text-brand-100 text-sm mt-1">Becak Dekat, Mudah, Cepat</p>
           </div>
@@ -256,35 +248,35 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   <div id="driver-login" class="view flex-1 flex flex-col">
     <div class="flex-1 flex flex-col items-center justify-center px-6">
       <!-- bg hijau → icon-becakita.png -->
-      <div class="w-24 h-24 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 mb-4 overflow-hidden">
-        <img src="/icon-becakita.png" alt="BecaKita" class="w-full h-full object-contain p-2">
+      <div class="w-16 h-16 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 mb-4">
+        <img src="/icon-becakita.png" alt="BecaKita" class="w-9 h-9 object-contain">
       </div>
-      <h1 class="text-2xl font-800 tracking-tight">Masuk Driver</h1>
-      <p class="text-sm text-ink-500 mt-1 mb-8">Masukkan nomor HP dan PIN untuk melanjutkan</p>
+      <h1 class="text-2xl font-800 tracking-tight text-ink-900">Masuk Driver</h1>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Masukkan nomor HP dan PIN untuk melanjutkan</p>
       <div class="w-full max-w-xs space-y-4">
         <div>
-          <label class="text-xs font-600 text-ink-700 mb-1 block">Nomor HP</label>
+          <label class="text-xs font-600 text-ink-700 mb-1.5 block">Nomor HP</label>
           <div class="flex items-center bg-white border border-surface-200 rounded-xl px-4 py-3 gap-2 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 transition-all">
-            <span class="text-sm text-ink-500 font-500">+62</span>
+            <span class="text-sm text-ink-500 font-600">+62</span>
             <input id="driver-phone" type="tel" maxlength="12" placeholder="8123456789" class="flex-1 outline-none text-sm bg-transparent font-500" inputmode="numeric">
           </div>
         </div>
         <div>
-          <label class="text-xs font-600 text-ink-700 mb-1 block">PIN</label>
+          <label class="text-xs font-600 text-ink-700 mb-1.5 block">PIN</label>
           <input id="driver-pin" type="password" maxlength="6" placeholder="Masukkan 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric">
         </div>
-        <button onclick="driverLogin()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap">Masuk</button>
+        <button onclick="driverLogin()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap text-sm">Masuk</button>
       </div>
-      <p class="text-sm text-ink-500 mt-4">Belum punya akun? <button onclick="showDriverRegister()" class="text-brand-600 font-700 underline underline-offset-2">Daftar Sekarang</button></p>
-      <button onclick="goBack()" class="mt-8 text-sm text-ink-500 flex items-center gap-1 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali</button>
+      <p class="text-sm text-ink-500 mt-6">Belum punya akun? <button onclick="showDriverRegister()" class="text-brand-600 font-700 underline underline-offset-2">Daftar Sekarang</button></p>
+      <button onclick="goBack()" class="mt-6 text-sm text-ink-500 flex items-center gap-1 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali</button>
     </div>
   </div>
   <div id="driver-dashboard" class="view flex-1 overflow-y-auto">
     <!-- bg hijau → icon-becakita.png -->
     <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2">
-        <div class="w-12 h-12 bg-brand-500 rounded-xl flex items-center justify-center overflow-hidden">
-          <img src="/icon-becakita.png" alt="BecaKita" class="w-full h-full object-contain p-1.5">
+        <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+          <img src="/icon-becakita.png" alt="BecaKita" class="w-5 h-5 object-contain">
         </div>
         <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
       </div>
@@ -351,14 +343,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         <span>Isi data dengan benar. Pendaftaran akan ditinjau oleh admin sebelum akun Anda aktif. Proses verifikasi biasanya 1x24 jam.</span>
       </div>
       <div class="space-y-3">
-        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Nama Lengkap <span class="text-red-400">*</span></label><input id="reg-nama" type="text" placeholder="Masukkan nama lengkap" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Nomor HP <span class="text-red-400">*</span></label><div class="flex items-center bg-white border border-surface-200 rounded-xl px-4 py-3 gap-2 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 transition-all"><span class="text-sm text-ink-500 font-500">+62</span><input id="reg-phone" type="tel" maxlength="12" placeholder="8123456789" class="flex-1 outline-none text-sm bg-transparent font-500" inputmode="numeric"></div></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Buat PIN (6 digit) <span class="text-red-400">*</span></label><input id="reg-pin" type="password" maxlength="6" placeholder="Masukkan 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Konfirmasi PIN <span class="text-red-400">*</span></label><input id="reg-pin-confirm" type="password" maxlength="6" placeholder="Ulangi 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Jenis Becak <span class="text-red-400">*</span></label><select id="reg-jenis" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"><option value="">Pilih jenis becak</option><option value="Becak Motor">Becak Motor</option><option value="Becak Kayuh">Becak Kayuh</option><option value="Becak Listrik">Becak Listrik</option></select></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Pengalaman (tahun)</label><input id="reg-pengalaman" type="number" min="0" placeholder="0" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Area Layanan</label><input id="reg-area" type="text" placeholder="cth: Selat Panjang, Tanjung Samak" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1 block">Deskripsi Singkat</label><textarea id="reg-deskripsi" rows="3" placeholder="Ceritakan sedikit tentang Anda dan layanan Anda" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all resize-none"></textarea></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Nama Lengkap <span class="text-red-400">*</span></label><input id="reg-nama" type="text" placeholder="Masukkan nama lengkap" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Nomor HP <span class="text-red-400">*</span></label><div class="flex items-center bg-white border border-surface-200 rounded-xl px-4 py-3 gap-2 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 transition-all"><span class="text-sm text-ink-500 font-600">+62</span><input id="reg-phone" type="tel" maxlength="12" placeholder="8123456789" class="flex-1 outline-none text-sm bg-transparent font-500" inputmode="numeric"></div></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Buat PIN (6 digit) <span class="text-red-400">*</span></label><input id="reg-pin" type="password" maxlength="6" placeholder="Masukkan 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Konfirmasi PIN <span class="text-red-400">*</span></label><input id="reg-pin-confirm" type="password" maxlength="6" placeholder="Ulangi 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Jenis Becak <span class="text-red-400">*</span></label><select id="reg-jenis" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all appearance-none bg-no-repeat bg-[right_12px_center] bg-[length:16px]" style="background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2716%27 height=%2716%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%2394A3B8%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E')"><option value="">Pilih jenis becak</option><option value="Becak Motor">Becak Motor</option><option value="Becak Kayuh">Becak Kayuh</option><option value="Becak Listrik">Becak Listrik</option></select></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Pengalaman (tahun)</label><input id="reg-pengalaman" type="number" min="0" placeholder="0" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Area Layanan</label><input id="reg-area" type="text" placeholder="cth: Selat Panjang, Tanjung Samak" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
+        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Deskripsi Singkat</label><textarea id="reg-deskripsi" rows="3" placeholder="Ceritakan sedikit tentang Anda dan layanan Anda" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all resize-none"></textarea></div>
       </div>
       <div class="bg-surface-50 rounded-xl p-3 space-y-2">
         <div class="flex items-start gap-2"><input type="checkbox" id="reg-agree" class="mt-1 accent-brand-500"><label for="reg-agree" class="text-xs text-ink-700 leading-relaxed">Saya menyetujui <button onclick="showUserAbout()" class="text-brand-600 font-600 underline">Ketentuan Layanan</button> dan <button onclick="showUserPrivacy()" class="text-brand-600 font-600 underline">Kebijakan Privasi</button> BecaKita <span class="text-red-400">*</span></label></div>
@@ -569,7 +561,7 @@ function updateMapMarkers(){
   userMarker=L.marker([state.userLocation.lat,state.userLocation.lng],{icon:ui,zIndexOffset:1000}).addTo(map);
   state.nearbyDrivers.forEach(d=>{
     // pin bg hijau → icon-becakita.png
-    const di=L.divIcon({className:'',html:'<div class="driver-pin"><img src="/icon-becakita.png" style="width:36px;height:auto;transform:rotate(45deg);object-fit:contain"></div>',iconSize:[50,50],iconAnchor:[25,50]});
+    const di=L.divIcon({className:'',html:'<div class="driver-pin"><img src="/icon-becakita.png" style="width:16px;height:auto;transform:rotate(45deg);object-fit:contain"></div>',iconSize:[38,38],iconAnchor:[19,38]});
     driverMarkers.push(L.marker([d.lat,d.lng],{icon:di}).addTo(map).bindPopup(`<b>${d.nama}</b><br>${d.jenisBeca} · ${formatDistance(d.distance)}`));
   });
 }
@@ -595,7 +587,7 @@ function showDriverDetail(driverId){
           </div>
           <div class="space-y-3">
             <!-- card bg putih → icon-becakita-hijau.png -->
-            <div class="flex items-center gap-3"><div class="w-12 h-12 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0 overflow-hidden"><img src="/icon-becakita-hijau.png" alt="" class="w-full h-full object-contain p-1.5"></div><div><div class="text-xs text-ink-500">Jenis Becak</div><div class="text-sm font-600">${driver.jenisBeca}</div></div></div>
+            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita-hijau.png" alt="" class="w-4 h-4 object-contain"></div><div><div class="text-xs text-ink-500">Jenis Becak</div><div class="text-sm font-600">${driver.jenisBeca}</div></div></div>
             <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-medal text-amber-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Pengalaman</div><div class="text-sm font-600">${driver.pengalaman} tahun</div></div></div>
             <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-map-pin text-blue-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Area Layanan</div><div class="text-sm font-600">${driver.areaLayanan}</div></div></div>
           </div>
