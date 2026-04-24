@@ -71,8 +71,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 <!-- SPLASH — bg hijau → icon-becakita.png -->
 <div id="splash" class="fixed inset-0 z-[999] bg-brand-500 flex flex-col items-center justify-center transition-opacity duration-500">
   <div class="mb-4" style="animation:float 2s ease-in-out infinite">
-    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-brand-700/30">
-      <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-[52px] h-[52px] object-contain">
+    <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-lg shadow-brand-700/30">
+      <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-[68px] h-[68px] object-contain">
     </div>
   </div>
   <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
@@ -88,19 +88,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <div class="absolute top-[30%] right-[-30px] w-32 h-32 bg-white/5 rounded-full"></div>
     <div class="flex-1 flex flex-col items-center justify-center px-6 py-16 relative z-10">
       <!-- bg putih → icon-becakita-hijau.png -->
-      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
-        <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-[46px] h-[46px] object-contain">
+      <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
+        <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-[58px] h-[58px] object-contain">
       </div>
       <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
       <p class="text-brand-100 text-sm mt-1 font-500 mb-12">Becak Dekat, Mudah, Cepat</p>
       <div class="w-full max-w-xs space-y-4">
         <button onclick="selectRole('user')" class="role-card w-full bg-white rounded-2xl p-5 flex items-center gap-4 shadow-xl shadow-black/10 card-tap text-left">
-          <div class="w-14 h-14 rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-location-dot text-brand-500 text-2xl"></i></div>
+          <div class="w-[72px] h-[72px] rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-location-dot text-brand-500 text-[36px]"></i></div>
           <div class="flex-1"><div class="font-800 text-ink-900 text-lg">Penumpang</div><div class="text-xs text-ink-500 mt-0.5">Cari becak terdekat tanpa login</div></div>
         </button>
         <button onclick="selectRole('driver')" class="role-card w-full bg-white rounded-2xl p-5 flex items-center gap-4 shadow-xl shadow-black/10 card-tap text-left">
           <!-- card bg putih → icon-becakita-hijau.png -->
-          <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-9 h-9 object-contain"></div>
+          <div class="w-[72px] h-[72px] rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-[52px] h-[52px] object-contain"></div>
           <div class="flex-1"><div class="font-800 text-ink-900 text-lg">Driver Becak</div><div class="text-xs text-ink-500 mt-0.5">Dashboard & lokasi GPS</div></div>
         </button>
       </div>
@@ -114,19 +114,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   <!-- bg hijau → icon-becakita.png -->
   <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm relative z-20 flex-shrink-0">
     <div class="flex items-center gap-2">
-      <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
-        <img src="/icon-becakita.png" alt="BecaKita" class="w-5 h-5 object-contain">
+      <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center">
+        <img src="/icon-becakita.png" alt="BecaKita" class="w-7 h-7 object-contain">
       </div>
       <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
     </div>
-    <button onclick="goBack()" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center" aria-label="Keluar"><i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-xs"></i></button>
+    <button onclick="goBack()" class="w-9 h-9 rounded-full bg-surface-100 flex items-center justify-center" aria-label="Keluar"><i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-sm"></i></button>
   </header>
   <main class="flex-1 overflow-y-auto pb-20">
     <div id="user-home" class="view">
       <div class="relative" style="height:42vh;min-height:240px">
         <div id="map" class="absolute inset-0"></div>
         <div class="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center gap-2 shadow-lg z-[1000]">
-          <i class="fa-solid fa-location-crosshairs text-brand-500 text-sm"></i>
+          <i class="fa-solid fa-location-crosshairs text-brand-500 text-base"></i>
           <span id="location-text" class="text-xs text-ink-700 font-500 truncate">Mencari lokasi...</span>
         </div>
       </div>
@@ -143,18 +143,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
           </div>
           <!-- card bg putih → icon-becakita-hijau.png -->
           <div id="no-drivers" class="hidden text-center py-8">
-            <img src="/icon-becakita-hijau.png" alt="" class="w-12 h-12 object-contain mx-auto mb-3 opacity-20">
+            <img src="/icon-becakita-hijau.png" alt="" class="w-16 h-16 object-contain mx-auto mb-3 opacity-20">
             <p class="text-sm text-ink-500">Belum ada becak aktif di sekitar Anda</p>
           </div>
         </div>
       </div>
       <div id="demo-badge-user" class="hidden mx-4 mt-3 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
-        <i class="fa-solid fa-circle-info"></i><span>Mode demo — data simulasi Selat Panjang</span>
+        <i class="fa-solid fa-circle-info text-sm"></i><span>Mode demo — data simulasi Selat Panjang</span>
       </div>
       <div id="notif-prompt" class="hidden mx-4 mt-3 bg-blue-50 border border-blue-200 rounded-xl px-3 py-2.5 flex items-center gap-3 cursor-pointer card-tap" onclick="requestNotificationPermission()">
-        <i class="fa-solid fa-bell text-blue-500"></i>
+        <i class="fa-solid fa-bell text-blue-500 text-base"></i>
         <span class="text-xs text-blue-700 font-500 flex-1">Aktifkan notifikasi untuk info terbaru</span>
-        <i class="fa-solid fa-chevron-right text-blue-400 text-xs"></i>
+        <i class="fa-solid fa-chevron-right text-blue-400 text-sm"></i>
       </div>
     </div>
     <div id="user-history" class="view hidden">
@@ -163,15 +163,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <div id="user-profile" class="view hidden">
       <div class="px-4 py-4">
         <div class="bg-white rounded-2xl p-6 shadow-sm text-center mb-4">
-          <div class="w-20 h-20 bg-brand-50 rounded-full mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-user text-brand-500 text-2xl"></i></div>
+          <div class="w-24 h-24 bg-brand-50 rounded-full mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-user text-brand-500 text-3xl"></i></div>
           <h3 class="font-700 text-lg">Pengguna BecaKita</h3>
           <p class="text-sm text-ink-500 mt-1">Tidak perlu login untuk menggunakan layanan</p>
         </div>
         <div class="bg-white rounded-2xl shadow-sm divide-y divide-surface-100">
-          <div class="px-4 py-3.5 flex items-center gap-3 cursor-pointer card-tap" onclick="showUserAbout()"><i class="fa-solid fa-circle-info text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Tentang BecaKita</span><i class="fa-solid fa-chevron-right text-ink-300 text-xs ml-auto"></i></div>
-          <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-map-location-dot text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Area Layanan</span><span class="text-xs text-ink-300 ml-auto">Kep. Meranti</span></div>
-          <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-bell text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Notifikasi</span><span id="notif-status" class="text-xs ml-auto font-500">-</span></div>
-          <div class="px-4 py-3.5 flex items-center gap-3 cursor-pointer card-tap" onclick="showUserPrivacy()"><i class="fa-solid fa-shield-halved text-ink-500 w-5 text-center"></i><span class="text-sm font-500">Kebijakan Privasi</span><i class="fa-solid fa-chevron-right text-ink-300 text-xs ml-auto"></i></div>
+          <div class="px-4 py-3.5 flex items-center gap-3 cursor-pointer card-tap" onclick="showUserAbout()"><i class="fa-solid fa-circle-info text-ink-500 w-6 text-center text-base"></i><span class="text-sm font-500">Tentang BecaKita</span><i class="fa-solid fa-chevron-right text-ink-300 text-sm ml-auto"></i></div>
+          <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-map-location-dot text-ink-500 w-6 text-center text-base"></i><span class="text-sm font-500">Area Layanan</span><span class="text-xs text-ink-300 ml-auto">Kep. Meranti</span></div>
+          <div class="px-4 py-3.5 flex items-center gap-3"><i class="fa-solid fa-bell text-ink-500 w-6 text-center text-base"></i><span class="text-sm font-500">Notifikasi</span><span id="notif-status" class="text-xs ml-auto font-500">-</span></div>
+          <div class="px-4 py-3.5 flex items-center gap-3 cursor-pointer card-tap" onclick="showUserPrivacy()"><i class="fa-solid fa-shield-halved text-ink-500 w-6 text-center text-base"></i><span class="text-sm font-500">Kebijakan Privasi</span><i class="fa-solid fa-chevron-right text-ink-300 text-sm ml-auto"></i></div>
         </div>
         <p class="text-center text-xs text-ink-300 mt-6">BecaKita v1.1 — by <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 text-brand-500 hover:text-brand-600 transition-colors font-600">KedaiMedia</a></p>
       </div>
@@ -181,10 +181,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <!-- ==================== ABOUT BECAKITA ==================== -->
     <div id="user-about" class="view hidden">
       <div class="px-4 py-4">
-        <button onclick="switchUserTab('profile')" class="flex items-center gap-2 text-sm text-ink-500 font-500 mb-4 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Profil</button>
+        <button onclick="switchUserTab('profile')" class="flex items-center gap-2 text-sm text-ink-500 font-500 mb-4 card-tap"><i class="fa-solid fa-arrow-left text-sm"></i> Kembali ke Profil</button>
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-4">
           <div class="bg-gradient-to-b from-brand-500 to-brand-600 px-5 py-6 text-center">
-            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-9 h-9 object-contain"></div>
+            <div class="w-[72px] h-[72px] bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-[52px] h-[52px] object-contain"></div>
             <h2 class="text-white text-xl font-800">BecaKita</h2>
             <p class="text-brand-100 text-sm mt-1">Becak Dekat, Mudah, Cepat</p>
           </div>
@@ -205,7 +205,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <!-- ==================== PRIVACY POLICY ==================== -->
     <div id="user-privacy" class="view hidden">
       <div class="px-4 py-4">
-        <button onclick="switchUserTab('profile')" class="flex items-center gap-2 text-sm text-ink-500 font-500 mb-4 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Profil</button>
+        <button onclick="switchUserTab('profile')" class="flex items-center gap-2 text-sm text-ink-500 font-500 mb-4 card-tap"><i class="fa-solid fa-arrow-left text-sm"></i> Kembali ke Profil</button>
         <div class="bg-white rounded-2xl shadow-sm px-5 py-5 space-y-5 text-sm text-ink-700 leading-relaxed">
           <div class="text-center"><h2 class="font-800 text-lg text-ink-900">Kebijakan Privasi</h2><p class="text-xs text-ink-500 mt-1">Terakhir diperbarui: 24 April 2026</p></div>
 
@@ -237,9 +237,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     </div>
   </main>
   <nav id="user-bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-surface-200 flex items-center justify-around py-2 z-30" style="padding-bottom:max(8px,env(safe-area-inset-bottom))">
-    <button onclick="switchUserTab('home')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="home"><i class="fa-solid fa-house text-lg"></i><span class="text-[10px] font-600">Beranda</span></button>
-    <button onclick="switchUserTab('history')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="history"><i class="fa-solid fa-clock-rotate-left text-lg"></i><span class="text-[10px] font-600">Riwayat</span></button>
-    <button onclick="switchUserTab('profile')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="profile"><i class="fa-solid fa-circle-user text-lg"></i><span class="text-[10px] font-600">Profil</span></button>
+    <button onclick="switchUserTab('home')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="home"><i class="fa-solid fa-house text-xl"></i><span class="text-[10px] font-600">Beranda</span></button>
+    <button onclick="switchUserTab('history')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="history"><i class="fa-solid fa-clock-rotate-left text-xl"></i><span class="text-[10px] font-600">Riwayat</span></button>
+    <button onclick="switchUserTab('profile')" class="user-tab flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors" data-tab="profile"><i class="fa-solid fa-circle-user text-xl"></i><span class="text-[10px] font-600">Profil</span></button>
   </nav>
 </div>
 
@@ -248,8 +248,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   <div id="driver-login" class="view flex-1 flex flex-col">
     <div class="flex-1 flex flex-col items-center justify-center px-6">
       <!-- bg hijau → icon-becakita.png -->
-      <div class="w-16 h-16 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 mb-4">
-        <img src="/icon-becakita.png" alt="BecaKita" class="w-9 h-9 object-contain">
+      <div class="w-20 h-20 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30 mb-4">
+        <img src="/icon-becakita.png" alt="BecaKita" class="w-[52px] h-[52px] object-contain">
       </div>
       <h1 class="text-2xl font-800 tracking-tight text-ink-900">Masuk Driver</h1>
       <p class="text-sm text-ink-500 mt-1 mb-6">Masukkan nomor HP dan PIN untuk melanjutkan</p>
@@ -268,19 +268,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         <button onclick="driverLogin()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap text-sm">Masuk</button>
       </div>
       <p class="text-sm text-ink-500 mt-6">Belum punya akun? <button onclick="showDriverRegister()" class="text-brand-600 font-700 underline underline-offset-2">Daftar Sekarang</button></p>
-      <button onclick="goBack()" class="mt-6 text-sm text-ink-500 flex items-center gap-1 card-tap"><i class="fa-solid fa-arrow-left text-xs"></i> Kembali</button>
+      <button onclick="goBack()" class="mt-6 text-sm text-ink-500 flex items-center gap-1 card-tap"><i class="fa-solid fa-arrow-left text-sm"></i> Kembali</button>
     </div>
   </div>
   <div id="driver-dashboard" class="view flex-1 overflow-y-auto">
     <!-- bg hijau → icon-becakita.png -->
     <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm flex-shrink-0">
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
-          <img src="/icon-becakita.png" alt="BecaKita" class="w-5 h-5 object-contain">
+        <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center">
+          <img src="/icon-becakita.png" alt="BecaKita" class="w-7 h-7 object-contain">
         </div>
         <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
       </div>
-      <div class="flex items-center gap-2"><button onclick="goBack()" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center" aria-label="Keluar"><i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-xs"></i></button></div>
+      <div class="flex items-center gap-2"><button onclick="goBack()" class="w-9 h-9 rounded-full bg-surface-100 flex items-center justify-center" aria-label="Keluar"><i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-sm"></i></button></div>
     </header>
     <div class="px-4 py-4 space-y-4">
       <div id="driver-status-card" class="rounded-2xl p-4 shadow-sm border"></div>
@@ -289,23 +289,23 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         <div id="online-toggle" class="toggle-track" onclick="toggleOnline()" role="switch" aria-label="Toggle online"><div class="toggle-thumb"></div></div>
       </div>
       <div class="bg-white rounded-2xl p-4 shadow-sm">
-        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-calendar-check text-brand-500 text-sm"></i><span class="font-700 text-sm">Masa Aktif Langganan</span></div>
+        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-calendar-check text-brand-500 text-base"></i><span class="font-700 text-sm">Masa Aktif Langganan</span></div>
         <div id="expiry-info" class="text-sm text-ink-700"></div>
       </div>
       <div class="bg-white rounded-2xl p-4 shadow-sm">
-        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-satellite-dish text-blue-500 text-sm"></i><span class="font-700 text-sm">Status GPS</span></div>
+        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-satellite-dish text-blue-500 text-base"></i><span class="font-700 text-sm">Status GPS</span></div>
         <div id="gps-status" class="text-sm text-ink-700"><span class="text-ink-300">Belum aktif</span></div>
       </div>
       <div class="space-y-3">
         <button id="btn-extend" onclick="extendSubscription()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2"><i class="fa-solid fa-rotate-right"></i>Perpanjang (Rp10.000/bulan)</button>
-        <button onclick="showDriverEdit()" class="w-full bg-white text-ink-700 font-600 py-3 rounded-xl border border-surface-200 card-tap flex items-center justify-center gap-2"><i class="fa-solid fa-pen-to-square text-sm"></i>Edit Profil</button>
+        <button onclick="showDriverEdit()" class="w-full bg-white text-ink-700 font-600 py-3 rounded-xl border border-surface-200 card-tap flex items-center justify-center gap-2"><i class="fa-solid fa-pen-to-square text-base"></i>Edit Profil</button>
       </div>
-      <div id="demo-badge-driver" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2"><i class="fa-solid fa-circle-info"></i><span>Mode demo — data akun simulasi</span></div>
+      <div id="demo-badge-driver" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2"><i class="fa-solid fa-circle-info text-sm"></i><span>Mode demo — data akun simulasi</span></div>
     </div>
   </div>
   <div id="driver-edit" class="view flex-1 overflow-y-auto">
     <header class="bg-white px-4 py-3 flex items-center gap-3 shadow-sm flex-shrink-0">
-      <button onclick="showDriverDashboard()" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-ink-700 text-xs"></i></button>
+      <button onclick="showDriverDashboard()" class="w-9 h-9 rounded-full bg-surface-100 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-ink-700 text-sm"></i></button>
       <span class="font-700">Edit Profil</span>
     </header>
     <div class="px-4 py-4 space-y-4">
@@ -313,8 +313,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         <div class="relative">
           <img id="edit-foto" src="" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
           <div id="upload-overlay" class="hidden upload-overlay"><i class="fa-solid fa-spinner text-white text-lg"></i></div>
-          <div class="absolute -bottom-1 -right-1 w-8 h-8 bg-brand-500 rounded-full flex items-center justify-center border-2 border-white cursor-pointer card-tap" onclick="document.getElementById('foto-input').click()">
-            <i class="fa-solid fa-camera text-white text-xs"></i>
+          <div class="absolute -bottom-1 -right-1 w-10 h-10 bg-brand-500 rounded-full flex items-center justify-center border-2 border-white cursor-pointer card-tap" onclick="document.getElementById('foto-input').click()">
+            <i class="fa-solid fa-camera text-white text-sm"></i>
           </div>
           <input type="file" id="foto-input" accept="image/*" class="hidden" onchange="handlePhotoSelect(event)">
         </div>
@@ -334,7 +334,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   <!-- ==================== DRIVER REGISTER ==================== -->
   <div id="driver-register" class="view flex-1 overflow-y-auto">
     <header class="bg-white px-4 py-3 flex items-center gap-3 shadow-sm flex-shrink-0">
-      <button onclick="showDriverView('login')" class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-ink-700 text-xs"></i></button>
+      <button onclick="showDriverView('login')" class="w-9 h-9 rounded-full bg-surface-100 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-ink-700 text-sm"></i></button>
       <span class="font-700">Daftar Driver Baru</span>
     </header>
     <div class="px-4 py-4 space-y-4">
@@ -428,7 +428,7 @@ function toRad(d){return d*Math.PI/180}
 function formatDistance(km){return km<1?Math.round(km*1000)+' m':km.toFixed(1)+' km'}
 function formatDate(iso){return new Date(iso).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}
 function daysUntil(iso){return Math.ceil((new Date(iso)-new Date())/(864e5))}
-function renderStars(r){let h='';for(let i=1;i<=5;i++){if(i<=Math.floor(r))h+='<i class="fa-solid fa-star text-amber-400 text-xs"></i>';else if(i-.5<=r)h+='<i class="fa-solid fa-star-half-stroke text-amber-400 text-xs"></i>';else h+='<i class="fa-regular fa-star text-amber-300 text-xs"></i>';}return h;}
+function renderStars(r){let h='';for(let i=1;i<=5;i++){if(i<=Math.floor(r))h+='<i class="fa-solid fa-star text-amber-400 text-sm"></i>';else if(i-.5<=r)h+='<i class="fa-solid fa-star-half-stroke text-amber-400 text-sm"></i>';else h+='<i class="fa-regular fa-star text-amber-300 text-sm"></i>';}return h;}
 function getWaMessage(){const l=state.userLocation;return `Halo pak, saya mau pesan beca. Lokasi saya: https://www.google.com/maps?q=${l.lat},${l.lng}`;}
 
 // ============================================================
@@ -536,7 +536,7 @@ function renderDriverList(){
         <div class="flex items-center gap-2 mt-0.5"><span class="text-xs text-ink-500">${d.jenisBeca}</span><span class="text-ink-300">·</span><span class="text-xs text-amber-500"><i class="fa-solid fa-star text-[10px]"></i> ${d.rating}</span></div>
         <div class="text-xs text-brand-500 font-600 mt-0.5"><i class="fa-solid fa-location-dot text-[10px]"></i> ${formatDistance(d.distance)}</div>
       </div>
-      <a href="/connecting.html?phone=${d.nomorHP}&msg=${encodeURIComponent(getWaMessage())}" onclick="event.stopPropagation();trackWaClick('${d.id}')" class="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md shadow-green-500/25 transition-colors" aria-label="Hubungi WhatsApp"><i class="fa-brands fa-whatsapp text-white text-lg"></i></a>
+      <a href="/connecting.html?phone=${d.nomorHP}&msg=${encodeURIComponent(getWaMessage())}" onclick="event.stopPropagation();trackWaClick('${d.id}')" class="w-12 h-12 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md shadow-green-500/25 transition-colors" aria-label="Hubungi WhatsApp"><i class="fa-brands fa-whatsapp text-white text-xl"></i></a>
     </div>`).join('');
 }
 
@@ -577,7 +577,7 @@ function showDriverDetail(driverId){
       <div class="h-56 bg-surface-100 relative overflow-hidden">
         <img src="${driver.fotoURL}" class="w-full h-full object-cover" onerror="this.src='https://picsum.photos/seed/fallback/400/300'">
         <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-        <button onclick="switchUserTab('home')" class="absolute top-4 left-4 w-9 h-9 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow card-tap"><i class="fa-solid fa-arrow-left text-ink-900 text-sm"></i></button>
+        <button onclick="switchUserTab('home')" class="absolute top-4 left-4 w-11 h-11 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow card-tap"><i class="fa-solid fa-arrow-left text-ink-900 text-base"></i></button>
       </div>
       <div class="px-4 -mt-12 relative z-10">
         <div class="bg-white rounded-2xl shadow-lg shadow-black/5 p-5">
@@ -587,16 +587,16 @@ function showDriverDetail(driverId){
           </div>
           <div class="space-y-3">
             <!-- card bg putih → icon-becakita-hijau.png -->
-            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita-hijau.png" alt="" class="w-4 h-4 object-contain"></div><div><div class="text-xs text-ink-500">Jenis Becak</div><div class="text-sm font-600">${driver.jenisBeca}</div></div></div>
-            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-medal text-amber-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Pengalaman</div><div class="text-sm font-600">${driver.pengalaman} tahun</div></div></div>
-            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-map-pin text-blue-500 text-xs"></i></div><div><div class="text-xs text-ink-500">Area Layanan</div><div class="text-sm font-600">${driver.areaLayanan}</div></div></div>
+            <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center flex-shrink-0"><img src="/icon-becakita-hijau.png" alt="" class="w-6 h-6 object-contain"></div><div><div class="text-xs text-ink-500">Jenis Becak</div><div class="text-sm font-600">${driver.jenisBeca}</div></div></div>
+            <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-medal text-amber-500 text-sm"></i></div><div><div class="text-xs text-ink-500">Pengalaman</div><div class="text-sm font-600">${driver.pengalaman} tahun</div></div></div>
+            <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-map-pin text-blue-500 text-sm"></i></div><div><div class="text-xs text-ink-500">Area Layanan</div><div class="text-sm font-600">${driver.areaLayanan}</div></div></div>
           </div>
           ${driver.deskripsi?`<div class="mt-4 pt-4 border-t border-surface-100"><div class="text-xs text-ink-500 mb-1">Deskripsi</div><p class="text-sm text-ink-700 leading-relaxed">${driver.deskripsi}</p></div>`:''}
-          ${driver.distance!==undefined?`<div class="mt-3 flex items-center gap-1 text-brand-500"><i class="fa-solid fa-route text-xs"></i><span class="text-xs font-600">${formatDistance(driver.distance)} dari lokasi Anda</span></div>`:''}
+          ${driver.distance!==undefined?`<div class="mt-3 flex items-center gap-1.5 text-brand-500"><i class="fa-solid fa-route text-sm"></i><span class="text-xs font-600">${formatDistance(driver.distance)} dari lokasi Anda</span></div>`:''}
         </div>
       </div>
       <div class="px-4 py-5">
-        <a href="/connecting.html?phone=${driver.nomorHP}&msg=${encodeURIComponent(getWaMessage())}" onclick="trackWaClick('${driver.id}')" class="w-full bg-green-500 hover:bg-green-600 text-white font-700 py-4 rounded-2xl transition-colors shadow-lg shadow-green-500/30 flex items-center justify-center gap-3 text-base card-tap"><i class="fa-brands fa-whatsapp text-2xl"></i>Hubungi via WhatsApp</a>
+        <a href="/connecting.html?phone=${driver.nomorHP}&msg=${encodeURIComponent(getWaMessage())}" onclick="trackWaClick('${driver.id}')" class="w-full bg-green-500 hover:bg-green-600 text-white font-700 py-4 rounded-2xl transition-colors shadow-lg shadow-green-500/30 flex items-center justify-center gap-3 text-base card-tap"><i class="fa-brands fa-whatsapp text-3xl"></i>Hubungi via WhatsApp</a>
       </div>
     </div>`;
   document.querySelectorAll('#page-user .view').forEach(v=>v.classList.add('hidden'));
@@ -609,7 +609,7 @@ function showDriverDetail(driverId){
 // ============================================================
 function renderHistory(){
   const c=document.getElementById('history-list');
-  if(DEMO_HISTORY.length>0){c.innerHTML=DEMO_HISTORY.map(h=>`<div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3"><div class="w-10 h-10 bg-surface-100 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-route text-ink-500 text-sm"></i></div><div class="flex-1 min-w-0"><div class="font-600 text-sm">${h.dari} → ${h.ke}</div><div class="text-xs text-ink-500 mt-0.5">${h.driver} · ${h.tanggal}</div></div><div class="text-sm font-700 text-brand-600">${h.tarif}</div></div>`).join('');}
+  if(DEMO_HISTORY.length>0){c.innerHTML=DEMO_HISTORY.map(h=>`<div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3"><div class="w-12 h-12 bg-surface-100 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-route text-ink-500 text-base"></i></div><div class="flex-1 min-w-0"><div class="font-600 text-sm">${h.dari} → ${h.ke}</div><div class="text-xs text-ink-500 mt-0.5">${h.driver} · ${h.tanggal}</div></div><div class="text-sm font-700 text-brand-600">${h.tarif}</div></div>`).join('');}
   else{c.innerHTML='<div class="text-center py-12"><i class="fa-solid fa-clock-rotate-left text-4xl text-surface-200 mb-3 block"></i><p class="text-sm text-ink-500">Belum ada riwayat</p></div>';}
 }
 
