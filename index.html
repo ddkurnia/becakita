@@ -93,57 +93,51 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 </div>
 
 <!-- DISCLAIMER POPUP -->
-<div id="disclaimer-overlay" class="fixed inset-0 z-[10001] flex items-center justify-center px-5" style="background:linear-gradient(135deg,rgba(0,166,81,.92) 0%,rgba(0,138,67,.96) 50%,rgba(0,110,53,.98) 100%);backdrop-filter:blur(12px)" onclick="event.stopPropagation()">
-  <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full"></div>
-    <div class="absolute top-1/3 -left-16 w-48 h-48 bg-white/5 rounded-full"></div>
-    <div class="absolute -bottom-10 right-1/4 w-56 h-56 bg-white/5 rounded-full"></div>
-  </div>
-  <div id="disclaimer-card" class="relative z-10 bg-white rounded-3xl shadow-2xl shadow-black/20 max-w-sm w-full overflow-hidden">
-    <div class="bg-gradient-to-br from-brand-500 via-brand-500 to-brand-600 px-6 pt-8 pb-10 text-center relative overflow-hidden">
-      <div class="absolute top-0 left-0 right-0 h-full bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
-      <div class="relative z-10">
-        <div class="disclaimer-icon-wrap w-20 h-20 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
-          <i class="fa-solid fa-shield-halved text-white text-3xl"></i>
+<div id="disclaimer-overlay" class="fixed inset-0 z-[10001] flex items-end sm:items-center justify-center sm:px-5" style="background:rgba(0,60,30,.6);backdrop-filter:blur(8px)" onclick="event.stopPropagation()">
+  <div id="disclaimer-card" class="relative z-10 bg-white sm:rounded-3xl rounded-t-3xl shadow-2xl shadow-black/30 max-w-sm w-full max-h-[90vh] flex flex-col">
+    <div class="bg-gradient-to-br from-brand-500 via-brand-500 to-brand-600 px-5 pt-5 pb-4 text-center flex-shrink-0">
+      <div class="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+        <i class="fa-solid fa-shield-halved text-white text-xl"></i>
+      </div>
+      <h2 class="text-white text-base font-800 tracking-tight">Disclaimer</h2>
+      <p class="text-brand-100 text-[10px] mt-0.5 font-500">Baca sebelum melanjutkan</p>
+    </div>
+    <div class="px-5 py-4 overflow-y-auto flex-1" style="-webkit-overflow-scrolling:touch">
+      <div class="bg-amber-50 border border-amber-200/80 rounded-xl p-3 mb-4">
+        <div class="flex items-start gap-2.5">
+          <div class="w-6 h-6 bg-amber-100 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 text-[10px]"></i>
+          </div>
+          <p class="text-[11px] text-amber-800 leading-relaxed font-500">BecaKita hanya sebagai platform penghubung antara penumpang dan driver becak, dan bukan merupakan penyedia layanan transportasi. Seluruh transaksi dan layanan dilakukan langsung antara penumpang dan driver becak.</p>
         </div>
-        <h2 class="text-white text-xl font-800 tracking-tight">Disclaimer</h2>
-        <p class="text-brand-100 text-xs mt-1 font-500">Baca sebelum melanjutkan</p>
+      </div>
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 bg-brand-50 rounded flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-handshake text-brand-500 text-[9px]"></i>
+          </div>
+          <p class="text-[11px] text-ink-500 leading-relaxed">BecaKita tidak bertanggung jawab atas kecelakaan, kerugian, atau sengketa selama perjalanan</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 bg-brand-50 rounded flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-money-bill-transfer text-brand-500 text-[9px]"></i>
+          </div>
+          <p class="text-[11px] text-ink-500 leading-relaxed">Transaksi pembayaran dilakukan langsung antara penumpang dan driver</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 bg-brand-50 rounded flex items-center justify-center flex-shrink-0">
+            <i class="fa-brands fa-whatsapp text-brand-500 text-[9px]"></i>
+          </div>
+          <p class="text-[11px] text-ink-500 leading-relaxed">Negosiasi tarif dan koordinasi dilakukan melalui WhatsApp</p>
+        </div>
       </div>
     </div>
-    <div class="px-6 py-6">
-      <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 mb-5">
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-            <i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i>
-          </div>
-          <p class="text-sm text-amber-800 leading-relaxed font-500">BecaKita hanya sebagai platform penghubung antara penumpang dan driver becak, dan bukan merupakan penyedia layanan transportasi. Seluruh transaksi dan layanan dilakukan langsung antara penumpang dan driver becak.</p>
-        </div>
-      </div>
-      <div class="space-y-2.5 mb-6">
-        <div class="flex items-center gap-3">
-          <div class="w-7 h-7 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0">
-            <i class="fa-solid fa-handshake text-brand-500 text-xs"></i>
-          </div>
-          <p class="text-xs text-ink-500 leading-relaxed">BecaKita tidak bertanggung jawab atas kecelakaan, kerugian, atau sengketa selama perjalanan</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="w-7 h-7 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0">
-            <i class="fa-solid fa-money-bill-transfer text-brand-500 text-xs"></i>
-          </div>
-          <p class="text-xs text-ink-500 leading-relaxed">Transaksi pembayaran dilakukan langsung antara penumpang dan driver</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="w-7 h-7 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0">
-            <i class="fa-brands fa-whatsapp text-brand-500 text-xs"></i>
-          </div>
-          <p class="text-xs text-ink-500 leading-relaxed">Negosiasi tarif dan koordinasi dilakukan melalui WhatsApp</p>
-        </div>
-      </div>
-      <button onclick="acceptDisclaimer()" class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-700 py-4 rounded-2xl transition-all shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-500/40 active:scale-[.98] flex items-center justify-center gap-2.5 text-sm">
-        <i class="fa-solid fa-circle-check text-base"></i>
+    <div class="px-5 pb-5 pt-0 flex-shrink-0">
+      <button onclick="acceptDisclaimer()" class="w-full bg-brand-500 active:bg-brand-700 text-white font-700 py-3 rounded-xl transition-all shadow-lg shadow-brand-500/25 active:scale-[.98] flex items-center justify-center gap-2 text-[13px]">
+        <i class="fa-solid fa-circle-check text-sm"></i>
         <span>Setuju &amp; Lanjutkan</span>
       </button>
-      <p class="text-center text-[10px] text-ink-300 mt-3">Dengan menekan tombol ini, Anda menyetujui ketentuan di atas</p>
+      <p class="text-center text-[9px] text-ink-300 mt-2">Dengan menekan tombol ini, Anda menyetujui ketentuan di atas</p>
     </div>
   </div>
 </div>
