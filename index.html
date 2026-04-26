@@ -70,6 +70,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 #disclaimer-overlay.closing #disclaimer-card{animation:disclaimerCardDown .3s ease forwards}
 .disclaimer-icon-wrap{animation:iconBounce 2s ease-in-out infinite, glowPulse 3s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+.ads-slide{min-width:100%;height:100%;position:relative;overflow:hidden}
+.ads-slide img{width:100%;height:100%;object-fit:cover}
+.ads-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,rgba(0,0,0,.1) 50%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:10px 12px}
+.ads-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .3s}
+.ads-dot.active{background:#fff;width:16px;border-radius:3px}
+.ads-banner-card{border-radius:10px;overflow:hidden;position:relative;height:64px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.ads-banner-card img{width:100%;height:100%;object-fit:cover}
+.ads-banner-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55) 0%,rgba(0,0,0,.1) 60%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:6px 8px}
 </style>
 </head>
 <body class="bg-surface-50 text-ink-900 antialiased">
@@ -148,26 +156,44 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <div class="absolute top-[-60px] right-[-40px] w-48 h-48 bg-white/5 rounded-full"></div>
     <div class="absolute bottom-[25%] left-[-50px] w-64 h-64 bg-white/5 rounded-full"></div>
     <div class="absolute top-[30%] right-[-30px] w-32 h-32 bg-white/5 rounded-full"></div>
-    <div class="flex-1 flex flex-col items-center justify-center px-6 py-16 relative z-10">
+    <div class="flex-1 flex flex-col items-center justify-start px-6 pt-8 pb-4 relative z-10 overflow-y-auto">
       <!-- bg putih → icon-becakita-hijau.png -->
-      <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4 p-2">
+      <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-3 p-1.5">
         <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
       </div>
-      <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
-      <p class="text-brand-100 text-sm mt-1 font-500 mb-12">Becak Dekat, Mudah, Cepat</p>
-      <div class="w-full max-w-xs space-y-4">
-        <button onclick="selectRole('user')" class="role-card w-full bg-white rounded-2xl p-5 flex items-center gap-4 shadow-xl shadow-black/10 card-tap text-left">
-          <div class="w-[72px] h-[72px] rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-location-dot text-brand-500 text-[36px]"></i></div>
-          <div class="flex-1"><div class="font-800 text-ink-900 text-lg">Penumpang</div><div class="text-xs text-ink-500 mt-0.5">Cari becak terdekat tanpa login</div></div>
+      <h1 class="text-white text-2xl font-800 tracking-tight">BecaKita</h1>
+      <p class="text-brand-100 text-xs mt-0.5 font-500 mb-4">Becak Dekat, Mudah, Cepat</p>
+      <div class="w-full max-w-xs space-y-3">
+        <button onclick="selectRole('user')" class="role-card w-full bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xl shadow-black/10 card-tap text-left">
+          <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-location-dot text-brand-500 text-xl"></i></div>
+          <div class="flex-1"><div class="font-800 text-ink-900 text-base">Penumpang</div><div class="text-[10px] text-ink-500 mt-0.5">Cari becak terdekat tanpa login</div></div>
         </button>
-        <button onclick="selectRole('driver')" class="role-card w-full bg-white rounded-2xl p-5 flex items-center gap-4 shadow-xl shadow-black/10 card-tap text-left">
+        <button onclick="selectRole('driver')" class="role-card w-full bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-xl shadow-black/10 card-tap text-left">
           <!-- card bg putih → icon-becakita-hijau.png -->
-          <div class="w-[72px] h-[72px] rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0 p-2"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain"></div>
-          <div class="flex-1"><div class="font-800 text-ink-900 text-lg">Driver Becak</div><div class="text-xs text-ink-500 mt-0.5">Dashboard & lokasi GPS</div></div>
+          <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0 p-1.5"><img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain"></div>
+          <div class="flex-1"><div class="font-800 text-ink-900 text-base">Driver Becak</div><div class="text-[10px] text-ink-500 mt-0.5">Dashboard & lokasi GPS</div></div>
         </button>
       </div>
+      <!-- ADS SECTION -->
+      <div class="w-full max-w-xs mt-4 space-y-2.5 relative z-10">
+        <!-- Sliding Ads Carousel -->
+        <div id="ads-carousel" class="relative overflow-hidden rounded-2xl shadow-lg shadow-black/15" style="height:110px">
+          <div id="ads-slides-wrapper" class="flex transition-transform duration-500 ease-in-out h-full">
+            <!-- Slides will be injected by JS -->
+          </div>
+          <!-- Dots indicator -->
+          <div id="ads-dots" class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10"></div>
+          <!-- Nav arrows -->
+          <button onclick="adsSlidePrev()" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 bg-black/30 hover:bg-black/50 rounded-full flex items-center justify-center z-10 transition-colors"><i class="fa-solid fa-chevron-left text-white text-[9px]"></i></button>
+          <button onclick="adsSlideNext()" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 bg-black/30 hover:bg-black/50 rounded-full flex items-center justify-center z-10 transition-colors"><i class="fa-solid fa-chevron-right text-white text-[9px]"></i></button>
+        </div>
+        <!-- Static Banner Cards -->
+        <div id="ads-banners" class="grid grid-cols-3 gap-2">
+          <!-- Banners will be injected by JS -->
+        </div>
+      </div>
     </div>
-    <div class="text-center pb-6 text-brand-200 text-xs">by <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-white transition-colors font-600">KedaiMedia</a> Web App Developer</div>
+    <div class="text-center pb-4 pt-2 text-brand-200 text-xs relative z-10">by <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-white transition-colors font-600">KedaiMedia</a> Web App Developer</div>
   </div>
 </div>
 
@@ -457,6 +483,17 @@ const DEMO_DRIVERS=[
   {id:'drv003',nama:'Buk Dewi',nomorHP:'6281554321098',fotoURL:'https://picsum.photos/seed/becakdriver3/200/200',jenisBeca:'Becak Motor',pengalaman:5,deskripsi:'Driver becak perempuan pertama di Selat Panjang. Becak motoris bersih dan aman.',status:'aktif',expired_at:new Date(Date.now()+28*24*60*60*1000).toISOString(),online:true,rating:4.9,areaLayanan:'Selat Panjang Pusat',lat:1.1440,lng:102.3530},
   {id:'drv004',nama:'Pak Surya',nomorHP:'6281667890123',fotoURL:'https://picsum.photos/seed/becakdriver4/200/200',jenisBeca:'Becak Kayuh',pengalaman:15,deskripsi:'Becak kayuh klasik, tarif murah meriah.',status:'aktif',expired_at:new Date(Date.now()+5*24*60*60*1000).toISOString(),online:false,rating:4.3,areaLayanan:'Teluk Belengkong',lat:1.1420,lng:102.3460},
   {id:'drv005',nama:'Pak Rizal',nomorHP:'6281789012345',fotoURL:'https://picsum.photos/seed/becakdriver5/200/200',jenisBeca:'Becak Motor',pengalaman:3,deskripsi:'Driver muda, becak motoris baru.',status:'nonaktif',expired_at:new Date(Date.now()-5*24*60*60*1000).toISOString(),online:true,rating:4.7,areaLayanan:'Selat Panjang',lat:1.1350,lng:102.3550}
+];
+const DEMO_ADS_SLIDES=[
+  {id:'slide1',imageURL:'https://picsum.photos/seed/becakad1/400/200',title:'Promo Bulan Ini',linkURL:'',active:true,order:1},
+  {id:'slide2',imageURL:'https://picsum.photos/seed/becakad2/400/200',title:'Becak Listrik Hadir!',linkURL:'',active:true,order:2},
+  {id:'slide3',imageURL:'https://picsum.photos/seed/becakad3/400/200',title:'Jadi Driver BecaKita',linkURL:'',active:true,order:3},
+  {id:'slide4',imageURL:'https://picsum.photos/seed/becakad4/400/200',title:'Bayar Cash - Tanpa Ribet',linkURL:'',active:true,order:4}
+];
+const DEMO_ADS_BANNERS=[
+  {id:'ban1',imageURL:'https://picsum.photos/seed/becakban1/200/150',title:'Selat Panjang',linkURL:'',active:true,order:1},
+  {id:'ban2',imageURL:'https://picsum.photos/seed/becakban2/200/150',title:'Tanjung Samak',linkURL:'',active:true,order:2},
+  {id:'ban3',imageURL:'https://picsum.photos/seed/becakban3/200/150',title:'Tebing Tinggi',linkURL:'',active:true,order:3}
 ];
 const DEMO_HISTORY=[
   {driver:'Pak Hamid',dari:'Selat Panjang',ke:'Pasar',tanggal:'2 hari lalu',tarif:'Rp15.000'},
@@ -1006,10 +1043,77 @@ function acceptDisclaimer(){
 }
 
 // ============================================================
+// ADS & BANNERS
+// ============================================================
+let adsSlides=[], adsBanners=[], adsCurrentSlide=0, adsAutoTimer=null;
+
+async function loadAds(){
+  if(isDemoMode){
+    adsSlides=DEMO_ADS_SLIDES.filter(s=>s.active).sort((a,b)=>a.order-b.order);
+    adsBanners=DEMO_ADS_BANNERS.filter(b=>b.active).sort((a,b)=>a.order-b.order);
+  }else{
+    try{
+      const ss=await db.collection('ads_slides').where('active','==',true).orderBy('order','asc').get();
+      adsSlides=[];ss.forEach(doc=>adsSlides.push({id:doc.id,...doc.data()}));
+      const bs=await db.collection('ads_banners').where('active','==',true).orderBy('order','asc').get();
+      adsBanners=[];bs.forEach(doc=>adsBanners.push({id:doc.id,...doc.data()}));
+    }catch(e){console.warn('[BecaKita] Gagal memuat iklan:',e);adsSlides=DEMO_ADS_SLIDES.filter(s=>s.active);adsBanners=DEMO_ADS_BANNERS.filter(b=>b.active);}
+  }
+  renderAdsCarousel();
+  renderAdsBanners();
+  startAdsAutoSlide();
+}
+
+function renderAdsCarousel(){
+  const wrapper=document.getElementById('ads-slides-wrapper');
+  const dots=document.getElementById('ads-dots');
+  if(!wrapper)return;
+  if(!adsSlides.length){wrapper.innerHTML='<div class="ads-slide bg-brand-800 flex items-center justify-center"><span class="text-white/50 text-xs">Tidak ada iklan</span></div>';dots.innerHTML='';return;}
+  wrapper.innerHTML=adsSlides.map(s=>`
+    <div class="ads-slide" ${s.linkURL?`onclick="window.open('${s.linkURL}','_blank')"`:''}>
+      <img src="${s.imageURL}" alt="${s.title}" onerror="this.src='https://picsum.photos/seed/adfallback/400/200'">
+      <div class="ads-slide-overlay">
+        <span class="text-white text-xs font-700 leading-tight drop-shadow-lg">${s.title}</span>
+      </div>
+    </div>
+  `).join('');
+  dots.innerHTML=adsSlides.map((_,i)=>`<div class="ads-dot ${i===0?'active':''}" onclick="adsGoToSlide(${i})"></div>`).join('');
+  adsCurrentSlide=0;
+  updateAdsSlidePosition();
+}
+
+function renderAdsBanners(){
+  const container=document.getElementById('ads-banners');
+  if(!container)return;
+  if(!adsBanners.length){container.innerHTML='';return;}
+  container.innerHTML=adsBanners.map(b=>`
+    <div class="ads-banner-card" ${b.linkURL?`onclick="window.open('${b.linkURL}','_blank')"`:''}>
+      <img src="${b.imageURL}" alt="${b.title}" onerror="this.src='https://picsum.photos/seed/banfallback/200/150'">
+      <div class="ads-banner-overlay">
+        <span class="text-white text-[9px] font-700 leading-tight drop-shadow">${b.title}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateAdsSlidePosition(){
+  const wrapper=document.getElementById('ads-slides-wrapper');
+  if(wrapper)wrapper.style.transform=`translateX(-${adsCurrentSlide*100}%)`;
+  document.querySelectorAll('.ads-dot').forEach((d,i)=>{d.classList.toggle('active',i===adsCurrentSlide);});
+}
+
+function adsGoToSlide(i){adsCurrentSlide=i;updateAdsSlidePosition();resetAdsAutoSlide();}
+function adsSlideNext(){adsCurrentSlide=(adsCurrentSlide+1)%adsSlides.length;updateAdsSlidePosition();resetAdsAutoSlide();}
+function adsSlidePrev(){adsCurrentSlide=(adsCurrentSlide-1+adsSlides.length)%adsSlides.length;updateAdsSlidePosition();resetAdsAutoSlide();}
+
+function startAdsAutoSlide(){if(adsAutoTimer)clearInterval(adsAutoTimer);if(adsSlides.length>1)adsAutoTimer=setInterval(()=>{adsCurrentSlide=(adsCurrentSlide+1)%adsSlides.length;updateAdsSlidePosition();},4000);}
+function resetAdsAutoSlide(){startAdsAutoSlide();}
+
+// ============================================================
 // INIT
 // ============================================================
 function init(){
-  initFirebase();setupManifest();
+  initFirebase();setupManifest();loadAds();
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/sw.js').then(reg=>{
       swRegistration=reg;console.log('[BecaKita] SW terdaftar');
