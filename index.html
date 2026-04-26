@@ -1122,11 +1122,80 @@ function startLiveStatsPolling(){
 // ADS & BANNERS
 // ============================================================
 let adsSlides=[], adsBanners=[], adsCurrentSlide=0, adsAutoTimer=null;
+let adsUnsubscribeSlides=null, adsUnsubscribeBanners=null, adsStoragePollTimer=null;
+
+function readAdsFromStorage(){
+  try{
+    const ss=localStorage.getItem('becakita_ads_slides');
+    const bs=localStorage.getItem('becakita_ads_banners');
+    if(ss&&bs){
+      const slides=JSON.parse(ss).filter(s=>s.active).sort((a,b)=>a.order-b.order);
+      const banners=JSON.parse(bs).filter(b=>b.active).sort((a,b)=>a.order-b.order);
+      return {slides,banners};
+    }
+  }catch(e){console.warn('[BecaKita] Gagal baca iklan dari localStorage:',e);}
+  return null;
+}
+
+function startAdsStoragePolling(){
+  if(adsStoragePollTimer)clearInterval(adsStoragePollTimer);
+  let lastUpdate=localStorage.getItem('becakita_ads_updated')||'0';
+  adsStoragePollTimer=setInterval(()=>{
+    const currentUpdate=localStorage.getItem('becakita_ads_updated')||'0';
+    if(currentUpdate!==lastUpdate){
+      lastUpdate=currentUpdate;
+      const data=readAdsFromStorage();
+      if(data){
+        adsSlides=data.slides;
+        adsBanners=data.banners;
+        renderAdsCarousel();
+        renderAdsBanners();
+        startAdsAutoSlide();
+        console.log('[BecaKita] Iklan diperbarui dari localStorage');
+      }
+    }
+  },2000);
+}
+
+function setupAdsRealtimeListeners(){
+  if(isDemoMode||!db)return;
+  // Firestore onSnapshot untuk ads_slides
+  try{
+    adsUnsubscribeSlides=db.collection('ads_slides').where('active','==',true).orderBy('order','asc')
+      .onSnapshot(snap=>{
+        adsSlides=[];
+        snap.forEach(doc=>adsSlides.push({id:doc.id,...doc.data()}));
+        renderAdsCarousel();
+        startAdsAutoSlide();
+        console.log('[BecaKita] Iklan slide realtime update');
+      },err=>{console.warn('[BecaKita] Listener slide error:',err);});
+  }catch(e){console.warn('[BecaKita] Gagal setup listener slide:',e);}
+
+  // Firestore onSnapshot untuk ads_banners
+  try{
+    adsUnsubscribeBanners=db.collection('ads_banners').where('active','==',true).orderBy('order','asc')
+      .onSnapshot(snap=>{
+        adsBanners=[];
+        snap.forEach(doc=>adsBanners.push({id:doc.id,...doc.data()}));
+        renderAdsBanners();
+        console.log('[BecaKita] Banner realtime update');
+      },err=>{console.warn('[BecaKita] Listener banner error:',err);});
+  }catch(e){console.warn('[BecaKita] Gagal setup listener banner:',e);}
+}
 
 async function loadAds(){
   if(isDemoMode){
-    adsSlides=DEMO_ADS_SLIDES.filter(s=>s.active).sort((a,b)=>a.order-b.order);
-    adsBanners=DEMO_ADS_BANNERS.filter(b=>b.active).sort((a,b)=>a.order-b.order);
+    // Cek localStorage dulu — kalau admin sudah ubah iklan, pakai data terbaru
+    const stored=readAdsFromStorage();
+    if(stored&&stored.slides.length>0){
+      adsSlides=stored.slides;
+      adsBanners=stored.banners;
+    }else{
+      adsSlides=DEMO_ADS_SLIDES.filter(s=>s.active).sort((a,b)=>a.order-b.order);
+      adsBanners=DEMO_ADS_BANNERS.filter(b=>b.active).sort((a,b)=>a.order-b.order);
+    }
+    // Poll localStorage setiap 2 detik untuk deteksi perubahan dari admin
+    startAdsStoragePolling();
   }else{
     try{
       const ss=await db.collection('ads_slides').where('active','==',true).orderBy('order','asc').get();
@@ -1134,6 +1203,8 @@ async function loadAds(){
       const bs=await db.collection('ads_banners').where('active','==',true).orderBy('order','asc').get();
       adsBanners=[];bs.forEach(doc=>adsBanners.push({id:doc.id,...doc.data()}));
     }catch(e){console.warn('[BecaKita] Gagal memuat iklan:',e);adsSlides=DEMO_ADS_SLIDES.filter(s=>s.active);adsBanners=DEMO_ADS_BANNERS.filter(b=>b.active);}
+    // Setup realtime listener setelah initial load
+    setupAdsRealtimeListeners();
   }
   renderAdsCarousel();
   renderAdsBanners();
