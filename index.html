@@ -176,9 +176,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <!-- ===== HERO HEADER (3 Layer + Curve) ===== -->
     <div class="relative overflow-visible flex-shrink-0" style="padding:36px 20px 48px">
 
-      <!-- LAYER 0: Background Image (samar / watermark) -->
+      <!-- LAYER 0: Background Image (diredam brightness, hanya tekstur halus) -->
       <div class="absolute inset-0 z-0">
-        <img src="/assets/images/hero-foto.png" alt="" class="w-full h-full object-cover object-center" style="opacity:0.35" onerror="this.style.display='none';document.getElementById('hero-svg-fallback').style.display='block'">
+        <img src="/assets/images/hero-foto.png" alt="" class="w-full h-full object-cover object-center" style="opacity:0.35;filter:brightness(0.7)" onerror="this.style.display='none';document.getElementById('hero-svg-fallback').style.display='block'">
         <!-- SVG fallback jika hero-foto.png belum ada -->
         <svg id="hero-svg-fallback" class="absolute inset-0 w-full h-full" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="display:none">
           <rect width="400" height="220" fill="#00A651" opacity="0.15"/>
@@ -208,8 +208,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         </svg>
       </div>
 
-      <!-- LAYER 1: Green Overlay (gradient, lebih transparan agar hero-foto.png terlihat) -->
-      <div class="absolute inset-0 z-[1]" style="background:linear-gradient(160deg,rgba(0,110,53,0.72) 0%,rgba(0,166,81,0.65) 40%,rgba(0,200,83,0.60) 100%)"></div>
+      <!-- LAYER 1: Green Overlay (PEKAT, SOLID, premium seperti Grab) -->
+      <div class="absolute inset-0 z-[1]" style="background:linear-gradient(180deg,rgba(0,120,70,0.95) 0%,rgba(0,90,50,0.98) 100%)"></div>
 
       <!-- Decorative circles (subtle) -->
       <div class="absolute top-[-20px] left-[-15px] w-24 h-24 bg-white/5 rounded-full z-[1]"></div>
@@ -221,18 +221,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         <div class="w-[64px] h-[64px] bg-white rounded-[18px] flex items-center justify-center shadow-xl shadow-black/12 p-2 mb-2.5" style="animation:float 3s ease-in-out infinite">
           <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
         </div>
-        <h1 class="text-white text-[24px] font-800 tracking-tight leading-tight">BecaKita</h1>
-        <p class="text-white/70 text-[11px] mt-0.5 font-500">Becak Dekat, Mudah, Cepat</p>
+        <h1 class="text-[#ffffff] text-[24px] font-800 tracking-tight leading-tight" style="text-shadow:0 1px 3px rgba(0,0,0,0.2)">BecaKita</h1>
+        <p class="text-[#ffffff] text-[11px] mt-0.5 font-500 opacity-90" style="text-shadow:0 1px 2px rgba(0,0,0,0.15)">Becak Dekat, Mudah, Cepat</p>
       </div>
 
       <!-- LAYER 1b: Curve ∪ menghadap ke bawah (hero melengkung turun di tengah) -->
       <div class="absolute left-0 right-0 bottom-0 z-[2]" style="height:55px;transform:translateY(100%)">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style="width:100%;height:100%;display:block">
           <defs>
-            <linearGradient id="heroCurveGrad" x1="0" y1="0" x2="1440" y2="80" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#006E35"/>
-              <stop offset="50%" stop-color="#00A651"/>
-              <stop offset="100%" stop-color="#00C853"/>
+            <linearGradient id="heroCurveGrad" x1="0" y1="0" x2="0" y2="80" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#005A32"/>
+              <stop offset="100%" stop-color="#007846"/>
             </linearGradient>
           </defs>
           <path d="M0,0 L1440,0 C1080,80 360,80 0,0 Z" fill="url(#heroCurveGrad)"/>
