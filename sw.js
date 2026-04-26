@@ -3,13 +3,14 @@
 // Menangani cache untuk index.html DAN admin.html
 // ============================================================
 
-const CACHE_NAME = 'becakita-v1.2.0';
+const CACHE_NAME = 'becakita-v1.3.0';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/admin.html',
   '/connecting.html',
-  '/driver-ready.png'
+  '/driver-ready.png',
+  '/assets/images/hero-foto.png'
 ];
 
 // Install
