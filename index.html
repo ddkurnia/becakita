@@ -54,6 +54,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 .role-card:nth-child(1){animation-delay:.1s}
 .role-card:nth-child(2){animation-delay:.2s}
 .role-card{animation:fadeUp .5s ease both}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.anim-slide-up{animation:slideUp .4s ease both}
 .update-banner{animation:slideDown .4s ease,bounceIn .3s ease .4s}
 .upload-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2}
 .upload-overlay i{animation:spin-icon 1s linear infinite}
@@ -92,7 +94,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 .ads-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,.15) 50%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:12px 14px}
 .ads-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .3s}
 .ads-dot.active{background:#fff;width:18px;border-radius:3px}
-.ads-banner-card{border-radius:10px;overflow:hidden;position:relative;height:72px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.ads-banner-card{border-radius:12px;overflow:hidden;position:relative;height:68px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .ads-banner-card img{width:100%;height:100%;object-fit:cover}
 .ads-banner-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,rgba(0,0,0,.1) 60%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:8px 10px}
 </style>
@@ -105,16 +107,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   <button onclick="applyUpdate()" class="bg-white text-brand-600 text-xs font-700 px-3 py-1.5 rounded-lg card-tap">Update</button>
 </div>
 
-<!-- SPLASH — bg hijau → icon-becakita.png -->
-<div id="splash" class="fixed inset-0 z-[999] bg-brand-500 flex flex-col items-center justify-center transition-opacity duration-500">
+<!-- SPLASH -->
+<div id="splash" class="fixed inset-0 z-[999] flex flex-col items-center justify-center transition-opacity duration-500" style="background:linear-gradient(135deg,#00A651 0%,#00C853 50%,#00A651 100%)">
   <div class="mb-4" style="animation:float 2s ease-in-out infinite">
-    <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-lg shadow-brand-700/30 p-2">
+    <div class="w-[72px] h-[72px] bg-white rounded-[20px] flex items-center justify-center shadow-xl shadow-black/15 p-2">
       <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
     </div>
   </div>
-  <h1 class="text-white text-3xl font-800 tracking-tight">BecaKita</h1>
-  <p class="text-brand-100 text-sm mt-1 font-500">Becak Dekat, Mudah, Cepat</p>
-  <div class="mt-8 w-8 h-8 border-3 border-white/30 border-t-white rounded-full" style="animation:spin-slow .8s linear infinite;border-width:3px"></div>
+  <h1 class="text-white text-[26px] font-800 tracking-tight">BecaKita</h1>
+  <p class="text-white/60 text-[11px] mt-1 font-500">Becak Dekat, Mudah, Cepat</p>
+  <div class="mt-8 w-7 h-7 border-[3px] border-white/25 border-t-white rounded-full" style="animation:spin-slow .8s linear infinite"></div>
 </div>
 
 <!-- DISCLAIMER POPUP -->
@@ -167,110 +169,123 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   </div>
 </div>
 
-<!-- ROLE SELECT -->
+<!-- ROLE SELECT / HOME -->
 <div id="page-role" class="page">
-  <div class="flex-1 flex flex-col bg-gradient-to-b from-brand-600 via-brand-500 to-brand-700 relative overflow-hidden">
-    <!-- Decorative background elements -->
-    <div class="absolute top-[-60px] right-[-40px] w-48 h-48 bg-white/5 rounded-full"></div>
-    <div class="absolute bottom-[25%] left-[-50px] w-64 h-64 bg-white/5 rounded-full"></div>
-    <div class="absolute top-[30%] right-[-30px] w-32 h-32 bg-white/5 rounded-full"></div>
-    <!-- Becak silhouettes decorative -->
-    <div class="absolute top-16 left-4 opacity-[0.06] text-white text-5xl"><i class="fa-solid fa-bicycle"></i></div>
-    <div class="absolute top-28 right-6 opacity-[0.04] text-white text-3xl"><i class="fa-solid fa-building"></i></div>
-    <div class="absolute bottom-[40%] left-8 opacity-[0.04] text-white text-4xl"><i class="fa-solid fa-store"></i></div>
+  <div class="flex-1 flex flex-col relative overflow-hidden" style="background:#F4F6FA">
 
-    <div class="flex-1 flex flex-col items-center justify-start px-5 pt-6 pb-3 relative z-10 overflow-y-auto">
-      <!-- Logo -->
-      <div class="w-[72px] h-[72px] bg-white rounded-2xl flex items-center justify-center shadow-xl shadow-black/15 mb-2.5 p-2" style="animation:float 3s ease-in-out infinite">
-        <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
-      </div>
-      <h1 class="text-white text-[26px] font-800 tracking-tight">BecaKita</h1>
-      <p class="text-brand-100 text-[11px] mt-0.5 font-500 mb-5">Becak Dekat, Mudah, Cepat</p>
+    <!-- ===== HEADER (Green Gradient) ===== -->
+    <div class="relative overflow-hidden flex-shrink-0" style="background:linear-gradient(135deg,#00A651 0%,#00C853 50%,#00A651 100%);border-radius:0 0 28px 28px;padding:40px 20px 28px">
+      <!-- Transparent becak illustration in background -->
+      <div class="absolute right-[-10px] bottom-[-8px] opacity-[0.08] text-white" style="font-size:120px;line-height:1"><i class="fa-solid fa-bicycle"></i></div>
+      <!-- Decorative circles -->
+      <div class="absolute top-[-30px] left-[-20px] w-28 h-28 bg-white/5 rounded-full"></div>
+      <div class="absolute top-[20px] right-[-15px] w-20 h-20 bg-white/5 rounded-full"></div>
 
-      <!-- Role Cards -->
-      <div class="w-full max-w-xs space-y-3">
-        <!-- Penumpang Card -->
-        <button onclick="selectRole('user')" class="role-card w-full bg-white rounded-2xl p-4 flex items-center gap-3.5 shadow-xl shadow-black/10 card-tap text-left">
-          <div class="w-[50px] h-[50px] rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0">
-            <i class="fa-solid fa-location-dot text-brand-500 text-[22px]"></i>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="font-800 text-ink-900 text-[15px]">Penumpang</div>
-            <div class="text-[10px] text-ink-500 mt-0.5 font-500">Cari becak terdekat tanpa login</div>
-          </div>
-          <div class="role-card-arrow green">
-            <i class="fa-solid fa-chevron-right"></i>
-          </div>
-        </button>
-
-        <!-- Driver Becak Card -->
-        <button onclick="selectRole('driver')" class="role-card w-full rounded-2xl p-4 flex items-center gap-3.5 shadow-xl shadow-black/10 card-tap text-left" style="background:#FFF8EB">
-          <div class="w-[50px] h-[50px] rounded-2xl bg-amber-100/60 flex items-center justify-center flex-shrink-0 p-2 driver-card-pattern">
-            <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="font-800 text-ink-900 text-[15px]">Driver Becak</div>
-            <div class="text-[10px] text-ink-500 mt-0.5 font-500">Dashboard & lokasi GPS</div>
-          </div>
-          <div class="role-card-arrow yellow">
-            <i class="fa-solid fa-chevron-right"></i>
-          </div>
-        </button>
-      </div>
-
-      <!-- LIVE STATS BAR -->
-      <div class="w-full max-w-xs mt-4 relative z-10">
-        <div class="stats-bar">
-          <div class="stat-item">
-            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-            <div><span class="stat-count" id="live-users">0</span> <span class="text-ink-500">Pengguna</span></div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <div class="stat-icon"><i class="fa-solid fa-motorcycle"></i></div>
-            <div><span class="stat-count" id="live-drivers">0</span> <span class="text-ink-500">Driver Online</span></div>
-          </div>
+      <div class="flex flex-col items-center relative z-10">
+        <div class="w-[64px] h-[64px] bg-white rounded-[18px] flex items-center justify-center shadow-lg shadow-black/10 p-2 mb-2" style="animation:float 3s ease-in-out infinite">
+          <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
         </div>
-      </div>
-
-      <!-- ADS SECTION -->
-      <div class="w-full max-w-xs mt-3 space-y-3 relative z-10">
-        <!-- Sliding Ads Carousel -->
-        <div id="ads-carousel" class="relative overflow-hidden rounded-2xl shadow-lg shadow-black/15" style="height:130px">
-          <div id="ads-slides-wrapper" class="flex transition-transform duration-500 ease-in-out h-full">
-            <!-- Slides will be injected by JS -->
-          </div>
-          <!-- Dots indicator -->
-          <div id="ads-dots" class="absolute bottom-2.5 left-0 right-0 flex justify-center gap-1.5 z-10"></div>
-          <!-- Nav arrows -->
-          <button onclick="adsSlidePrev()" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-black/25 hover:bg-black/45 rounded-full flex items-center justify-center z-10 transition-colors"><i class="fa-solid fa-chevron-left text-white text-[10px]"></i></button>
-          <button onclick="adsSlideNext()" class="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-black/25 hover:bg-black/45 rounded-full flex items-center justify-center z-10 transition-colors"><i class="fa-solid fa-chevron-right text-white text-[10px]"></i></button>
-        </div>
-        <!-- Static Banner Cards -->
-        <div id="ads-banners" class="grid grid-cols-3 gap-2">
-          <!-- Banners will be injected by JS -->
-        </div>
-      </div>
-
-      <!-- FOOTER CARD -->
-      <div class="w-full max-w-xs mt-3 relative z-10">
-        <div class="footer-card">
-          <div class="flex items-center gap-2.5">
-            <div class="shield-icon"><i class="fa-solid fa-shield-halved"></i></div>
-            <div>
-              <div class="text-[10px] font-600 text-ink-700 leading-tight">Data kamu aman,</div>
-              <div class="text-[10px] font-600 text-ink-700 leading-tight">perjalanan tetap nyaman</div>
-            </div>
-          </div>
-          <div class="text-right">
-            <div class="text-[11px] font-800 text-brand-600">BecaKita</div>
-            <div class="text-[8px] text-ink-400 font-500">Becak Dekat, Mudah, Cepat</div>
-          </div>
-        </div>
+        <h1 class="text-white text-[24px] font-800 tracking-tight leading-tight">BecaKita</h1>
+        <p class="text-white/70 text-[11px] mt-0.5 font-500">Becak Dekat, Mudah, Cepat</p>
       </div>
     </div>
 
-    <div class="text-center pb-3 pt-1 text-brand-200/60 text-[10px] relative z-10">by <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-white transition-colors font-600">KedaiMedia</a></div>
+    <!-- ===== CONTENT AREA ===== -->
+    <div class="flex-1 flex flex-col px-4 pt-4 pb-3 overflow-y-auto gap-3">
+
+      <!-- ===== CARD 1: Penumpang ===== -->
+      <button onclick="selectRole('user')" class="role-card w-full bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm card-tap text-left relative overflow-hidden">
+        <!-- Map pattern background right -->
+        <div class="absolute right-0 top-0 bottom-0 w-[90px] opacity-[0.04]" style="background-image:url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=%270 0 60 60%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cg fill=%27%2300A651%27 fill-opacity=%271%27%3E%3Cpath d=%27M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%27/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+        <div class="w-[46px] h-[46px] rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-location-dot text-brand-500 text-[20px]"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="font-800 text-ink-900 text-[14px]">Penumpang</div>
+          <div class="text-[10px] text-ink-500 mt-0.5 font-500">Cari becak terdekat</div>
+        </div>
+        <div class="w-[36px] h-[36px] rounded-full flex items-center justify-center flex-shrink-0 shadow-sm" style="background:linear-gradient(135deg,#00A651,#00C853)">
+          <i class="fa-solid fa-chevron-right text-white text-[11px]"></i>
+        </div>
+      </button>
+
+      <!-- ===== CARD 2: Driver Becak ===== -->
+      <button onclick="selectRole('driver')" class="role-card w-full rounded-2xl p-4 flex items-center gap-3 shadow-sm card-tap text-left relative overflow-hidden" style="background:#FFF9EB">
+        <!-- Road illustration background right -->
+        <div class="absolute right-0 top-0 bottom-0 w-[90px] opacity-[0.06]" style="background-image:url('data:image/svg+xml,%3Csvg width=40 height=40 viewBox=%270 0 40 40%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cg fill=%27%23d4a054%27 fill-opacity=%271%27%3E%3Cpath d=%27M20 0v40M0 20h40%27 stroke=%27%23d4a054%27 stroke-width=%272%27 stroke-dasharray=%274 4%27/%3E%3C/g%3E%3C/svg%3E')"></div>
+        <div class="w-[46px] h-[46px] rounded-2xl bg-amber-100/60 flex items-center justify-center flex-shrink-0 p-2.5">
+          <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="font-800 text-ink-900 text-[14px]">Driver Becak</div>
+          <div class="text-[10px] text-ink-500 mt-0.5 font-500">Dashboard & GPS tracking</div>
+        </div>
+        <div class="w-[36px] h-[36px] rounded-full flex items-center justify-center flex-shrink-0 shadow-sm" style="background:linear-gradient(135deg,#F59E0B,#FBBF24)">
+          <i class="fa-solid fa-chevron-right text-white text-[11px]"></i>
+        </div>
+      </button>
+
+      <!-- ===== STATS BAR (Capsule) ===== -->
+      <div class="w-full">
+        <div class="flex items-center justify-center bg-white border border-surface-200 rounded-full py-2.5 px-5 shadow-sm">
+          <div class="flex items-center gap-2 flex-1 justify-center">
+            <div class="w-[26px] h-[26px] rounded-full bg-brand-500 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-users text-white text-[10px]"></i>
+            </div>
+            <div class="text-[12px]">
+              <span class="font-800 text-ink-900" id="live-users">0</span>
+              <span class="text-ink-500 font-500"> Pengguna</span>
+            </div>
+          </div>
+          <div class="w-px h-5 bg-surface-200 mx-3 flex-shrink-0"></div>
+          <div class="flex items-center gap-2 flex-1 justify-center">
+            <div class="w-[26px] h-[26px] rounded-full bg-brand-500 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-motorcycle text-white text-[10px]"></i>
+            </div>
+            <div class="text-[12px]">
+              <span class="font-800 text-ink-900" id="live-drivers">0</span>
+              <span class="text-ink-500 font-500"> Driver Online</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BANNER SLIDER (Max 130px) ===== -->
+      <div id="ads-carousel" class="relative overflow-hidden rounded-2xl shadow-md" style="height:130px;max-height:130px">
+        <div id="ads-slides-wrapper" class="flex transition-transform duration-500 ease-in-out h-full">
+          <!-- Slides injected by JS -->
+        </div>
+        <div id="ads-dots" class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10"></div>
+        <button onclick="adsSlidePrev()" class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-black/20 hover:bg-black/40 rounded-full flex items-center justify-center z-10 transition-colors"><i class="fa-solid fa-chevron-left text-white text-[9px]"></i></button>
+        <button onclick="adsSlideNext()" class="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-black/20 hover:bg-black/40 rounded-full flex items-center justify-center z-10 transition-colors"><i class="fa-solid fa-chevron-right text-white text-[9px]"></i></button>
+      </div>
+
+      <!-- ===== STATIC BANNER CARDS ===== -->
+      <div id="ads-banners" class="grid grid-cols-3 gap-2">
+        <!-- Banners injected by JS -->
+      </div>
+
+      <!-- ===== FOOTER SECURITY CARD ===== -->
+      <div class="bg-white rounded-2xl px-4 py-3 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2.5">
+          <div class="w-[28px] h-[28px] rounded-lg bg-brand-500 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-shield-halved text-white text-[11px]"></i>
+          </div>
+          <div>
+            <div class="text-[10px] font-600 text-ink-700 leading-tight">Data kamu aman,</div>
+            <div class="text-[10px] font-600 text-ink-700 leading-tight">perjalanan tetap nyaman</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-[11px] font-800 text-brand-600">BecaKita</div>
+          <div class="text-[8px] text-ink-400 font-500">Becak Dekat, Mudah, Cepat</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Credit -->
+    <div class="text-center pb-3 text-ink-300 text-[10px]">by <a href="https://kedaimedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-brand-500 transition-colors font-600">KedaiMedia</a></div>
   </div>
 </div>
 
@@ -1233,8 +1248,8 @@ function renderAdsCarousel(){
   wrapper.innerHTML=adsSlides.map(s=>`
     <div class="ads-slide" ${s.linkURL?`onclick="window.open('${s.linkURL}','_blank')"`:''}>
       <img src="${s.imageURL}" alt="${s.title}" onerror="this.src='https://picsum.photos/seed/adfallback/400/200'">
-      <div class="ads-slide-overlay">
-        <span class="text-white text-sm font-800 leading-tight drop-shadow-lg">${s.title}</span>
+      <div class="ads-slide-overlay" style="padding:10px 14px">
+        <span class="text-white text-[13px] font-800 leading-tight drop-shadow-lg">${s.title}</span>
       </div>
     </div>
   `).join('');
