@@ -699,30 +699,173 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   </div>
 
   <!-- ==================== DRIVER REGISTER ==================== -->
-  <div id="driver-register" class="view flex-1 overflow-y-auto">
-    <header class="bg-white px-4 py-3 flex items-center gap-3 shadow-sm flex-shrink-0">
-      <button onclick="showDriverView('login')" class="w-9 h-9 rounded-full bg-surface-100 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-ink-700 text-sm"></i></button>
-      <span class="font-700">Daftar Driver Baru</span>
+  <div id="driver-register" class="view flex-1 overflow-y-auto" style="background:#F8FAFB">
+    <!-- Header -->
+    <header class="bg-white px-4 py-3.5 flex items-center gap-3 shadow-sm flex-shrink-0 sticky top-0 z-10">
+      <button onclick="showDriverView('login')" class="w-9 h-9 rounded-xl bg-surface-100 flex items-center justify-center card-tap"><i class="fa-solid fa-arrow-left text-ink-700 text-sm"></i></button>
+      <span class="font-700 text-[15px]" style="color:#1F2937">Daftar Driver Baru</span>
     </header>
-    <div class="px-4 py-4 space-y-4">
-      <div class="bg-brand-50 border border-brand-200 rounded-xl px-3 py-2.5 text-xs text-brand-700 flex items-start gap-2">
-        <i class="fa-solid fa-circle-info mt-0.5 flex-shrink-0"></i>
-        <span>Isi data dengan benar. Pendaftaran akan ditinjau oleh admin sebelum akun Anda aktif. Proses verifikasi biasanya 1x24 jam.</span>
+
+    <div class="px-4 py-5 space-y-5">
+
+      <!-- INFO CARD (Notifikasi) -->
+      <div class="rounded-2xl px-4 py-3.5 flex items-start gap-3" style="background:#ECFDF5;border:1px solid #A7F3D0">
+        <div class="w-[34px] h-[34px] rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style="background:#D1FAE5">
+          <i class="fa-solid fa-circle-info text-[14px]" style="color:#059669"></i>
+        </div>
+        <div>
+          <p class="text-[12px] font-700" style="color:#065F46">Isi data dengan benar</p>
+          <p class="text-[11px] mt-0.5 leading-relaxed" style="color:#047857">Pendaftaran akan ditinjau oleh admin sebelum akun aktif. Proses verifikasi biasanya 1x24 jam.</p>
+        </div>
       </div>
-      <div class="space-y-3">
-        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Nama Lengkap <span class="text-red-400">*</span></label><input id="reg-nama" type="text" placeholder="Masukkan nama lengkap" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Nomor HP <span class="text-red-400">*</span></label><div class="flex items-center bg-white border border-surface-200 rounded-xl px-4 py-3 gap-2 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-100 transition-all"><span class="text-sm text-ink-500 font-600">+62</span><input id="reg-phone" type="tel" maxlength="12" placeholder="8123456789" class="flex-1 outline-none text-sm bg-transparent font-500" inputmode="numeric"></div></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Buat PIN (6 digit) <span class="text-red-400">*</span></label><input id="reg-pin" type="password" maxlength="6" placeholder="Masukkan 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Konfirmasi PIN <span class="text-red-400">*</span></label><input id="reg-pin-confirm" type="password" maxlength="6" placeholder="Ulangi 6 digit PIN" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all tracking-widest text-center font-700" inputmode="numeric"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Jenis Becak <span class="text-red-400">*</span></label><select id="reg-jenis" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all appearance-none bg-no-repeat bg-[right_12px_center] bg-[length:16px]" style="background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2716%27 height=%2716%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%2394A3B8%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E')"><option value="">Pilih jenis becak</option><option value="Becak Motor">Becak Motor</option><option value="Becak Kayuh">Becak Kayuh</option><option value="Becak Listrik">Becak Listrik</option></select></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Pengalaman (tahun)</label><input id="reg-pengalaman" type="number" min="0" placeholder="0" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Area Layanan</label><input id="reg-area" type="text" placeholder="cth: Selat Panjang, Tanjung Samak" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"></div>
-        <div><label class="text-xs font-600 text-ink-700 mb-1.5 block">Deskripsi Singkat</label><textarea id="reg-deskripsi" rows="3" placeholder="Ceritakan sedikit tentang Anda dan layanan Anda" class="w-full bg-white border border-surface-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all resize-none"></textarea></div>
+
+      <!-- SECTION 1: DATA PRIBADI -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-surface-200">
+        <!-- Section Title -->
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-[30px] h-[30px] rounded-lg flex items-center justify-center" style="background:#E8F5E9">
+            <i class="fa-solid fa-user text-[12px]" style="color:#00A651"></i>
+          </div>
+          <h3 class="text-[14px] font-700" style="color:#1F2937">Data Pribadi</h3>
+        </div>
+
+        <!-- Nama Lengkap -->
+        <div class="mb-3.5">
+          <label class="text-[11px] font-600 mb-1.5 block" style="color:#6B7280">Nama Lengkap <span style="color:#EF4444">*</span></label>
+          <div class="flex items-center rounded-xl px-3.5 py-3 gap-2.5 transition-all border" style="background:#F7F9FB;border-color:#E4E7EF" onfocus="this.style.borderColor='#00A651';this.style.boxShadow='0 0 0 3px rgba(0,166,81,0.1)'" onblur="this.style.borderColor='#E4E7EF';this.style.boxShadow='none'">
+            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+              <i class="fa-solid fa-user text-[10px]" style="color:#00A651"></i>
+            </div>
+            <input id="reg-nama" type="text" placeholder="Masukkan nama lengkap" class="flex-1 outline-none text-[13px] bg-transparent font-500" style="color:#1F2937">
+          </div>
+        </div>
+
+        <!-- Nomor HP -->
+        <div class="mb-3.5">
+          <label class="text-[11px] font-600 mb-1.5 block" style="color:#6B7280">Nomor HP <span style="color:#EF4444">*</span></label>
+          <div class="flex items-center rounded-xl px-3.5 py-3 gap-2.5 transition-all border" style="background:#F7F9FB;border-color:#E4E7EF" onfocus="this.style.borderColor='#00A651';this.style.boxShadow='0 0 0 3px rgba(0,166,81,0.1)'" onblur="this.style.borderColor='#E4E7EF';this.style.boxShadow='none'">
+            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+              <i class="fa-solid fa-phone text-[10px]" style="color:#00A651"></i>
+            </div>
+            <span class="text-[13px] font-600 flex-shrink-0" style="color:#6B7280">+62</span>
+            <div class="w-px h-5 flex-shrink-0" style="background:#E4E7EF"></div>
+            <input id="reg-phone" type="tel" maxlength="12" placeholder="8123456789" class="flex-1 outline-none text-[13px] bg-transparent font-500" style="color:#1F2937" inputmode="numeric">
+          </div>
+        </div>
+
+        <!-- Buat PIN -->
+        <div class="mb-3.5">
+          <label class="text-[11px] font-600 mb-1.5 block" style="color:#6B7280">Buat PIN <span style="color:#EF4444">*</span></label>
+          <div class="flex items-center rounded-xl px-3.5 py-3 gap-2.5 transition-all border" style="background:#F7F9FB;border-color:#E4E7EF" onfocus="this.style.borderColor='#00A651';this.style.boxShadow='0 0 0 3px rgba(0,166,81,0.1)'" onblur="this.style.borderColor='#E4E7EF';this.style.boxShadow='none'" id="reg-pin-wrapper">
+            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+              <i class="fa-solid fa-lock text-[10px]" style="color:#00A651"></i>
+            </div>
+            <input id="reg-pin" type="password" maxlength="6" placeholder="Masukkan 6 digit PIN" class="flex-1 outline-none text-[13px] bg-transparent font-500 tracking-widest" style="color:#1F2937" inputmode="numeric">
+            <button type="button" onclick="toggleRegPin('reg-pin','reg-pin-eye')" class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg hover:bg-surface-100 transition-colors">
+              <i id="reg-pin-eye" class="fa-solid fa-eye-slash text-[12px]" style="color:#9CA3AF"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Konfirmasi PIN -->
+        <div>
+          <label class="text-[11px] font-600 mb-1.5 block" style="color:#6B7280">Konfirmasi PIN <span style="color:#EF4444">*</span></label>
+          <div class="flex items-center rounded-xl px-3.5 py-3 gap-2.5 transition-all border" style="background:#F7F9FB;border-color:#E4E7EF" onfocus="this.style.borderColor='#00A651';this.style.boxShadow='0 0 0 3px rgba(0,166,81,0.1)'" onblur="this.style.borderColor='#E4E7EF';this.style.boxShadow='none'" id="reg-pin-confirm-wrapper">
+            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+              <i class="fa-solid fa-lock text-[10px]" style="color:#00A651"></i>
+            </div>
+            <input id="reg-pin-confirm" type="password" maxlength="6" placeholder="Ulangi 6 digit PIN" class="flex-1 outline-none text-[13px] bg-transparent font-500 tracking-widest" style="color:#1F2937" inputmode="numeric">
+            <button type="button" onclick="toggleRegPin('reg-pin-confirm','reg-pin-confirm-eye')" class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg hover:bg-surface-100 transition-colors">
+              <i id="reg-pin-confirm-eye" class="fa-solid fa-eye-slash text-[12px]" style="color:#9CA3AF"></i>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="bg-surface-50 rounded-xl p-3 space-y-2">
-        <div class="flex items-start gap-2"><input type="checkbox" id="reg-agree" class="mt-1 accent-brand-500"><label for="reg-agree" class="text-xs text-ink-700 leading-relaxed">Saya menyetujui <button onclick="showUserAbout()" class="text-brand-600 font-600 underline">Ketentuan Layanan</button> dan <button onclick="showUserPrivacy()" class="text-brand-600 font-600 underline">Kebijakan Privasi</button> BecaKita <span class="text-red-400">*</span></label></div>
+
+      <!-- SECTION 2: INFORMASI LAYANAN -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-surface-200">
+        <!-- Section Title -->
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-[30px] h-[30px] rounded-lg flex items-center justify-center" style="background:#FEF3C7">
+            <i class="fa-solid fa-truck text-[12px]" style="color:#D97706"></i>
+          </div>
+          <h3 class="text-[14px] font-700" style="color:#1F2937">Informasi Layanan</h3>
+        </div>
+
+        <!-- Jenis Becak -->
+        <div class="mb-3.5">
+          <label class="text-[11px] font-600 mb-1.5 block" style="color:#6B7280">Jenis Becak <span style="color:#EF4444">*</span></label>
+          <div class="flex items-center rounded-xl px-3.5 py-3 gap-2.5 transition-all border" style="background:#F7F9FB;border-color:#E4E7EF" onfocus="this.style.borderColor='#00A651';this.style.boxShadow='0 0 0 3px rgba(0,166,81,0.1)'" onblur="this.style.borderColor='#E4E7EF';this.style.boxShadow='none'">
+            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+              <i class="fa-solid fa-car text-[10px]" style="color:#00A651"></i>
+            </div>
+            <select id="reg-jenis" class="flex-1 outline-none text-[13px] bg-transparent font-500 appearance-none" style="color:#1F2937">
+              <option value="">Pilih jenis becak</option>
+              <option value="Becak Motor">Becak Motor</option>
+              <option value="Becak Kayuh">Becak Kayuh</option>
+              <option value="Becak Listrik">Becak Listrik</option>
+            </select>
+            <i class="fa-solid fa-chevron-down text-[10px] flex-shrink-0" style="color:#9CA3AF"></i>
+          </div>
+        </div>
+
+        <!-- 2 Kolom: Pengalaman + Area -->
+        <div class="grid grid-cols-2 gap-3 mb-3.5">
+          <!-- Pengalaman -->
+          <div>
+            <label class="text-[11px] font-600 mb-1.5 block" style="color:#6B7280">Pengalaman (tahun)</label>
+            <div class="flex items-center rounded-xl px-3.5 py-3 gap-2 transition-all border" style="background:#F7F9FB;border-color:#E4E7EF" onfocus="this.style.borderColor='#00A651';this.style.boxShadow='0 0 0 3px rgba(0,166,81,0.1)'" onblur="this.style.borderColor='#E4E7EF';this.style.boxShadow='none'">
+              <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+                <i class="fa-solid fa-clock text-[10px]" style="color:#00A651"></i>
+              </div>
+              <input id="reg-pengalaman" type="number" min="0" placeholder="Contoh: 2" class="flex-1 outline-none text-[13px] bg-transparent font-500 min-w-0" style="color:#1F2937" inputmode="numeric">
+            </div>
+          </div>
+          <!-- Area Layanan -->
+          <div>
+            <label class="text-[11px] font-600 mb-1.5 block" style="color:#6B7280">Area Layanan</label>
+            <div class="flex items-center rounded-xl px-3.5 py-3 gap-2 transition-all border" style="background:#F7F9FB;border-color:#E4E7EF" onfocus="this.style.borderColor='#00A651';this.style.boxShadow='0 0 0 3px rgba(0,166,81,0.1)'" onblur="this.style.borderColor='#E4E7EF';this.style.boxShadow='none'">
+              <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+                <i class="fa-solid fa-location-dot text-[10px]" style="color:#00A651"></i>
+              </div>
+              <input id="reg-area" type="text" placeholder="cth: Selat Panjang" class="flex-1 outline-none text-[13px] bg-transparent font-500 min-w-0" style="color:#1F2937">
+            </div>
+          </div>
+        </div>
+
+        <!-- Deskripsi Singkat -->
+        <div>
+          <label class="text-[11px] font-600 mb-1.5 block" style="color:#6B7280">Deskripsi Singkat</label>
+          <div class="rounded-xl px-3.5 py-3 gap-2.5 transition-all border" style="background:#F7F9FB;border-color:#E4E7EF" onfocus="this.style.borderColor='#00A651';this.style.boxShadow='0 0 0 3px rgba(0,166,81,0.1)'" onblur="this.style.borderColor='#E4E7EF';this.style.boxShadow='none'">
+            <div class="flex items-start gap-2.5">
+              <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:#E8F5E9">
+                <i class="fa-solid fa-file-lines text-[10px]" style="color:#00A651"></i>
+              </div>
+              <div class="flex-1">
+                <textarea id="reg-deskripsi" rows="3" placeholder="Ceritakan sedikit tentang Anda dan layanan Anda" class="w-full outline-none text-[13px] bg-transparent font-500 resize-none leading-relaxed" style="color:#1F2937" maxlength="200" oninput="updateDescCounter()"></textarea>
+              </div>
+            </div>
+            <div class="flex justify-end mt-1">
+              <span id="reg-desc-counter" class="text-[10px] font-500" style="color:#9CA3AF">0/200</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <button id="btn-register" onclick="driverRegister()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap">Kirim Pendaftaran</button>
+
+      <!-- TERMS & CHECKBOX -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200">
+        <div class="flex items-start gap-3">
+          <input type="checkbox" id="reg-agree" class="mt-0.5 accent-[#00A651] w-[18px] h-[18px] rounded flex-shrink-0 cursor-pointer">
+          <label for="reg-agree" class="text-[12px] leading-relaxed font-500" style="color:#4B5563">Saya menyetujui <button onclick="showUserAbout()" class="font-600 underline underline-offset-2" style="color:#00A651">Ketentuan Layanan</button> dan <button onclick="showUserPrivacy()" class="font-600 underline underline-offset-2" style="color:#00A651">Kebijakan Privasi</button> BecaKita <span style="color:#EF4444">*</span></label>
+        </div>
+      </div>
+
+      <!-- BUTTON UTAMA -->
+      <button id="btn-register" onclick="driverRegister()" class="w-full text-white font-700 py-3.5 rounded-xl transition-all card-tap text-[14px] shadow-sm flex items-center justify-center gap-2" style="background:#00A651;box-shadow:0 4px 14px rgba(0,166,81,0.25)" onmousedown="this.style.background='#008a43'" onmouseup="this.style.background='#00A651'" ontouchstart="this.style.background='#008a43'" ontouchend="this.style.background='#00A651'">
+        <i class="fa-solid fa-paper-plane text-[12px]"></i>
+        <span>Kirim Pendaftaran</span>
+      </button>
+
     </div>
   </div>
 </div>
@@ -1028,6 +1171,21 @@ function toggleDriverPin(){
   const eyeIcon=document.getElementById('driver-pin-eye');
   if(pinInput.type==='password'){pinInput.type='text';eyeIcon.className='fa-solid fa-eye text-[12px]';eyeIcon.style.color='#00A651';}
   else{pinInput.type='password';eyeIcon.className='fa-solid fa-eye-slash text-[12px]';eyeIcon.style.color='#A0AEC0';}
+}
+
+function toggleRegPin(inputId,eyeId){
+  const pinInput=document.getElementById(inputId);
+  const eyeIcon=document.getElementById(eyeId);
+  if(pinInput.type==='password'){pinInput.type='text';eyeIcon.className='fa-solid fa-eye text-[12px]';eyeIcon.style.color='#00A651';}
+  else{pinInput.type='password';eyeIcon.className='fa-solid fa-eye-slash text-[12px]';eyeIcon.style.color='#9CA3AF';}
+}
+
+function updateDescCounter(){
+  const ta=document.getElementById('reg-deskripsi');
+  const counter=document.getElementById('reg-desc-counter');
+  const len=ta.value.length;
+  counter.textContent=len+'/200';
+  counter.style.color=len>180?'#EF4444':'#9CA3AF';
 }
 
 async function driverLogin(){
