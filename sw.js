@@ -48,7 +48,9 @@ self.addEventListener('fetch', (event) => {
     url.hostname.includes('gstatic.com') ||
     url.hostname.includes('fonts.googleapis.com') ||
     url.hostname.includes('fonts.gstatic.com') ||
-    url.hostname.includes('githubusercontent.com')
+    url.hostname.includes('githubusercontent.com') ||
+    url.hostname.includes('cloudinary.com') ||
+    url.hostname.includes('picsum.photos')
   ) return;
 
   event.respondWith(
