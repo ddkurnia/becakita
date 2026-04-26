@@ -285,6 +285,80 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 const FIREBASE_CONFIG={apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""};
 
 // ============================================================
+// CLOUDINARY — SAMAKAN DENGAN index.html
+// ============================================================
+const CLOUDINARY_CLOUD='dnpdjhdgr';
+const CLOUDINARY_UPLOAD_PRESET='becakita_upload';
+const CLOUDINARY_ADS_MAX_WIDTH=800;
+const CLOUDINARY_ADS_QUALITY=0.75;
+
+function compressAdsImage(file,maxW,quality){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error('Gagal membaca file'));
+    reader.onload=(e)=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error('File bukan gambar valid'));
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');
+        let w=img.naturalWidth,h=img.naturalHeight;
+        if(w>maxW){h=Math.round((h*maxW)/w);w=maxW;}
+        if(h>maxW){w=Math.round((w*maxW)/h);h=maxW;}
+        canvas.width=Math.max(1,w);canvas.height=Math.max(1,h);
+        const ctx=canvas.getContext('2d');
+        ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        canvas.toBlob((blob)=>{if(blob)resolve(blob);else reject(new Error('Kompresi gagal'));},'image/jpeg',quality);
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function uploadToCloudinary(blob,folder){
+  return new Promise((resolve,reject)=>{
+    const formData=new FormData();
+    formData.append('file',blob,'ads-image.jpg');
+    formData.append('upload_preset',CLOUDINARY_UPLOAD_PRESET);
+    if(folder)formData.append('folder',folder);
+    const xhr=new XMLHttpRequest();
+    xhr.open('POST',`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`);
+    xhr.onload=()=>{
+      if(xhr.status===200){try{const r=JSON.parse(xhr.responseText);if(r.secure_url)resolve(r.secure_url);else reject(new Error('URL tidak ditemukan'));}catch(e){reject(new Error('Gagal parse respons'));}}
+      else{try{const er=JSON.parse(xhr.responseText);reject(new Error(er.error?.message||`HTTP ${xhr.status}`));}catch(e){reject(new Error(`Upload gagal: HTTP ${xhr.status}`));}}
+    };
+    xhr.onerror=()=>reject(new Error('Koneksi gagal'));
+    xhr.ontimeout=()=>reject(new Error('Upload timeout'));
+    xhr.timeout=30000;
+    xhr.send(formData);
+  });
+}
+
+async function uploadAdsPhoto(fileInputId,previewId,hiddenUrlId){
+  const fileEl=document.getElementById(fileInputId);
+  const file=fileEl?fileEl.files[0]:null;
+  if(!file)return null;
+  if(!file.type.startsWith('image/')){showToast('Pilih file gambar (JPG, PNG, WEBP)','warning');return null;}
+  if(file.size>10*1024*1024){showToast('Ukuran foto maksimal 10MB','warning');return null;}
+  try{
+    const compressedBlob=await compressAdsImage(file,CLOUDINARY_ADS_MAX_WIDTH,CLOUDINARY_ADS_QUALITY);
+    const compressedKB=Math.round(compressedBlob.size/1024);
+    console.log(`[BecaKita Ads Upload] Kompresi: ${Math.round(file.size/1024)}KB → ${compressedKB}KB`);
+    const secureURL=await uploadToCloudinary(compressedBlob,'becakita_ads');
+    if(previewId){const prev=document.getElementById(previewId);if(prev)prev.src=secureURL;}
+    if(hiddenUrlId){const hid=document.getElementById(hiddenUrlId);if(hid)hid.value=secureURL;}
+    showToast(`Foto diupload (${compressedKB}KB)`,'success');
+    return secureURL;
+  }catch(err){
+    console.error('[BecaKita Ads Upload] Gagal:',err);
+    if(err.message&&err.message.includes('Upload preset'))showToast('Upload preset belum dibuat di Cloudinary','error');
+    else showToast('Gagal upload foto, coba lagi','error');
+    return null;
+  }
+}
+
+// ============================================================
 // DATA DEMO — SAMAKAN DENGAN index.html
 // ============================================================
 const DEMO_DRIVERS=[
@@ -870,26 +944,75 @@ function showAddSlideModal(){
       <h3 class="font-700 text-lg">Tambah Iklan Slide</h3>
     </div>
     <div class="space-y-3">
-      <div><label class="text-xs font-600 text-ink-700 mb-1 block">URL Gambar</label><input id="m-slide-img" type="url" placeholder="https://..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div>
+        <label class="text-xs font-600 text-ink-700 mb-1 block">Upload Gambar</label>
+        <div id="m-slide-preview-wrap" class="hidden mb-2 relative">
+          <img id="m-slide-preview" src="" class="w-full h-28 object-cover rounded-xl border border-surface-200">
+          <button onclick="clearSlideUpload()" class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <label class="flex items-center justify-center gap-2 w-full bg-surface-50 border-2 border-dashed border-surface-300 rounded-xl px-3 py-4 text-sm text-ink-500 cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition-colors">
+          <i class="fa-solid fa-cloud-arrow-up text-brand-500"></i>
+          <span id="m-slide-file-label">Pilih file gambar</span>
+          <input id="m-slide-file" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewSlideFile(this)">
+        </label>
+        <input id="m-slide-img" type="hidden" value="">
+      </div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Judul Iklan</label><input id="m-slide-title" type="text" placeholder="Judul iklan..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Link URL (opsional)</label><input id="m-slide-link" type="url" placeholder="https://..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Urutan</label><input id="m-slide-order" type="number" value="${allAdsSlides.length+1}" min="1" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
     </div>
     <div class="flex gap-3 mt-4">
       <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
-      <button onclick="confirmAddSlide()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
+      <button id="btn-add-slide" onclick="confirmAddSlide()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
     </div>
   `);
 }
 
+function previewSlideFile(input){
+  const file=input.files[0];
+  if(!file)return;
+  const label=document.getElementById('m-slide-file-label');
+  if(label)label.textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    const prev=document.getElementById('m-slide-preview');
+    const wrap=document.getElementById('m-slide-preview-wrap');
+    if(prev){prev.src=e.target.result;}
+    if(wrap){wrap.classList.remove('hidden');}
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearSlideUpload(){
+  const fileEl=document.getElementById('m-slide-file');
+  if(fileEl)fileEl.value='';
+  const label=document.getElementById('m-slide-file-label');
+  if(label)label.textContent='Pilih file gambar';
+  const wrap=document.getElementById('m-slide-preview-wrap');
+  if(wrap)wrap.classList.add('hidden');
+  const hid=document.getElementById('m-slide-img');
+  if(hid)hid.value='';
+}
+
 async function confirmAddSlide(){
-  const img=document.getElementById('m-slide-img').value.trim();
   const title=document.getElementById('m-slide-title').value.trim();
   const link=document.getElementById('m-slide-link').value.trim();
   const order=parseInt(document.getElementById('m-slide-order').value)||1;
-  if(!img||!title){showToast('URL gambar dan judul wajib diisi','error');return;}
+  const fileEl=document.getElementById('m-slide-file');
+  const hasFile=fileEl&&fileEl.files&&fileEl.files.length>0;
+  const existingUrl=document.getElementById('m-slide-img').value.trim();
+  if(!hasFile&&!existingUrl){showToast('Upload gambar wajib diisi','error');return;}
+  if(!title){showToast('Judul iklan wajib diisi','error');return;}
+  const btn=document.getElementById('btn-add-slide');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i> Uploading...';}
+  let imageURL=existingUrl;
+  if(hasFile){
+    const uploaded=await uploadAdsPhoto('m-slide-file','m-slide-preview','m-slide-img');
+    if(!uploaded){if(btn){btn.disabled=false;btn.textContent='Simpan';}return;}
+    imageURL=uploaded;
+  }
   closeModal();
-  const slideData={imageURL:img,title,linkURL:link,active:true,order};
+  const slideData={imageURL,title,linkURL:link,active:true,order};
   if(isDemoMode){slideData.id='slide'+Date.now();DEMO_ADS_SLIDES.push(slideData);}
   else{try{const ref=await db.collection('ads_slides').add(slideData);slideData.id=ref.id;}catch(e){showToast('Gagal menambah slide','error');return;}}
   loadAdsData();showToast('Iklan slide berhasil ditambahkan','success');
@@ -903,24 +1026,45 @@ function editSlide(id){
       <h3 class="font-700 text-lg">Edit Iklan Slide</h3>
     </div>
     <div class="space-y-3">
-      <div><label class="text-xs font-600 text-ink-700 mb-1 block">URL Gambar</label><input id="m-slide-img" type="url" value="${s.imageURL}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div>
+        <label class="text-xs font-600 text-ink-700 mb-1 block">Upload Gambar</label>
+        <div id="m-slide-preview-wrap" class="mb-2 relative">
+          <img id="m-slide-preview" src="${s.imageURL}" class="w-full h-28 object-cover rounded-xl border border-surface-200" onerror="this.src='https://picsum.photos/seed/adfallback/400/200'">
+        </div>
+        <label class="flex items-center justify-center gap-2 w-full bg-surface-50 border-2 border-dashed border-surface-300 rounded-xl px-3 py-3 text-xs text-ink-500 cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition-colors">
+          <i class="fa-solid fa-cloud-arrow-up text-brand-500"></i>
+          <span id="m-slide-file-label">Ganti gambar (opsional)</span>
+          <input id="m-slide-file" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewSlideFile(this)">
+        </label>
+        <input id="m-slide-img" type="hidden" value="${s.imageURL}">
+      </div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Judul Iklan</label><input id="m-slide-title" type="text" value="${s.title}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Link URL (opsional)</label><input id="m-slide-link" type="url" value="${s.linkURL||''}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Urutan</label><input id="m-slide-order" type="number" value="${s.order}" min="1" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
     </div>
     <div class="flex gap-3 mt-4">
       <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
-      <button onclick="confirmEditSlide('${id}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
+      <button id="btn-edit-slide" onclick="confirmEditSlide('${id}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
     </div>
   `);
 }
 
 async function confirmEditSlide(id){
   const s=allAdsSlides.find(x=>x.id===id);if(!s)return;
-  s.imageURL=document.getElementById('m-slide-img').value.trim()||s.imageURL;
-  s.title=document.getElementById('m-slide-title').value.trim()||s.title;
-  s.linkURL=document.getElementById('m-slide-link').value.trim();
-  s.order=parseInt(document.getElementById('m-slide-order').value)||s.order;
+  const title=document.getElementById('m-slide-title').value.trim()||s.title;
+  const link=document.getElementById('m-slide-link').value.trim();
+  const order=parseInt(document.getElementById('m-slide-order').value)||s.order;
+  const fileEl=document.getElementById('m-slide-file');
+  const hasFile=fileEl&&fileEl.files&&fileEl.files.length>0;
+  const btn=document.getElementById('btn-edit-slide');
+  let imageURL=document.getElementById('m-slide-img').value.trim()||s.imageURL;
+  if(hasFile){
+    if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i> Uploading...';}
+    const uploaded=await uploadAdsPhoto('m-slide-file','m-slide-preview','m-slide-img');
+    if(uploaded){imageURL=uploaded;}
+    else{if(btn){btn.disabled=false;btn.textContent='Simpan';}return;}
+  }
+  s.imageURL=imageURL;s.title=title;s.linkURL=link;s.order=order;
   closeModal();
   if(!isDemoMode&&db){try{await db.collection('ads_slides').doc(id).update({imageURL:s.imageURL,title:s.title,linkURL:s.linkURL,order:s.order});}catch(e){showToast('Gagal mengedit slide','error');return;}}
   loadAdsData();showToast('Iklan slide berhasil diperbarui','success');
@@ -963,26 +1107,75 @@ function showAddBannerModal(){
       <h3 class="font-700 text-lg">Tambah Banner</h3>
     </div>
     <div class="space-y-3">
-      <div><label class="text-xs font-600 text-ink-700 mb-1 block">URL Gambar</label><input id="m-ban-img" type="url" placeholder="https://..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div>
+        <label class="text-xs font-600 text-ink-700 mb-1 block">Upload Gambar</label>
+        <div id="m-ban-preview-wrap" class="hidden mb-2 relative">
+          <img id="m-ban-preview" src="" class="w-full h-28 object-cover rounded-xl border border-surface-200">
+          <button onclick="clearBannerUpload()" class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <label class="flex items-center justify-center gap-2 w-full bg-surface-50 border-2 border-dashed border-surface-300 rounded-xl px-3 py-4 text-sm text-ink-500 cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition-colors">
+          <i class="fa-solid fa-cloud-arrow-up text-brand-500"></i>
+          <span id="m-ban-file-label">Pilih file gambar</span>
+          <input id="m-ban-file" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewBannerFile(this)">
+        </label>
+        <input id="m-ban-img" type="hidden" value="">
+      </div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Judul Banner</label><input id="m-ban-title" type="text" placeholder="Judul banner..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Link URL (opsional)</label><input id="m-ban-link" type="url" placeholder="https://..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Urutan</label><input id="m-ban-order" type="number" value="${allAdsBanners.length+1}" min="1" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
     </div>
     <div class="flex gap-3 mt-4">
       <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
-      <button onclick="confirmAddBanner()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
+      <button id="btn-add-banner" onclick="confirmAddBanner()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
     </div>
   `);
 }
 
+function previewBannerFile(input){
+  const file=input.files[0];
+  if(!file)return;
+  const label=document.getElementById('m-ban-file-label');
+  if(label)label.textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    const prev=document.getElementById('m-ban-preview');
+    const wrap=document.getElementById('m-ban-preview-wrap');
+    if(prev){prev.src=e.target.result;}
+    if(wrap){wrap.classList.remove('hidden');}
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearBannerUpload(){
+  const fileEl=document.getElementById('m-ban-file');
+  if(fileEl)fileEl.value='';
+  const label=document.getElementById('m-ban-file-label');
+  if(label)label.textContent='Pilih file gambar';
+  const wrap=document.getElementById('m-ban-preview-wrap');
+  if(wrap)wrap.classList.add('hidden');
+  const hid=document.getElementById('m-ban-img');
+  if(hid)hid.value='';
+}
+
 async function confirmAddBanner(){
-  const img=document.getElementById('m-ban-img').value.trim();
   const title=document.getElementById('m-ban-title').value.trim();
   const link=document.getElementById('m-ban-link').value.trim();
   const order=parseInt(document.getElementById('m-ban-order').value)||1;
-  if(!img||!title){showToast('URL gambar dan judul wajib diisi','error');return;}
+  const fileEl=document.getElementById('m-ban-file');
+  const hasFile=fileEl&&fileEl.files&&fileEl.files.length>0;
+  const existingUrl=document.getElementById('m-ban-img').value.trim();
+  if(!hasFile&&!existingUrl){showToast('Upload gambar wajib diisi','error');return;}
+  if(!title){showToast('Judul banner wajib diisi','error');return;}
+  const btn=document.getElementById('btn-add-banner');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i> Uploading...';}
+  let imageURL=existingUrl;
+  if(hasFile){
+    const uploaded=await uploadAdsPhoto('m-ban-file','m-ban-preview','m-ban-img');
+    if(!uploaded){if(btn){btn.disabled=false;btn.textContent='Simpan';}return;}
+    imageURL=uploaded;
+  }
   closeModal();
-  const banData={imageURL:img,title,linkURL:link,active:true,order};
+  const banData={imageURL,title,linkURL:link,active:true,order};
   if(isDemoMode){banData.id='ban'+Date.now();DEMO_ADS_BANNERS.push(banData);}
   else{try{const ref=await db.collection('ads_banners').add(banData);banData.id=ref.id;}catch(e){showToast('Gagal menambah banner','error');return;}}
   loadAdsData();showToast('Banner berhasil ditambahkan','success');
@@ -996,24 +1189,45 @@ function editBanner(id){
       <h3 class="font-700 text-lg">Edit Banner</h3>
     </div>
     <div class="space-y-3">
-      <div><label class="text-xs font-600 text-ink-700 mb-1 block">URL Gambar</label><input id="m-ban-img" type="url" value="${b.imageURL}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div>
+        <label class="text-xs font-600 text-ink-700 mb-1 block">Upload Gambar</label>
+        <div id="m-ban-preview-wrap" class="mb-2 relative">
+          <img id="m-ban-preview" src="${b.imageURL}" class="w-full h-28 object-cover rounded-xl border border-surface-200" onerror="this.src='https://picsum.photos/seed/banfallback/200/150'">
+        </div>
+        <label class="flex items-center justify-center gap-2 w-full bg-surface-50 border-2 border-dashed border-surface-300 rounded-xl px-3 py-3 text-xs text-ink-500 cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition-colors">
+          <i class="fa-solid fa-cloud-arrow-up text-brand-500"></i>
+          <span id="m-ban-file-label">Ganti gambar (opsional)</span>
+          <input id="m-ban-file" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewBannerFile(this)">
+        </label>
+        <input id="m-ban-img" type="hidden" value="${b.imageURL}">
+      </div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Judul Banner</label><input id="m-ban-title" type="text" value="${b.title}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Link URL (opsional)</label><input id="m-ban-link" type="url" value="${b.linkURL||''}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
       <div><label class="text-xs font-600 text-ink-700 mb-1 block">Urutan</label><input id="m-ban-order" type="number" value="${b.order}" min="1" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
     </div>
     <div class="flex gap-3 mt-4">
       <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
-      <button onclick="confirmEditBanner('${id}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
+      <button id="btn-edit-banner" onclick="confirmEditBanner('${id}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
     </div>
   `);
 }
 
 async function confirmEditBanner(id){
   const b=allAdsBanners.find(x=>x.id===id);if(!b)return;
-  b.imageURL=document.getElementById('m-ban-img').value.trim()||b.imageURL;
-  b.title=document.getElementById('m-ban-title').value.trim()||b.title;
-  b.linkURL=document.getElementById('m-ban-link').value.trim();
-  b.order=parseInt(document.getElementById('m-ban-order').value)||b.order;
+  const title=document.getElementById('m-ban-title').value.trim()||b.title;
+  const link=document.getElementById('m-ban-link').value.trim();
+  const order=parseInt(document.getElementById('m-ban-order').value)||b.order;
+  const fileEl=document.getElementById('m-ban-file');
+  const hasFile=fileEl&&fileEl.files&&fileEl.files.length>0;
+  const btn=document.getElementById('btn-edit-banner');
+  let imageURL=document.getElementById('m-ban-img').value.trim()||b.imageURL;
+  if(hasFile){
+    if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i> Uploading...';}
+    const uploaded=await uploadAdsPhoto('m-ban-file','m-ban-preview','m-ban-img');
+    if(uploaded){imageURL=uploaded;}
+    else{if(btn){btn.disabled=false;btn.textContent='Simpan';}return;}
+  }
+  b.imageURL=imageURL;b.title=title;b.linkURL=link;b.order=order;
   closeModal();
   if(!isDemoMode&&db){try{await db.collection('ads_banners').doc(id).update({imageURL:b.imageURL,title:b.title,linkURL:b.linkURL,order:b.order});}catch(e){showToast('Gagal mengedit banner','error');return;}}
   loadAdsData();showToast('Banner berhasil diperbarui','success');
