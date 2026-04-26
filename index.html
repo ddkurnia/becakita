@@ -178,7 +178,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 
       <!-- LAYER 0: Background Image (diredam brightness, hanya tekstur halus) -->
       <div class="absolute inset-0 z-0">
-        <img src="/assets/images/hero-foto.png" alt="" class="w-full h-full object-cover object-center" style="opacity:0.35;filter:brightness(0.7)" onerror="this.style.display='none';document.getElementById('hero-svg-fallback').style.display='block'">
+        <img src="/assets/images/hero-foto.png" alt="" class="w-full h-full object-cover object-center" style="opacity:0.45;filter:brightness(0.8)" onerror="this.style.display='none';document.getElementById('hero-svg-fallback').style.display='block'">
         <!-- SVG fallback jika hero-foto.png belum ada -->
         <svg id="hero-svg-fallback" class="absolute inset-0 w-full h-full" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="display:none">
           <rect width="400" height="220" fill="#00A651" opacity="0.15"/>
@@ -208,8 +208,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
         </svg>
       </div>
 
-      <!-- LAYER 1: Green Overlay (PEKAT, SOLID, premium seperti Grab) -->
-      <div class="absolute inset-0 z-[1]" style="background:linear-gradient(180deg,rgba(0,120,70,0.95) 0%,rgba(0,90,50,0.98) 100%)"></div>
+      <!-- LAYER 1: Green Overlay (PEKAT tapi gambar tetap tembus sebagai tekstur halus) -->
+      <div class="absolute inset-0 z-[1]" style="background:linear-gradient(180deg,rgba(0,120,70,0.88) 0%,rgba(0,90,50,0.92) 100%)"></div>
 
       <!-- Decorative circles (subtle) -->
       <div class="absolute top-[-20px] left-[-15px] w-24 h-24 bg-white/5 rounded-full z-[1]"></div>
