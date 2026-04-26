@@ -855,16 +855,6 @@ function setupManifest(){
 // ============================================================
 let allAdsSlides=[], allAdsBanners=[], currentAdsTab='slides';
 
-// --- localStorage sync untuk demo mode ---
-function syncAdsToStorage(){
-  if(!isDemoMode)return;
-  try{
-    localStorage.setItem('becakita_ads_slides',JSON.stringify(allAdsSlides));
-    localStorage.setItem('becakita_ads_banners',JSON.stringify(allAdsBanners));
-    localStorage.setItem('becakita_ads_updated',Date.now().toString());
-  }catch(e){console.warn('[BecaKita] Gagal sync iklan ke localStorage:',e);}
-}
-
 function showAdsManager(){showView('ads');loadAdsData();}
 
 function switchAdsTab(tab){
@@ -890,8 +880,6 @@ async function loadAdsData(){
   }
   renderSlidesList();
   renderBannersList();
-  // Sync ke localStorage agar index.html bisa baca perubahan
-  syncAdsToStorage();
 }
 
 function renderSlidesList(){
@@ -1076,9 +1064,14 @@ async function confirmEditSlide(id){
     if(uploaded){imageURL=uploaded;}
     else{if(btn){btn.disabled=false;btn.textContent='Simpan';}return;}
   }
-  s.imageURL=imageURL;s.title=title;s.linkURL=link;s.order=order;
   closeModal();
-  if(!isDemoMode&&db){try{await db.collection('ads_slides').doc(id).update({imageURL:s.imageURL,title:s.title,linkURL:s.linkURL,order:s.order});}catch(e){showToast('Gagal mengedit slide','error');return;}}
+  if(!isDemoMode&&db){
+    try{await db.collection('ads_slides').doc(id).update({imageURL,title,linkURL:link,order});}catch(e){showToast('Gagal mengedit slide','error');return;}
+  }else{
+    // Demo mode: update di DEMO_ADS_SLIDES agar loadAdsData() baca data terbaru
+    const ds=DEMO_ADS_SLIDES.find(x=>x.id===id);
+    if(ds){ds.imageURL=imageURL;ds.title=title;ds.linkURL=link;ds.order=order;}
+  }
   loadAdsData();showToast('Iklan slide berhasil diperbarui','success');
 }
 
@@ -1086,6 +1079,7 @@ async function toggleSlide(id){
   const s=allAdsSlides.find(x=>x.id===id);if(!s)return;
   s.active=!s.active;
   if(!isDemoMode&&db){try{await db.collection('ads_slides').doc(id).update({active:s.active});}catch(e){showToast('Gagal mengubah status','error');s.active=!s.active;return;}}
+  else{const ds=DEMO_ADS_SLIDES.find(x=>x.id===id);if(ds)ds.active=s.active;}
   loadAdsData();showToast(`Iklan slide ${s.active?'diaktifkan':'dinonaktifkan'}`,'success');
 }
 
@@ -1239,9 +1233,14 @@ async function confirmEditBanner(id){
     if(uploaded){imageURL=uploaded;}
     else{if(btn){btn.disabled=false;btn.textContent='Simpan';}return;}
   }
-  b.imageURL=imageURL;b.title=title;b.linkURL=link;b.order=order;
   closeModal();
-  if(!isDemoMode&&db){try{await db.collection('ads_banners').doc(id).update({imageURL:b.imageURL,title:b.title,linkURL:b.linkURL,order:b.order});}catch(e){showToast('Gagal mengedit banner','error');return;}}
+  if(!isDemoMode&&db){
+    try{await db.collection('ads_banners').doc(id).update({imageURL,title,linkURL:link,order});}catch(e){showToast('Gagal mengedit banner','error');return;}
+  }else{
+    // Demo mode: update di DEMO_ADS_BANNERS agar loadAdsData() baca data terbaru
+    const db2=DEMO_ADS_BANNERS.find(x=>x.id===id);
+    if(db2){db2.imageURL=imageURL;db2.title=title;db2.linkURL=link;db2.order=order;}
+  }
   loadAdsData();showToast('Banner berhasil diperbarui','success');
 }
 
@@ -1249,6 +1248,7 @@ async function toggleBanner(id){
   const b=allAdsBanners.find(x=>x.id===id);if(!b)return;
   b.active=!b.active;
   if(!isDemoMode&&db){try{await db.collection('ads_banners').doc(id).update({active:b.active});}catch(e){showToast('Gagal mengubah status','error');b.active=!b.active;return;}}
+  else{const db2=DEMO_ADS_BANNERS.find(x=>x.id===id);if(db2)db2.active=b.active;}
   loadAdsData();showToast(`Banner ${b.active?'diaktifkan':'dinonaktifkan'}`,'success');
 }
 
