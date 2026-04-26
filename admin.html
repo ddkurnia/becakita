@@ -139,6 +139,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
       </div>
     </div>
 
+    <!-- Ads Shortcut -->
+    <div onclick="showAdsManager()" class="bg-white rounded-xl shadow-sm p-3 flex items-center gap-3 cursor-pointer card-tap border border-surface-100 hover:border-brand-300 transition-colors">
+      <div class="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-rectangle-ad text-brand-500 text-sm"></i></div>
+      <div class="flex-1">
+        <div class="font-700 text-sm">Pengaturan Iklan</div>
+        <div class="text-xs text-ink-500">Kelola iklan slide & banner</div>
+      </div>
+      <i class="fa-solid fa-chevron-right text-ink-300 text-xs"></i>
+    </div>
+
     <!-- Driver List -->
     <div id="admin-driver-list" class="space-y-3"></div>
 
@@ -208,6 +218,55 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
   </main>
 </div>
 
+<!-- ADS MANAGER VIEW -->
+<div id="view-ads" class="view min-h-screen">
+  <header class="bg-slate-800 px-4 py-3 flex items-center justify-between flex-shrink-0 sticky top-0 z-20">
+    <div class="flex items-center gap-3">
+      <button onclick="showView('dashboard')" class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center"><i class="fa-solid fa-arrow-left text-white text-xs"></i></button>
+      <span class="font-700 text-white text-sm">Pengaturan Iklan</span>
+    </div>
+    <button onclick="loadAdsData()" class="text-slate-400 hover:text-white text-xs font-500 card-tap flex items-center gap-1"><i class="fa-solid fa-rotate-right text-[10px]"></i> Refresh</button>
+  </header>
+  <main class="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-6">
+    <!-- Tab Switch -->
+    <div class="flex bg-white rounded-xl shadow-sm p-1 gap-1">
+      <button onclick="switchAdsTab('slides')" id="ads-tab-slides" class="flex-1 text-xs font-600 py-2 rounded-lg transition-colors bg-slate-800 text-white">Iklan Slide</button>
+      <button onclick="switchAdsTab('banners')" id="ads-tab-banners" class="flex-1 text-xs font-600 py-2 rounded-lg transition-colors text-ink-500">Banner Tetap</button>
+    </div>
+
+    <!-- Slides Section -->
+    <div id="ads-slides-section">
+      <div class="flex items-center justify-between">
+        <h3 class="font-700 text-sm text-ink-900">Iklan Slide (Carousel)</h3>
+        <button onclick="showAddSlideModal()" class="text-xs text-brand-500 font-600 flex items-center gap-1 card-tap"><i class="fa-solid fa-plus text-[10px]"></i> Tambah</button>
+      </div>
+      <div id="slides-list" class="space-y-3"></div>
+      <div id="slides-empty" class="hidden text-center py-8">
+        <i class="fa-solid fa-images text-4xl text-surface-200 mb-3 block"></i>
+        <p class="text-sm text-ink-500">Belum ada iklan slide</p>
+      </div>
+    </div>
+
+    <!-- Banners Section -->
+    <div id="ads-banners-section" class="hidden">
+      <div class="flex items-center justify-between">
+        <h3 class="font-700 text-sm text-ink-900">Banner Tetap (3 Banner)</h3>
+        <button onclick="showAddBannerModal()" class="text-xs text-brand-500 font-600 flex items-center gap-1 card-tap"><i class="fa-solid fa-plus text-[10px]"></i> Tambah</button>
+      </div>
+      <div id="banners-list" class="space-y-3"></div>
+      <div id="banners-empty" class="hidden text-center py-8">
+        <i class="fa-solid fa-rectangle-ad text-4xl text-surface-200 mb-3 block"></i>
+        <p class="text-sm text-ink-500">Belum ada banner</p>
+      </div>
+    </div>
+
+    <!-- Demo Badge -->
+    <div id="demo-badge-ads" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+      <i class="fa-solid fa-circle-info"></i><span>Mode demo — perubahan iklan hanya berlaku sesi ini.</span>
+    </div>
+  </main>
+</div>
+
 <!-- TOAST -->
 <div id="toast-container" class="fixed top-4 left-4 right-0 z-[9999] flex flex-col items-center gap-2 pointer-events-none" style="right:16px"></div>
 
@@ -234,6 +293,17 @@ const DEMO_DRIVERS=[
   {id:'drv003',nama:'Buk Dewi',nomorHP:'6281554321098',fotoURL:'https://picsum.photos/seed/becakdriver3/200/200',jenisBeca:'Becak Motor',pengalaman:5,deskripsi:'Driver perempuan pertama.',status:'aktif',expired_at:new Date(Date.now()+28*24*60*60*1000).toISOString(),online:true,rating:4.9,areaLayanan:'Selat Panjang Pusat',lat:1.1440,lng:102.3530,lastSeen:new Date(Date.now()-30000).toISOString(),profileViews:215,waClicks:67},
   {id:'drv004',nama:'Pak Surya',nomorHP:'6281667890123',fotoURL:'https://picsum.photos/seed/becakdriver4/200/200',jenisBeca:'Becak Kayuh',pengalaman:15,deskripsi:'Becak kayuh klasik.',status:'aktif',expired_at:new Date(Date.now()+5*24*60*60*1000).toISOString(),online:false,rating:4.3,areaLayanan:'Teluk Belengkong',lat:1.1420,lng:102.3460,lastSeen:new Date(Date.now()-86400000).toISOString(),profileViews:34,waClicks:8},
   {id:'drv005',nama:'Pak Rizal',nomorHP:'6281789012345',fotoURL:'https://picsum.photos/seed/becakdriver5/200/200',jenisBeca:'Becak Motor',pengalaman:3,deskripsi:'Driver muda.',status:'nonaktif',expired_at:new Date(Date.now()-5*24*60*60*1000).toISOString(),online:false,rating:4.7,areaLayanan:'Selat Panjang',lat:1.1350,lng:102.3550,lastSeen:new Date(Date.now()-604800000).toISOString(),profileViews:56,waClicks:12}
+];
+const DEMO_ADS_SLIDES=[
+  {id:'slide1',imageURL:'https://picsum.photos/seed/becakad1/400/200',title:'Promo Bulan Ini',linkURL:'',active:true,order:1},
+  {id:'slide2',imageURL:'https://picsum.photos/seed/becakad2/400/200',title:'Becak Listrik Hadir!',linkURL:'',active:true,order:2},
+  {id:'slide3',imageURL:'https://picsum.photos/seed/becakad3/400/200',title:'Jadi Driver BecaKita',linkURL:'',active:true,order:3},
+  {id:'slide4',imageURL:'https://picsum.photos/seed/becakad4/400/200',title:'Bayar Cash - Tanpa Ribet',linkURL:'',active:true,order:4}
+];
+const DEMO_ADS_BANNERS=[
+  {id:'ban1',imageURL:'https://picsum.photos/seed/becakban1/200/150',title:'Selat Panjang',linkURL:'',active:true,order:1},
+  {id:'ban2',imageURL:'https://picsum.photos/seed/becakban2/200/150',title:'Tanjung Samak',linkURL:'',active:true,order:2},
+  {id:'ban3',imageURL:'https://picsum.photos/seed/becakban3/200/150',title:'Tebing Tinggi',linkURL:'',active:true,order:3}
 ];
 
 // ============================================================
@@ -704,6 +774,278 @@ function setupManifest(){
   const m={name:'BecaKita Admin',short_name:'BK Admin',description:'Panel admin BecaKita — Kelola driver becak',start_url:'/admin.html',scope:'/',display:'standalone',orientation:'portrait',theme_color:'#1E293B',background_color:'#F8F9FC',icons:[{src:'https://img.icons8.com/fluency/192/bicycle.png',sizes:'192x192',type:'image/png'},{src:'https://img.icons8.com/fluency/512/bicycle.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
   const blob=new Blob([JSON.stringify(m)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('link');
   link.rel='manifest';link.href=url;document.head.appendChild(link);
+}
+
+// ============================================================
+// ADS MANAGER
+// ============================================================
+let allAdsSlides=[], allAdsBanners=[], currentAdsTab='slides';
+
+function showAdsManager(){showView('ads');loadAdsData();}
+
+function switchAdsTab(tab){
+  currentAdsTab=tab;
+  document.getElementById('ads-tab-slides').className=`flex-1 text-xs font-600 py-2 rounded-lg transition-colors ${tab==='slides'?'bg-slate-800 text-white':'text-ink-500'}`;
+  document.getElementById('ads-tab-banners').className=`flex-1 text-xs font-600 py-2 rounded-lg transition-colors ${tab==='banners'?'bg-slate-800 text-white':'text-ink-500'}`;
+  document.getElementById('ads-slides-section').classList.toggle('hidden',tab!=='slides');
+  document.getElementById('ads-banners-section').classList.toggle('hidden',tab!=='banners');
+}
+
+async function loadAdsData(){
+  if(isDemoMode){
+    allAdsSlides=[...DEMO_ADS_SLIDES];
+    allAdsBanners=[...DEMO_ADS_BANNERS];
+    const dba=document.getElementById('demo-badge-ads');if(dba)dba.classList.remove('hidden');
+  }else{
+    try{
+      allAdsSlides=[];
+      const ss=await db.collection('ads_slides').orderBy('order','asc').get();ss.forEach(doc=>allAdsSlides.push({id:doc.id,...doc.data()}));
+      allAdsBanners=[];
+      const bs=await db.collection('ads_banners').orderBy('order','asc').get();bs.forEach(doc=>allAdsBanners.push({id:doc.id,...doc.data()}));
+    }catch(e){showToast('Gagal memuat data iklan','error');return;}
+  }
+  renderSlidesList();
+  renderBannersList();
+}
+
+function renderSlidesList(){
+  const container=document.getElementById('slides-list');
+  const empty=document.getElementById('slides-empty');
+  if(!allAdsSlides.length){container.innerHTML='';empty.classList.remove('hidden');return;}
+  empty.classList.add('hidden');
+  container.innerHTML=allAdsSlides.sort((a,b)=>a.order-b.order).map((s,i)=>`
+    <div class="bg-white rounded-2xl p-3 shadow-sm border border-surface-100">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-surface-100"><img src="${s.imageURL}" class="w-full h-full object-cover" onerror="this.src='https://picsum.photos/seed/adfallback/400/200'"></div>
+        <div class="flex-1 min-w-0">
+          <div class="font-700 text-sm truncate">${s.title}</div>
+          <div class="text-[10px] text-ink-500 truncate">${s.linkURL||'Tanpa link'}</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-[10px] font-600 px-1.5 py-0.5 rounded-full ${s.active?'bg-brand-50 text-brand-600':'bg-red-50 text-red-500'}">${s.active?'AKTIF':'NONAKTIF'}</span>
+            <span class="text-[10px] text-ink-300">Urutan: ${s.order}</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="editSlide('${s.id}')" class="flex-1 bg-surface-100 hover:bg-surface-200 text-ink-700 font-600 py-2 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid fa-pen text-[10px]"></i> Edit</button>
+        <button onclick="toggleSlide('${s.id}')" class="flex-1 ${s.active?'bg-red-50 hover:bg-red-100 text-red-600':'bg-brand-50 hover:bg-brand-100 text-brand-600'} font-600 py-2 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid ${s.active?'fa-eye-slash':'fa-eye'} text-[10px]"></i> ${s.active?'Nonaktif':'Aktif'}</button>
+        <button onclick="deleteSlide('${s.id}')" class="w-9 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl flex items-center justify-center transition-colors card-tap"><i class="fa-solid fa-trash text-[10px]"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderBannersList(){
+  const container=document.getElementById('banners-list');
+  const empty=document.getElementById('banners-empty');
+  if(!allAdsBanners.length){container.innerHTML='';empty.classList.remove('hidden');return;}
+  empty.classList.add('hidden');
+  container.innerHTML=allAdsBanners.sort((a,b)=>a.order-b.order).map(b=>`
+    <div class="bg-white rounded-2xl p-3 shadow-sm border border-surface-100">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-16 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-surface-100"><img src="${b.imageURL}" class="w-full h-full object-cover" onerror="this.src='https://picsum.photos/seed/banfallback/200/150'"></div>
+        <div class="flex-1 min-w-0">
+          <div class="font-700 text-sm truncate">${b.title}</div>
+          <div class="text-[10px] text-ink-500 truncate">${b.linkURL||'Tanpa link'}</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-[10px] font-600 px-1.5 py-0.5 rounded-full ${b.active?'bg-brand-50 text-brand-600':'bg-red-50 text-red-500'}">${b.active?'AKTIF':'NONAKTIF'}</span>
+            <span class="text-[10px] text-ink-300">Urutan: ${b.order}</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="editBanner('${b.id}')" class="flex-1 bg-surface-100 hover:bg-surface-200 text-ink-700 font-600 py-2 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid fa-pen text-[10px]"></i> Edit</button>
+        <button onclick="toggleBanner('${b.id}')" class="flex-1 ${b.active?'bg-red-50 hover:bg-red-100 text-red-600':'bg-brand-50 hover:bg-brand-100 text-brand-600'} font-600 py-2 rounded-xl text-xs transition-colors card-tap flex items-center justify-center gap-1"><i class="fa-solid ${b.active?'fa-eye-slash':'fa-eye'} text-[10px]"></i> ${b.active?'Nonaktif':'Aktif'}</button>
+        <button onclick="deleteBanner('${b.id}')" class="w-9 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl flex items-center justify-center transition-colors card-tap"><i class="fa-solid fa-trash text-[10px]"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// --- Slide CRUD ---
+function showAddSlideModal(){
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-brand-50 rounded-2xl mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-images text-brand-500 text-2xl"></i></div>
+      <h3 class="font-700 text-lg">Tambah Iklan Slide</h3>
+    </div>
+    <div class="space-y-3">
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">URL Gambar</label><input id="m-slide-img" type="url" placeholder="https://..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Judul Iklan</label><input id="m-slide-title" type="text" placeholder="Judul iklan..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Link URL (opsional)</label><input id="m-slide-link" type="url" placeholder="https://..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Urutan</label><input id="m-slide-order" type="number" value="${allAdsSlides.length+1}" min="1" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmAddSlide()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
+    </div>
+  `);
+}
+
+async function confirmAddSlide(){
+  const img=document.getElementById('m-slide-img').value.trim();
+  const title=document.getElementById('m-slide-title').value.trim();
+  const link=document.getElementById('m-slide-link').value.trim();
+  const order=parseInt(document.getElementById('m-slide-order').value)||1;
+  if(!img||!title){showToast('URL gambar dan judul wajib diisi','error');return;}
+  closeModal();
+  const slideData={imageURL:img,title,linkURL:link,active:true,order};
+  if(isDemoMode){slideData.id='slide'+Date.now();DEMO_ADS_SLIDES.push(slideData);}
+  else{try{const ref=await db.collection('ads_slides').add(slideData);slideData.id=ref.id;}catch(e){showToast('Gagal menambah slide','error');return;}}
+  loadAdsData();showToast('Iklan slide berhasil ditambahkan','success');
+}
+
+function editSlide(id){
+  const s=allAdsSlides.find(x=>x.id===id);if(!s)return;
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-brand-50 rounded-2xl mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-pen text-brand-500 text-2xl"></i></div>
+      <h3 class="font-700 text-lg">Edit Iklan Slide</h3>
+    </div>
+    <div class="space-y-3">
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">URL Gambar</label><input id="m-slide-img" type="url" value="${s.imageURL}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Judul Iklan</label><input id="m-slide-title" type="text" value="${s.title}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Link URL (opsional)</label><input id="m-slide-link" type="url" value="${s.linkURL||''}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Urutan</label><input id="m-slide-order" type="number" value="${s.order}" min="1" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmEditSlide('${id}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
+    </div>
+  `);
+}
+
+async function confirmEditSlide(id){
+  const s=allAdsSlides.find(x=>x.id===id);if(!s)return;
+  s.imageURL=document.getElementById('m-slide-img').value.trim()||s.imageURL;
+  s.title=document.getElementById('m-slide-title').value.trim()||s.title;
+  s.linkURL=document.getElementById('m-slide-link').value.trim();
+  s.order=parseInt(document.getElementById('m-slide-order').value)||s.order;
+  closeModal();
+  if(!isDemoMode&&db){try{await db.collection('ads_slides').doc(id).update({imageURL:s.imageURL,title:s.title,linkURL:s.linkURL,order:s.order});}catch(e){showToast('Gagal mengedit slide','error');return;}}
+  loadAdsData();showToast('Iklan slide berhasil diperbarui','success');
+}
+
+async function toggleSlide(id){
+  const s=allAdsSlides.find(x=>x.id===id);if(!s)return;
+  s.active=!s.active;
+  if(!isDemoMode&&db){try{await db.collection('ads_slides').doc(id).update({active:s.active});}catch(e){showToast('Gagal mengubah status','error');s.active=!s.active;return;}}
+  loadAdsData();showToast(`Iklan slide ${s.active?'diaktifkan':'dinonaktifkan'}`,'success');
+}
+
+async function deleteSlide(id){
+  const s=allAdsSlides.find(x=>x.id===id);if(!s)return;
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-red-50 rounded-2xl mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-trash text-red-500 text-2xl"></i></div>
+      <h3 class="font-700 text-lg">Hapus Iklan Slide</h3>
+      <p class="text-sm text-ink-500 mt-1">Yakin ingin menghapus <b>${s.title}</b>?</p>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmDeleteSlide('${id}')" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Hapus</button>
+    </div>
+  `);
+}
+
+async function confirmDeleteSlide(id){
+  closeModal();
+  if(isDemoMode){const idx=DEMO_ADS_SLIDES.findIndex(x=>x.id===id);if(idx>-1)DEMO_ADS_SLIDES.splice(idx,1);}
+  else{try{await db.collection('ads_slides').doc(id).delete();}catch(e){showToast('Gagal menghapus slide','error');return;}}
+  loadAdsData();showToast('Iklan slide berhasil dihapus','success');
+}
+
+// --- Banner CRUD ---
+function showAddBannerModal(){
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-brand-50 rounded-2xl mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-rectangle-ad text-brand-500 text-2xl"></i></div>
+      <h3 class="font-700 text-lg">Tambah Banner</h3>
+    </div>
+    <div class="space-y-3">
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">URL Gambar</label><input id="m-ban-img" type="url" placeholder="https://..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Judul Banner</label><input id="m-ban-title" type="text" placeholder="Judul banner..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Link URL (opsional)</label><input id="m-ban-link" type="url" placeholder="https://..." class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Urutan</label><input id="m-ban-order" type="number" value="${allAdsBanners.length+1}" min="1" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmAddBanner()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
+    </div>
+  `);
+}
+
+async function confirmAddBanner(){
+  const img=document.getElementById('m-ban-img').value.trim();
+  const title=document.getElementById('m-ban-title').value.trim();
+  const link=document.getElementById('m-ban-link').value.trim();
+  const order=parseInt(document.getElementById('m-ban-order').value)||1;
+  if(!img||!title){showToast('URL gambar dan judul wajib diisi','error');return;}
+  closeModal();
+  const banData={imageURL:img,title,linkURL:link,active:true,order};
+  if(isDemoMode){banData.id='ban'+Date.now();DEMO_ADS_BANNERS.push(banData);}
+  else{try{const ref=await db.collection('ads_banners').add(banData);banData.id=ref.id;}catch(e){showToast('Gagal menambah banner','error');return;}}
+  loadAdsData();showToast('Banner berhasil ditambahkan','success');
+}
+
+function editBanner(id){
+  const b=allAdsBanners.find(x=>x.id===id);if(!b)return;
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-brand-50 rounded-2xl mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-pen text-brand-500 text-2xl"></i></div>
+      <h3 class="font-700 text-lg">Edit Banner</h3>
+    </div>
+    <div class="space-y-3">
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">URL Gambar</label><input id="m-ban-img" type="url" value="${b.imageURL}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Judul Banner</label><input id="m-ban-title" type="text" value="${b.title}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Link URL (opsional)</label><input id="m-ban-link" type="url" value="${b.linkURL||''}" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+      <div><label class="text-xs font-600 text-ink-700 mb-1 block">Urutan</label><input id="m-ban-order" type="number" value="${b.order}" min="1" class="w-full bg-surface-50 border border-surface-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-500"></div>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmEditBanner('${id}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Simpan</button>
+    </div>
+  `);
+}
+
+async function confirmEditBanner(id){
+  const b=allAdsBanners.find(x=>x.id===id);if(!b)return;
+  b.imageURL=document.getElementById('m-ban-img').value.trim()||b.imageURL;
+  b.title=document.getElementById('m-ban-title').value.trim()||b.title;
+  b.linkURL=document.getElementById('m-ban-link').value.trim();
+  b.order=parseInt(document.getElementById('m-ban-order').value)||b.order;
+  closeModal();
+  if(!isDemoMode&&db){try{await db.collection('ads_banners').doc(id).update({imageURL:b.imageURL,title:b.title,linkURL:b.linkURL,order:b.order});}catch(e){showToast('Gagal mengedit banner','error');return;}}
+  loadAdsData();showToast('Banner berhasil diperbarui','success');
+}
+
+async function toggleBanner(id){
+  const b=allAdsBanners.find(x=>x.id===id);if(!b)return;
+  b.active=!b.active;
+  if(!isDemoMode&&db){try{await db.collection('ads_banners').doc(id).update({active:b.active});}catch(e){showToast('Gagal mengubah status','error');b.active=!b.active;return;}}
+  loadAdsData();showToast(`Banner ${b.active?'diaktifkan':'dinonaktifkan'}`,'success');
+}
+
+async function deleteBanner(id){
+  const b=allAdsBanners.find(x=>x.id===id);if(!b)return;
+  showModal(`
+    <div class="text-center mb-4">
+      <div class="w-14 h-14 bg-red-50 rounded-2xl mx-auto flex items-center justify-center mb-3"><i class="fa-solid fa-trash text-red-500 text-2xl"></i></div>
+      <h3 class="font-700 text-lg">Hapus Banner</h3>
+      <p class="text-sm text-ink-500 mt-1">Yakin ingin menghapus <b>${b.title}</b>?</p>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 bg-surface-100 text-ink-700 font-600 py-3 rounded-xl card-tap">Batal</button>
+      <button onclick="confirmDeleteBanner('${id}')" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-600 py-3 rounded-xl card-tap transition-colors">Hapus</button>
+    </div>
+  `);
+}
+
+async function confirmDeleteBanner(id){
+  closeModal();
+  if(isDemoMode){const idx=DEMO_ADS_BANNERS.findIndex(x=>x.id===id);if(idx>-1)DEMO_ADS_BANNERS.splice(idx,1);}
+  else{try{await db.collection('ads_banners').doc(id).delete();}catch(e){showToast('Gagal menghapus banner','error');return;}}
+  loadAdsData();showToast('Banner berhasil dihapus','success');
 }
 
 // ============================================================
