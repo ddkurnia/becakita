@@ -108,7 +108,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 </div>
 
 <!-- SPLASH -->
-<div id="splash" class="fixed inset-0 z-[999] flex flex-col items-center justify-center transition-opacity duration-500" style="background:linear-gradient(135deg,#00A651 0%,#00C853 50%,#00A651 100%)">
+<div id="splash" class="fixed inset-0 z-[999] flex flex-col items-center justify-center transition-opacity duration-500" style="background:linear-gradient(160deg,rgba(0,110,53,1) 0%,rgba(0,166,81,1) 40%,rgba(0,200,83,1) 100%)">
   <div class="mb-4" style="animation:float 2s ease-in-out infinite">
     <div class="w-[72px] h-[72px] bg-white rounded-[20px] flex items-center justify-center shadow-xl shadow-black/15 p-2">
       <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
@@ -173,16 +173,59 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 <div id="page-role" class="page">
   <div class="flex-1 flex flex-col relative overflow-hidden" style="background:#F4F6FA">
 
-    <!-- ===== HEADER (Green Gradient) ===== -->
-    <div class="relative overflow-hidden flex-shrink-0" style="background:linear-gradient(135deg,#00A651 0%,#00C853 50%,#00A651 100%);border-radius:0 0 28px 28px;padding:40px 20px 28px">
-      <!-- Transparent becak illustration in background -->
-      <div class="absolute right-[-10px] bottom-[-8px] opacity-[0.08] text-white" style="font-size:120px;line-height:1"><i class="fa-solid fa-bicycle"></i></div>
-      <!-- Decorative circles -->
-      <div class="absolute top-[-30px] left-[-20px] w-28 h-28 bg-white/5 rounded-full"></div>
-      <div class="absolute top-[20px] right-[-15px] w-20 h-20 bg-white/5 rounded-full"></div>
+    <!-- ===== HERO HEADER (3 Layer + Curve) ===== -->
+    <div class="relative overflow-visible flex-shrink-0" style="padding:36px 20px 40px">
 
-      <div class="flex flex-col items-center relative z-10">
-        <div class="w-[64px] h-[64px] bg-white rounded-[18px] flex items-center justify-center shadow-lg shadow-black/10 p-2 mb-2" style="animation:float 3s ease-in-out infinite">
+      <!-- LAYER 0: Background Image (samar / watermark) -->
+      <div class="absolute inset-0 z-0">
+        <img src="/assets/images/hero-foto.png" alt="" class="w-full h-full object-cover object-center" style="opacity:0.35" onerror="this.style.display='none';document.getElementById('hero-svg-fallback').style.display='block'">
+        <!-- SVG fallback jika hero-foto.png belum ada -->
+        <svg id="hero-svg-fallback" class="absolute inset-0 w-full h-full" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="display:none">
+          <rect width="400" height="220" fill="#00A651" opacity="0.15"/>
+          <!-- Becak silhouette illustration -->
+          <g transform="translate(220,30) scale(1.8)" opacity="0.25">
+            <path d="M10 35 Q10 5 45 5 Q80 5 80 35" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+            <rect x="15" y="35" width="55" height="18" rx="4" fill="#fff" opacity="0.3"/>
+            <rect x="12" y="32" width="61" height="24" rx="5" fill="none" stroke="#fff" stroke-width="2"/>
+          </g>
+          <circle cx="260" cy="140" r="18" fill="none" stroke="#fff" stroke-width="3" opacity="0.25"/>
+          <circle cx="260" cy="140" r="4" fill="#fff" opacity="0.25"/>
+          <circle cx="345" cy="130" r="13" fill="none" stroke="#fff" stroke-width="3" opacity="0.2"/>
+          <circle cx="345" cy="130" r="3" fill="#fff" opacity="0.2"/>
+          <!-- Road -->
+          <line x1="0" y1="180" x2="400" y2="180" stroke="#fff" stroke-width="3" opacity="0.15"/>
+          <line x1="0" y1="190" x2="400" y2="190" stroke="#fff" stroke-width="1.5" stroke-dasharray="12 8" opacity="0.15"/>
+          <line x1="0" y1="200" x2="400" y2="200" stroke="#fff" stroke-width="3" opacity="0.15"/>
+          <!-- Buildings silhouette -->
+          <rect x="30" y="80" width="25" height="100" rx="2" fill="#fff" opacity="0.1"/>
+          <rect x="60" y="100" width="20" height="80" rx="2" fill="#fff" opacity="0.08"/>
+          <rect x="85" y="60" width="30" height="120" rx="2" fill="#fff" opacity="0.12"/>
+          <rect x="120" y="90" width="22" height="90" rx="2" fill="#fff" opacity="0.09"/>
+          <!-- Trees -->
+          <circle cx="160" cy="155" r="15" fill="#fff" opacity="0.08"/>
+          <rect x="158" y="165" width="4" height="20" fill="#fff" opacity="0.06"/>
+          <circle cx="350" cy="160" r="12" fill="#fff" opacity="0.07"/>
+        </svg>
+      </div>
+
+      <!-- LAYER 1: Green Overlay (gradient, tutupi background) -->
+      <div class="absolute inset-0 z-[1]" style="background:linear-gradient(160deg,rgba(0,110,53,0.92) 0%,rgba(0,166,81,0.88) 40%,rgba(0,200,83,0.85) 100%)"></div>
+
+      <!-- LAYER 1b: Curve shape di bawah hero -->
+      <div class="absolute left-0 right-0 bottom-0 z-[2] translate-y-[1px]" style="height:36px">
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 36" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <path d="M0 36 L0 12 Q100 0 200 0 Q300 0 400 12 L400 36 Z" fill="#F4F6FA"/>
+        </svg>
+      </div>
+
+      <!-- Decorative circles (subtle) -->
+      <div class="absolute top-[-20px] left-[-15px] w-24 h-24 bg-white/5 rounded-full z-[1]"></div>
+      <div class="absolute top-[15px] right-[-10px] w-16 h-16 bg-white/5 rounded-full z-[1]"></div>
+      <div class="absolute bottom-[30px] left-[30%] w-10 h-10 bg-white/3 rounded-full z-[1]"></div>
+
+      <!-- LAYER 2: Content (logo + teks) -->
+      <div class="flex flex-col items-center relative z-[3]">
+        <div class="w-[64px] h-[64px] bg-white rounded-[18px] flex items-center justify-center shadow-xl shadow-black/12 p-2 mb-2.5" style="animation:float 3s ease-in-out infinite">
           <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
         </div>
         <h1 class="text-white text-[24px] font-800 tracking-tight leading-tight">BecaKita</h1>
@@ -190,8 +233,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
       </div>
     </div>
 
-    <!-- ===== CONTENT AREA ===== -->
-    <div class="flex-1 flex flex-col px-4 pt-4 pb-3 overflow-y-auto gap-3">
+    <!-- ===== CONTENT AREA (card overlap hero) ===== -->
+    <div class="flex-1 flex flex-col px-4 pb-3 overflow-y-auto gap-3" style="margin-top:-18px;position:relative;z-index:5">
 
       <!-- ===== CARD 1: Penumpang ===== -->
       <button onclick="selectRole('user')" class="role-card w-full bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm card-tap text-left relative overflow-hidden">
