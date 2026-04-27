@@ -638,35 +638,90 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
       <button onclick="goBack()" class="mt-5 text-[12px] flex items-center gap-1.5 font-500 card-tap" style="color:#4A5568"><i class="fa-solid fa-arrow-left text-[11px]"></i> Kembali</button>
     </div>
   </div>
-  <div id="driver-dashboard" class="view flex-1 overflow-y-auto">
-    <!-- bg hijau → icon-becakita.png -->
-    <header class="bg-white px-4 py-3 flex items-center justify-between shadow-sm flex-shrink-0">
-      <div class="flex items-center gap-2">
-        <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center">
-          <img src="/icon-becakita.png" alt="BecaKita" class="w-full h-full object-contain p-1">
+  <div id="driver-dashboard" class="view flex-1 overflow-y-auto" style="background:#F8FAFB">
+    <!-- Header -->
+    <header class="bg-white px-4 py-3.5 flex items-center justify-between shadow-sm flex-shrink-0">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 bg-brand-500 rounded-xl flex items-center justify-center p-1.5">
+          <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
         </div>
-        <span class="font-800 text-brand-600 text-lg tracking-tight">BecaKita</span>
+        <div>
+          <span class="font-800 text-brand-600 text-[15px] tracking-tight block leading-tight">BecaKita</span>
+          <span class="text-[10px] text-ink-400 font-500">Driver Dashboard</span>
+        </div>
       </div>
-      <div class="flex items-center gap-2"><button onclick="goBack()" class="w-9 h-9 rounded-full bg-surface-100 flex items-center justify-center" aria-label="Keluar"><i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-sm"></i></button></div>
+      <button onclick="goBack()" class="w-9 h-9 rounded-xl bg-surface-100 flex items-center justify-center card-tap" aria-label="Keluar"><i class="fa-solid fa-arrow-right-from-bracket text-ink-500 text-sm"></i></button>
     </header>
-    <div class="px-4 py-4 space-y-4">
-      <div id="driver-status-card" class="rounded-2xl p-4 shadow-sm border"></div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
-        <div><div class="font-700 text-sm">Status Online</div><div class="text-xs text-ink-500 mt-0.5" id="online-desc">Aktifkan untuk muncul ke penumpang</div></div>
-        <div id="online-toggle" class="toggle-track" onclick="toggleOnline()" role="switch" aria-label="Toggle online"><div class="toggle-thumb"></div></div>
+
+    <div class="px-4 py-5 space-y-4">
+
+      <!-- STATUS AKUN (DINAMIS - diisi oleh renderDriverDashboard) -->
+      <div id="driver-status-card" class="rounded-2xl p-5 shadow-sm"></div>
+
+      <!-- PAYMENT SECTION (hanya tampil jika akun tidak aktif) -->
+      <div id="payment-section" class="hidden">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-surface-200">
+          <div class="flex items-center gap-2.5 mb-3">
+            <div class="w-[30px] h-[30px] rounded-lg flex items-center justify-center" style="background:#FEF3C7">
+              <i class="fa-solid fa-bolt text-[12px]" style="color:#D97706"></i>
+            </div>
+            <h3 class="text-[14px] font-700" style="color:#1F2937">Aktifkan Akun</h3>
+          </div>
+          <p class="text-[12px] font-500 mb-1" style="color:#6B7280">Langganan bulanan untuk tampil ke penumpang</p>
+          <p class="text-[20px] font-800 mb-4" style="color:#1F2937">Rp10.000<span class="text-[12px] font-500" style="color:#6B7280">/bulan</span></p>
+          <button onclick="openPaymentModal()" class="w-full text-white font-700 py-3.5 rounded-xl transition-all card-tap text-[14px] flex items-center justify-center gap-2" style="background:#00A651;box-shadow:0 4px 14px rgba(0,166,81,0.25)" onmousedown="this.style.background='#008a43'" onmouseup="this.style.background='#00A651'" ontouchstart="this.style.background='#008a43'" ontouchend="this.style.background='#00A651'">
+            <i class="fa-solid fa-qrcode text-[12px]"></i>
+            <span>Bayar Sekarang</span>
+          </button>
+        </div>
       </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm">
-        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-calendar-check text-brand-500 text-base"></i><span class="font-700 text-sm">Masa Aktif Langganan</span></div>
-        <div id="expiry-info" class="text-sm text-ink-700"></div>
+
+      <!-- TOGGLE ONLINE -->
+      <div id="online-section" class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div id="online-icon-wrap" class="w-[36px] h-[36px] rounded-xl flex items-center justify-center" style="background:#F3F4F6">
+              <i id="online-icon" class="fa-solid fa-signal text-[14px]" style="color:#9CA3AF"></i>
+            </div>
+            <div>
+              <div class="font-700 text-[13px]" style="color:#1F2937">Status Online</div>
+              <div class="text-[11px] font-500 mt-0.5" id="online-desc" style="color:#6B7280">Aktifkan untuk muncul ke penumpang</div>
+            </div>
+          </div>
+          <div id="online-toggle" class="toggle-track" onclick="toggleOnline()" role="switch" aria-label="Toggle online"><div class="toggle-thumb"></div></div>
+        </div>
       </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm">
-        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-satellite-dish text-blue-500 text-base"></i><span class="font-700 text-sm">Status GPS</span></div>
-        <div id="gps-status" class="text-sm text-ink-700"><span class="text-ink-300">Belum aktif</span></div>
+
+      <!-- INFO CARDS (2 kolom) -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Masa Aktif -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center" style="background:#E8F5E9">
+              <i class="fa-solid fa-calendar-check text-[10px]" style="color:#00A651"></i>
+            </div>
+            <span class="font-600 text-[11px]" style="color:#6B7280">Langganan</span>
+          </div>
+          <div id="expiry-info" class="text-[12px] font-700" style="color:#1F2937"></div>
+        </div>
+        <!-- GPS -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center" style="background:#EFF6FF">
+              <i class="fa-solid fa-satellite-dish text-[10px]" style="color:#3B82F6"></i>
+            </div>
+            <span class="font-600 text-[11px]" style="color:#6B7280">GPS</span>
+          </div>
+          <div id="gps-status" class="text-[12px] font-700" style="color:#1F2937"><span style="color:#9CA3AF">Belum aktif</span></div>
+        </div>
       </div>
-      <div class="space-y-3">
-        <button id="btn-extend" onclick="openPaymentModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2"><i class="fa-solid fa-qrcode"></i>Bayar Sekarang (Rp10.000/bulan)</button>
-        <button onclick="showDriverEdit()" class="w-full bg-white text-ink-700 font-600 py-3 rounded-xl border border-surface-200 card-tap flex items-center justify-center gap-2"><i class="fa-solid fa-pen-to-square text-base"></i>Edit Profil</button>
+
+      <!-- AKSI -->
+      <div class="space-y-2.5">
+        <button id="btn-extend" onclick="openPaymentModal()" class="hidden w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2"><i class="fa-solid fa-qrcode"></i>Bayar Sekarang (Rp10.000/bulan)</button>
+        <button onclick="showDriverEdit()" class="w-full bg-white text-ink-700 font-600 py-3 rounded-xl border border-surface-200 card-tap flex items-center justify-center gap-2 text-[13px]"><i class="fa-solid fa-pen-to-square text-brand-500 text-[13px]"></i>Edit Profil</button>
       </div>
+
       <div id="demo-badge-driver" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2"><i class="fa-solid fa-circle-info text-sm"></i><span>Mode demo — data akun simulasi</span></div>
     </div>
   </div>
@@ -1270,18 +1325,84 @@ async function driverLogin(){
 function renderDriverDashboard(){
   const d=state.currentDriver;if(!d)return;
   const isExpired=new Date(d.expired_at)<new Date(),isActive=d.status==='aktif'&&!isExpired,days=daysUntil(d.expired_at);
+
+  // === STATUS AKUN CARD (DINAMIS) ===
   const sc=document.getElementById('driver-status-card');
-  if(isActive){sc.className='rounded-2xl p-4 shadow-sm border border-brand-200 bg-brand-50';sc.innerHTML=`<div class="flex items-center gap-3"><div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center"><i class="fa-solid fa-circle-check text-white"></i></div><div><div class="font-700 text-brand-700">Akun Aktif</div><div class="text-xs text-brand-600/70">Langganan berlaku</div></div></div>`;}
-  else{sc.className='rounded-2xl p-4 shadow-sm border border-red-200 bg-red-50';sc.innerHTML=`<div class="flex items-center gap-3"><div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center"><i class="fa-solid fa-circle-xmark text-white"></i></div><div><div class="font-700 text-red-700">${isExpired?'Langganan Expired':'Akun Nonaktif'}</div><div class="text-xs text-red-600/70">Hubungi admin untuk perpanjang</div></div></div>`;}
-  const tg=document.getElementById('online-toggle'),od=document.getElementById('online-desc');
-  if(state.isOnline){tg.classList.add('on');od.textContent='Anda sedang online — muncul ke penumpang';}else{tg.classList.remove('on');od.textContent='Aktifkan untuk muncul ke penumpang';}
+  const ps=document.getElementById('payment-section');
+  const os=document.getElementById('online-section');
+  const tg=document.getElementById('online-toggle');
+  const od=document.getElementById('online-desc');
+  const oi=document.getElementById('online-icon');
+  const oiw=document.getElementById('online-icon-wrap');
+
+  if(isActive){
+    // AKTIF — Card hijau
+    sc.style.background='linear-gradient(135deg,#ECFDF5 0%,#D1FAE5 100%)';
+    sc.style.border='1px solid #A7F3D0';
+    sc.innerHTML=`
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-[40px] h-[40px] rounded-xl flex items-center justify-center" style="background:#00A651">
+          <i class="fa-solid fa-circle-check text-white text-[16px]"></i>
+        </div>
+        <div>
+          <div class="text-[16px] font-800" style="color:#065F46">Akun Aktif</div>
+          <div class="text-[12px] font-500" style="color:#047857">Langganan berlaku</div>
+        </div>
+      </div>
+      <div class="mt-1 text-[11px] font-500" style="color:#059669"><i class="fa-solid fa-calendar-check mr-1"></i>Berlaku hingga ${formatDate(d.expired_at)} (${days} hari lagi)</div>
+    `;
+    // Sembunyikan payment section
+    ps.classList.add('hidden');
+    // Online toggle aktif
+    os.style.opacity='1';os.style.pointerEvents='auto';
+  } else {
+    // TIDAK AKTIF — Card merah/kuning
+    const title=isExpired?'Langganan Expired':'Akun Nonaktif';
+    const sub=isExpired?'Silakan lakukan pembayaran untuk mengaktifkan akun':'Hubungi admin atau lakukan pembayaran';
+    sc.style.background='linear-gradient(135deg,#FEF2F2 0%,#FEE2E2 100%)';
+    sc.style.border='1px solid #FECACA';
+    sc.innerHTML=`
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-[40px] h-[40px] rounded-xl flex items-center justify-center" style="background:#EF4444">
+          <i class="fa-solid fa-circle-xmark text-white text-[16px]"></i>
+        </div>
+        <div>
+          <div class="text-[16px] font-800" style="color:#991B1B">${title}</div>
+          <div class="text-[12px] font-500" style="color:#B91C1C">${sub}</div>
+        </div>
+      </div>
+      <div class="mt-1 text-[11px] font-500" style="color:#DC2626"><i class="fa-solid fa-clock mr-1"></i>Expired sejak ${formatDate(d.expired_at)}</div>
+    `;
+    // Tampilkan payment section
+    ps.classList.remove('hidden');
+    // Online toggle nonaktif
+    os.style.opacity='0.5';os.style.pointerEvents='none';
+  }
+
+  // === TOGGLE ONLINE STATE ===
+  if(state.isOnline){
+    tg.classList.add('on');
+    od.textContent='Anda sedang online — muncul ke penumpang';
+    oi.style.color='#00A651';
+    oiw.style.background='#E8F5E9';
+  } else {
+    tg.classList.remove('on');
+    od.textContent=isActive?'Aktifkan untuk muncul ke penumpang':'Akun harus aktif untuk online';
+    oi.style.color='#9CA3AF';
+    oiw.style.background='#F3F4F6';
+  }
+
+  // === INFO CARDS ===
   const ei=document.getElementById('expiry-info');
-  if(isActive)ei.innerHTML=`<span class="font-700 text-brand-600">${formatDate(d.expired_at)}</span> <span class="text-ink-500">(${days} hari lagi)</span>`;
-  else if(isExpired)ei.innerHTML=`<span class="font-700 text-red-500">${formatDate(d.expired_at)}</span> <span class="text-red-400">(sudah expired)</span>`;
-  else ei.innerHTML=`<span class="font-700 text-ink-500">${formatDate(d.expired_at)}</span> <span class="text-ink-500">(nonaktif)</span>`;
+  if(isActive)ei.innerHTML=`<span style="color:#00A651">${days} hari</span><br><span class="font-500 text-[10px]" style="color:#6B7280">${formatDate(d.expired_at)}</span>`;
+  else if(isExpired)ei.innerHTML=`<span style="color:#EF4444">Expired</span><br><span class="font-500 text-[10px]" style="color:#6B7280">${formatDate(d.expired_at)}</span>`;
+  else ei.innerHTML=`<span style="color:#6B7280">Nonaktif</span><br><span class="font-500 text-[10px]" style="color:#6B7280">${formatDate(d.expired_at)}</span>`;
+
+  // Tombol extend tersembunyi (sudah ada di payment section)
   const be=document.getElementById('btn-extend');
-  if(isActive&&days>7){be.className='w-full bg-surface-100 text-ink-300 font-600 py-3.5 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed';be.disabled=true;}
-  else{be.className='w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2';be.disabled=false;}
+  if(isActive&&days>7){be.classList.add('hidden');}
+  else if(!isActive){be.classList.remove('hidden');be.className='w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2';be.disabled=false;}
+  else{be.classList.remove('hidden');be.className='w-full bg-amber-500 hover:bg-amber-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-amber-500/25 card-tap flex items-center justify-center gap-2';be.disabled=false;}
 }
 
 function toggleOnline(){
