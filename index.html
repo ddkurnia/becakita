@@ -75,6 +75,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 .live-dot{width:6px;height:6px;border-radius:50%;background:#4ADE80;display:inline-block;position:relative;flex-shrink:0}
 .live-dot::before{content:'';position:absolute;inset:-2px;border-radius:50%;background:#4ADE80;animation:livePulse 1.8s ease-in-out infinite}
 @keyframes livePulse{0%,100%{opacity:0;transform:scale(1)}50%{opacity:.5;transform:scale(2)}}
+@keyframes warningPulse{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,.15)}50%{box-shadow:0 0 0 6px rgba(217,119,6,0)}}
 .role-card-arrow{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .role-card-arrow i{color:#fff;font-size:12px}
 .role-card-arrow.green{background:linear-gradient(135deg,#00A651,#00C853)}
@@ -638,9 +639,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
       <button onclick="goBack()" class="mt-5 text-[12px] flex items-center gap-1.5 font-500 card-tap" style="color:#4A5568"><i class="fa-solid fa-arrow-left text-[11px]"></i> Kembali</button>
     </div>
   </div>
-  <div id="driver-dashboard" class="view flex-1 overflow-y-auto" style="background:#F8FAFB">
+  <div id="driver-dashboard" class="view flex-1 overflow-y-auto" style="background:#F4F6FA">
     <!-- Header -->
-    <header class="bg-white px-4 py-3.5 flex items-center justify-between shadow-sm flex-shrink-0">
+    <header class="bg-white px-4 py-3.5 flex items-center justify-between shadow-sm flex-shrink-0 sticky top-0 z-10">
       <div class="flex items-center gap-2.5">
         <div class="w-9 h-9 bg-brand-500 rounded-xl flex items-center justify-center p-1.5">
           <img src="/icon-becakita-hijau.png" alt="BecaKita" class="w-full h-full object-contain">
@@ -655,73 +656,162 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 
     <div class="px-4 py-5 space-y-4">
 
-      <!-- STATUS AKUN (DINAMIS - diisi oleh renderDriverDashboard) -->
+      <!-- ===== PROFILE WELCOME ===== -->
+      <div id="driver-welcome-card" class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200 flex items-center gap-3">
+        <div id="welcome-avatar" class="w-[50px] h-[50px] rounded-2xl bg-brand-50 flex items-center justify-center overflow-hidden flex-shrink-0">
+          <i class="fa-solid fa-user text-brand-500 text-[20px]"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div id="welcome-name" class="font-800 text-[15px] text-ink-900 truncate"></div>
+          <div id="welcome-phone" class="text-[11px] text-ink-400 font-500 mt-0.5"></div>
+        </div>
+        <button onclick="showDriverEdit()" class="w-[36px] h-[36px] rounded-xl bg-brand-50 flex items-center justify-center flex-shrink-0 card-tap">
+          <i class="fa-solid fa-pen-to-square text-brand-500 text-[13px]"></i>
+        </button>
+      </div>
+
+      <!-- ===== RENEWAL WARNING BANNER (hanya muncul jika hampir expired, 1-7 hari) ===== -->
+      <div id="renewal-warning" class="hidden rounded-2xl px-4 py-3.5 flex items-start gap-3 shadow-sm" style="background:#FFFBEB;border:1px solid #FDE68A;animation:warningPulse 2s ease-in-out infinite">
+        <div class="w-[34px] h-[34px] rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style="background:#FEF3C7">
+          <i class="fa-solid fa-triangle-exclamation text-[14px]" style="color:#D97706"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-[12px] font-700" style="color:#92400E">Langganan Segera Berakhir!</p>
+          <p id="renewal-warning-text" class="text-[11px] mt-0.5 leading-relaxed font-500" style="color:#A16207"></p>
+        </div>
+        <button onclick="openPaymentModal()" class="flex-shrink-0 mt-0.5 px-3 py-1.5 rounded-lg text-[11px] font-700 text-white card-tap" style="background:#D97706">Perpanjang</button>
+      </div>
+
+      <!-- ===== STATUS AKUN (DINAMIS - diisi oleh renderDriverDashboard) ===== -->
       <div id="driver-status-card" class="rounded-2xl p-5 shadow-sm"></div>
 
-      <!-- PAYMENT SECTION (hanya tampil jika akun tidak aktif) -->
+      <!-- ===== PAYMENT SECTION (hanya tampil jika akun tidak aktif) ===== -->
       <div id="payment-section" class="hidden">
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-surface-200">
-          <div class="flex items-center gap-2.5 mb-3">
-            <div class="w-[30px] h-[30px] rounded-lg flex items-center justify-center" style="background:#FEF3C7">
-              <i class="fa-solid fa-bolt text-[12px]" style="color:#D97706"></i>
+        <div class="bg-white rounded-2xl shadow-sm border border-surface-200 overflow-hidden">
+          <!-- Payment Header -->
+          <div class="px-5 pt-5 pb-4">
+            <div class="flex items-center gap-2.5 mb-3">
+              <div class="w-[34px] h-[34px] rounded-xl flex items-center justify-center" style="background:#FEF3C7">
+                <i class="fa-solid fa-bolt text-[14px]" style="color:#D97706"></i>
+              </div>
+              <div>
+                <h3 class="text-[15px] font-800" style="color:#1F2937">Aktifkan Akun</h3>
+                <p class="text-[11px] font-500" style="color:#6B7280">Langganan bulanan untuk tampil ke penumpang</p>
+              </div>
             </div>
-            <h3 class="text-[14px] font-700" style="color:#1F2937">Aktifkan Akun</h3>
+            <!-- Price -->
+            <div class="flex items-end gap-1 mb-4">
+              <span class="text-[24px] font-900" style="color:#1F2937">Rp10.000</span>
+              <span class="text-[12px] font-500 mb-1" style="color:#6B7280">/bulan</span>
+            </div>
+            <!-- Benefits -->
+            <div class="space-y-2 mb-4">
+              <div class="flex items-center gap-2">
+                <div class="w-[20px] h-[20px] rounded-md flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+                  <i class="fa-solid fa-check text-[9px]" style="color:#00A651"></i>
+                </div>
+                <span class="text-[12px] font-500" style="color:#4B5563">Tampil di peta penumpang</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-[20px] h-[20px] rounded-md flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+                  <i class="fa-solid fa-check text-[9px]" style="color:#00A651"></i>
+                </div>
+                <span class="text-[12px] font-500" style="color:#4B5563">GPS tracking real-time</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-[20px] h-[20px] rounded-md flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+                  <i class="fa-solid fa-check text-[9px]" style="color:#00A651"></i>
+                </div>
+                <span class="text-[12px] font-500" style="color:#4B5563">Dashboard driver lengkap</span>
+              </div>
+            </div>
           </div>
-          <p class="text-[12px] font-500 mb-1" style="color:#6B7280">Langganan bulanan untuk tampil ke penumpang</p>
-          <p class="text-[20px] font-800 mb-4" style="color:#1F2937">Rp10.000<span class="text-[12px] font-500" style="color:#6B7280">/bulan</span></p>
-          <button onclick="openPaymentModal()" class="w-full text-white font-700 py-3.5 rounded-xl transition-all card-tap text-[14px] flex items-center justify-center gap-2" style="background:#00A651;box-shadow:0 4px 14px rgba(0,166,81,0.25)" onmousedown="this.style.background='#008a43'" onmouseup="this.style.background='#00A651'" ontouchstart="this.style.background='#008a43'" ontouchend="this.style.background='#00A651'">
-            <i class="fa-solid fa-qrcode text-[12px]"></i>
-            <span>Bayar Sekarang</span>
-          </button>
+          <!-- Payment Action -->
+          <div class="px-5 pb-5">
+            <button onclick="openPaymentModal()" class="w-full text-white font-700 py-3.5 rounded-xl transition-all card-tap text-[14px] flex items-center justify-center gap-2" style="background:#00A651;box-shadow:0 4px 14px rgba(0,166,81,0.25)" onmousedown="this.style.background='#008a43'" onmouseup="this.style.background='#00A651'" ontouchstart="this.style.background='#008a43'" ontouchend="this.style.background='#00A651'">
+              <i class="fa-solid fa-qrcode text-[13px]"></i>
+              <span>Lakukan Pembayaran</span>
+            </button>
+            <p class="text-center text-[10px] mt-2 font-500" style="color:#9CA3AF"><i class="fa-solid fa-lock text-[9px] mr-1"></i>Pembayaran aman via QR scan</p>
+          </div>
         </div>
       </div>
 
-      <!-- TOGGLE ONLINE -->
-      <div id="online-section" class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200">
+      <!-- ===== TOGGLE ONLINE ===== -->
+      <div id="online-section" class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200 transition-all">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div id="online-icon-wrap" class="w-[36px] h-[36px] rounded-xl flex items-center justify-center" style="background:#F3F4F6">
-              <i id="online-icon" class="fa-solid fa-signal text-[14px]" style="color:#9CA3AF"></i>
+            <div id="online-icon-wrap" class="w-[40px] h-[40px] rounded-xl flex items-center justify-center transition-all" style="background:#F3F4F6">
+              <i id="online-icon" class="fa-solid fa-power-off text-[15px]" style="color:#9CA3AF"></i>
             </div>
             <div>
-              <div class="font-700 text-[13px]" style="color:#1F2937">Status Online</div>
+              <div class="font-700 text-[14px]" style="color:#1F2937">Status Online</div>
               <div class="text-[11px] font-500 mt-0.5" id="online-desc" style="color:#6B7280">Aktifkan untuk muncul ke penumpang</div>
             </div>
           </div>
           <div id="online-toggle" class="toggle-track" onclick="toggleOnline()" role="switch" aria-label="Toggle online"><div class="toggle-thumb"></div></div>
         </div>
+        <!-- Online status indicator bar -->
+        <div id="online-status-bar" class="hidden mt-3 rounded-lg px-3 py-2 flex items-center gap-2" style="background:#ECFDF5">
+          <div class="live-dot"></div>
+          <span class="text-[11px] font-600" style="color:#059669">Anda sedang online — penumpang bisa menemukan Anda</span>
+        </div>
+        <!-- Disabled notice -->
+        <div id="online-disabled-notice" class="hidden mt-3 rounded-lg px-3 py-2 flex items-center gap-2" style="background:#FEF2F2">
+          <i class="fa-solid fa-lock text-[10px]" style="color:#EF4444"></i>
+          <span class="text-[11px] font-500" style="color:#B91C1C">Aktifkan akun terlebih dahulu untuk bisa online</span>
+        </div>
       </div>
 
-      <!-- INFO CARDS (2 kolom) -->
+      <!-- ===== INFO CARDS (2 kolom) ===== -->
       <div class="grid grid-cols-2 gap-3">
         <!-- Masa Aktif -->
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200">
-          <div class="flex items-center gap-2 mb-2">
-            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center" style="background:#E8F5E9">
-              <i class="fa-solid fa-calendar-check text-[10px]" style="color:#00A651"></i>
+          <div class="flex items-center gap-2 mb-2.5">
+            <div class="w-[28px] h-[28px] rounded-lg flex items-center justify-center" style="background:#E8F5E9">
+              <i class="fa-solid fa-calendar-check text-[11px]" style="color:#00A651"></i>
             </div>
             <span class="font-600 text-[11px]" style="color:#6B7280">Langganan</span>
           </div>
-          <div id="expiry-info" class="text-[12px] font-700" style="color:#1F2937"></div>
+          <div id="expiry-info" class="text-[13px] font-800" style="color:#1F2937"></div>
         </div>
         <!-- GPS -->
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-surface-200">
-          <div class="flex items-center gap-2 mb-2">
-            <div class="w-[26px] h-[26px] rounded-lg flex items-center justify-center" style="background:#EFF6FF">
-              <i class="fa-solid fa-satellite-dish text-[10px]" style="color:#3B82F6"></i>
+          <div class="flex items-center gap-2 mb-2.5">
+            <div class="w-[28px] h-[28px] rounded-lg flex items-center justify-center" style="background:#EFF6FF">
+              <i class="fa-solid fa-satellite-dish text-[11px]" style="color:#3B82F6"></i>
             </div>
             <span class="font-600 text-[11px]" style="color:#6B7280">GPS</span>
           </div>
-          <div id="gps-status" class="text-[12px] font-700" style="color:#1F2937"><span style="color:#9CA3AF">Belum aktif</span></div>
+          <div id="gps-status" class="text-[13px] font-800" style="color:#1F2937"><span style="color:#9CA3AF">Belum aktif</span></div>
         </div>
       </div>
 
-      <!-- AKSI -->
-      <div class="space-y-2.5">
-        <button id="btn-extend" onclick="openPaymentModal()" class="hidden w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2"><i class="fa-solid fa-qrcode"></i>Bayar Sekarang (Rp10.000/bulan)</button>
-        <button onclick="showDriverEdit()" class="w-full bg-white text-ink-700 font-600 py-3 rounded-xl border border-surface-200 card-tap flex items-center justify-center gap-2 text-[13px]"><i class="fa-solid fa-pen-to-square text-brand-500 text-[13px]"></i>Edit Profil</button>
+      <!-- ===== AKSI CEPAT ===== -->
+      <div class="bg-white rounded-2xl shadow-sm border border-surface-200 divide-y divide-surface-100">
+        <button onclick="showDriverEdit()" class="w-full px-4 py-3.5 flex items-center gap-3 text-left card-tap">
+          <div class="w-[32px] h-[32px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E8F5E9">
+            <i class="fa-solid fa-pen-to-square text-[12px]" style="color:#00A651"></i>
+          </div>
+          <div class="flex-1">
+            <div class="font-600 text-[13px]" style="color:#1F2937">Edit Profil</div>
+            <div class="text-[10px] font-500" style="color:#9CA3AF">Ubah nama, foto, dan info layanan</div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-ink-300 text-[11px]"></i>
+        </button>
+        <button id="btn-extend" onclick="openPaymentModal()" class="hidden w-full px-4 py-3.5 flex items-center gap-3 text-left card-tap">
+          <div class="w-[32px] h-[32px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#FEF3C7">
+            <i class="fa-solid fa-qrcode text-[12px]" style="color:#D97706"></i>
+          </div>
+          <div class="flex-1">
+            <div class="font-600 text-[13px]" style="color:#1F2937">Perpanjang Langganan</div>
+            <div class="text-[10px] font-500" style="color:#9CA3AF">Rp10.000/bulan</div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-ink-300 text-[11px]"></i>
+        </button>
       </div>
 
+      <!-- ===== DEMO BADGE ===== -->
       <div id="demo-badge-driver" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2"><i class="fa-solid fa-circle-info text-sm"></i><span>Mode demo — data akun simulasi</span></div>
     </div>
   </div>
@@ -926,43 +1016,67 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 </div>
 
 <!-- MODAL PEMBAYARAN QR -->
-<div id="payment-modal" class="fixed inset-0 z-[9997] hidden" style="background:rgba(0,0,0,0.5);backdrop-filter:blur(4px)">
+<div id="payment-modal" class="fixed inset-0 z-[9997] hidden" style="background:rgba(0,0,0,0.55);backdrop-filter:blur(6px)">
   <div class="absolute inset-0 flex items-center justify-center px-5">
-    <div class="bg-white rounded-2xl w-full max-w-sm shadow-xl overflow-hidden" onclick="event.stopPropagation()">
+    <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
       <!-- Header -->
-      <div class="px-5 pt-5 pb-4 text-center relative">
-        <button onclick="closePaymentModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center card-tap"><i class="fa-solid fa-xmark text-ink-500 text-sm"></i></button>
-        <div class="w-[44px] h-[44px] rounded-xl flex items-center justify-center mx-auto mb-3" style="background:#ECFDF5">
-          <i class="fa-solid fa-qrcode text-[20px]" style="color:#00A651"></i>
+      <div class="px-5 pt-5 pb-3 text-center relative" style="background:linear-gradient(135deg,#ECFDF5 0%,#D1FAE5 100%)">
+        <button onclick="closePaymentModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/70 flex items-center justify-center card-tap"><i class="fa-solid fa-xmark text-ink-500 text-sm"></i></button>
+        <div class="w-[48px] h-[48px] rounded-2xl flex items-center justify-center mx-auto mb-2" style="background:linear-gradient(135deg,#00A651,#00C853)">
+          <i class="fa-solid fa-qrcode text-white text-[22px]"></i>
         </div>
-        <h2 class="text-[18px] font-800" style="color:#1F2937">Aktifkan Akun</h2>
-        <p class="text-[12px] mt-1 font-500" style="color:#6B7280">Scan QR untuk melakukan pembayaran</p>
+        <h2 class="text-[18px] font-900" style="color:#065F46">Pembayaran Langganan</h2>
+        <p class="text-[11px] mt-0.5 font-500" style="color:#047857">Scan QR code di bawah untuk membayar</p>
       </div>
 
       <!-- QR Code -->
-      <div class="px-5 pb-4 flex flex-col items-center">
-        <div class="w-[220px] h-[220px] bg-white border-2 border-surface-200 rounded-2xl flex items-center justify-center p-3 shadow-sm">
+      <div class="px-5 pt-4 pb-3 flex flex-col items-center">
+        <div class="w-[200px] h-[200px] bg-white border-2 border-surface-200 rounded-2xl flex items-center justify-center p-4 shadow-sm">
           <img src="/assets/images/qr-kedaimedia.png" alt="QR Pembayaran" class="w-full h-full object-contain">
         </div>
         <div class="mt-3 text-center">
-          <p class="text-[20px] font-800" style="color:#1F2937">Rp10.000<span class="text-[13px] font-500" style="color:#6B7280">/bulan</span></p>
-          <p class="text-[11px] mt-1 font-500" style="color:#6B7280">KedaiMedia - BecaKita</p>
+          <p class="text-[22px] font-900" style="color:#1F2937">Rp10.000<span class="text-[13px] font-500" style="color:#6B7280">/bulan</span></p>
+          <p class="text-[11px] mt-0.5 font-600" style="color:#6B7280">KedaiMedia - BecaKita</p>
         </div>
       </div>
 
-      <!-- Instruksi -->
-      <div class="mx-5 mb-4 rounded-xl px-3.5 py-3" style="background:#FEF3C7;border:1px solid #FDE68A">
-        <div class="flex items-start gap-2.5">
-          <i class="fa-solid fa-lightbulb text-[12px] mt-0.5" style="color:#D97706"></i>
-          <p class="text-[11px] leading-relaxed font-500" style="color:#92400E">Buka aplikasi e-wallet atau mobile banking, scan QR di atas, lalu lakukan pembayaran sesuai nominal.</p>
+      <!-- Step-by-step Instruksi -->
+      <div class="mx-5 mb-3">
+        <div class="rounded-xl px-4 py-3" style="background:#FFFBEB;border:1px solid #FDE68A">
+          <div class="flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-list-ol text-[12px]" style="color:#D97706"></i>
+            <span class="text-[11px] font-700" style="color:#92400E">Cara Pembayaran</span>
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex items-start gap-2">
+              <span class="w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-700 text-white mt-0.5" style="background:#D97706">1</span>
+              <p class="text-[11px] font-500 leading-relaxed" style="color:#78350F">Buka aplikasi e-wallet atau mobile banking</p>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-700 text-white mt-0.5" style="background:#D97706">2</span>
+              <p class="text-[11px] font-500 leading-relaxed" style="color:#78350F">Scan QR code di atas</p>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-700 text-white mt-0.5" style="background:#D97706">3</span>
+              <p class="text-[11px] font-500 leading-relaxed" style="color:#78350F">Transfer sesuai nominal Rp10.000</p>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Tombol Saya Sudah Bayar -->
-      <div class="px-5 pb-3">
+      <div class="px-5 pb-2">
         <button onclick="confirmPayment()" class="w-full text-white font-700 py-3.5 rounded-xl transition-all card-tap text-[14px] flex items-center justify-center gap-2" style="background:#00A651;box-shadow:0 4px 14px rgba(0,166,81,0.25)" onmousedown="this.style.background='#008a43'" onmouseup="this.style.background='#00A651'" ontouchstart="this.style.background='#008a43'" ontouchend="this.style.background='#00A651'">
           <i class="fa-solid fa-circle-check text-[13px]"></i>
           <span>Saya Sudah Bayar</span>
+        </button>
+      </div>
+
+      <!-- Lapor ke Admin -->
+      <div class="px-5 pb-3">
+        <button onclick="reportToAdmin()" class="w-full font-600 py-3 rounded-xl transition-all card-tap text-[13px] flex items-center justify-center gap-2 border-2" style="background:#ECFDF5;border-color:#A7F3D0;color:#059669">
+          <i class="fa-brands fa-whatsapp text-[15px]"></i>
+          <span>Lapor ke Admin via WhatsApp</span>
         </button>
       </div>
 
@@ -1297,7 +1411,7 @@ async function driverLogin(){
   const pin=document.getElementById('driver-pin').value.trim();
   if(!phone||phone.length<8){showToast('Masukkan nomor HP yang valid','warning');return;}
   if(!pin||pin.length!==6||!/^\d{6}$/.test(pin)){showToast('Masukkan PIN 6 digit yang valid','warning');return;}
-  if(isDemoMode){state.currentDriver={...DEMO_DRIVERS[0]};state.isOnline=state.currentDriver.online;showDriverView('dashboard');renderDriverDashboard();showToast('Login berhasil (mode demo)','success');startLocationWatch();startLocationInterval();return;}
+  if(isDemoMode){const matchPhone=DEMO_DRIVERS.find(x=>x.nomorHP.includes(phone));state.currentDriver={...(matchPhone||DEMO_DRIVERS[0])};state.isOnline=false;showDriverView('dashboard');renderDriverDashboard();showToast('Login berhasil (mode demo)','success');if(state.currentDriver.status==='aktif'&&new Date(state.currentDriver.expired_at)>=new Date()){startLocationWatch();startLocationInterval();}}
   try{
     const s=await db.collection('drivers').where('nomorHP','==','+62'+phone).limit(1).get();
     if(s.empty){
@@ -1326,6 +1440,26 @@ function renderDriverDashboard(){
   const d=state.currentDriver;if(!d)return;
   const isExpired=new Date(d.expired_at)<new Date(),isActive=d.status==='aktif'&&!isExpired,days=daysUntil(d.expired_at);
 
+  // === WELCOME CARD ===
+  const wName=document.getElementById('welcome-name');
+  const wPhone=document.getElementById('welcome-phone');
+  const wAvatar=document.getElementById('welcome-avatar');
+  if(wName)wName.textContent=d.nama||'Driver';
+  if(wPhone)wPhone.textContent=d.nomorHP?'+62'+d.nomorHP.replace(/^62/,''):'';
+  if(wAvatar&&d.fotoURL){
+    wAvatar.innerHTML=`<img src="${d.fotoURL}" alt="${d.nama}" class="w-full h-full object-cover">`;
+  }
+
+  // === RENEWAL WARNING BANNER ===
+  const rw=document.getElementById('renewal-warning');
+  const rwt=document.getElementById('renewal-warning-text');
+  if(isActive&&days>0&&days<=7){
+    rw.classList.remove('hidden');
+    rwt.textContent=`Langganan Anda berakhir dalam ${days} hari (${formatDate(d.expired_at)}). Perpanjang sekarang agar tetap muncul ke penumpang.`;
+  } else {
+    rw.classList.add('hidden');
+  }
+
   // === STATUS AKUN CARD (DINAMIS) ===
   const sc=document.getElementById('driver-status-card');
   const ps=document.getElementById('payment-section');
@@ -1334,75 +1468,83 @@ function renderDriverDashboard(){
   const od=document.getElementById('online-desc');
   const oi=document.getElementById('online-icon');
   const oiw=document.getElementById('online-icon-wrap');
+  const osb=document.getElementById('online-status-bar');
+  const odn=document.getElementById('online-disabled-notice');
 
   if(isActive){
-    // AKTIF — Card hijau
+    // AKTIF — Card hijau premium
     sc.style.background='linear-gradient(135deg,#ECFDF5 0%,#D1FAE5 100%)';
     sc.style.border='1px solid #A7F3D0';
     sc.innerHTML=`
-      <div class="flex items-center gap-3 mb-2">
-        <div class="w-[40px] h-[40px] rounded-xl flex items-center justify-center" style="background:#00A651">
-          <i class="fa-solid fa-circle-check text-white text-[16px]"></i>
+      <div class="flex items-center gap-3">
+        <div class="w-[44px] h-[44px] rounded-2xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#00A651,#00C853)">
+          <i class="fa-solid fa-circle-check text-white text-[18px]"></i>
         </div>
-        <div>
-          <div class="text-[16px] font-800" style="color:#065F46">Akun Aktif</div>
-          <div class="text-[12px] font-500" style="color:#047857">Langganan berlaku</div>
+        <div class="flex-1">
+          <div class="text-[17px] font-900" style="color:#065F46">Akun Aktif</div>
+          <div class="text-[12px] font-500 mt-0.5" style="color:#047857"><i class="fa-solid fa-calendar-check mr-1 text-[10px]"></i>Berlaku hingga ${formatDate(d.expired_at)} <span class="font-700">(${days} hari lagi)</span></div>
         </div>
       </div>
-      <div class="mt-1 text-[11px] font-500" style="color:#059669"><i class="fa-solid fa-calendar-check mr-1"></i>Berlaku hingga ${formatDate(d.expired_at)} (${days} hari lagi)</div>
     `;
     // Sembunyikan payment section
     ps.classList.add('hidden');
     // Online toggle aktif
     os.style.opacity='1';os.style.pointerEvents='auto';
+    os.style.borderColor='#E4E7EF';
+    if(odn)odn.classList.add('hidden');
   } else {
-    // TIDAK AKTIF — Card merah/kuning
+    // TIDAK AKTIF — Card merah premium
     const title=isExpired?'Langganan Expired':'Akun Nonaktif';
-    const sub=isExpired?'Silakan lakukan pembayaran untuk mengaktifkan akun':'Hubungi admin atau lakukan pembayaran';
+    const sub=isExpired?'Lakukan pembayaran untuk mengaktifkan kembali akun Anda':'Hubungi admin atau lakukan pembayaran';
     sc.style.background='linear-gradient(135deg,#FEF2F2 0%,#FEE2E2 100%)';
     sc.style.border='1px solid #FECACA';
     sc.innerHTML=`
-      <div class="flex items-center gap-3 mb-2">
-        <div class="w-[40px] h-[40px] rounded-xl flex items-center justify-center" style="background:#EF4444">
-          <i class="fa-solid fa-circle-xmark text-white text-[16px]"></i>
+      <div class="flex items-center gap-3">
+        <div class="w-[44px] h-[44px] rounded-2xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#EF4444,#F87171)">
+          <i class="fa-solid fa-circle-xmark text-white text-[18px]"></i>
         </div>
-        <div>
-          <div class="text-[16px] font-800" style="color:#991B1B">${title}</div>
-          <div class="text-[12px] font-500" style="color:#B91C1C">${sub}</div>
+        <div class="flex-1">
+          <div class="text-[17px] font-900" style="color:#991B1B">${title}</div>
+          <div class="text-[12px] font-500 mt-0.5" style="color:#B91C1C"><i class="fa-solid fa-clock mr-1 text-[10px]"></i>${isExpired?'Expired sejak '+formatDate(d.expired_at):sub}</div>
         </div>
       </div>
-      <div class="mt-1 text-[11px] font-500" style="color:#DC2626"><i class="fa-solid fa-clock mr-1"></i>Expired sejak ${formatDate(d.expired_at)}</div>
     `;
     // Tampilkan payment section
     ps.classList.remove('hidden');
     // Online toggle nonaktif
     os.style.opacity='0.5';os.style.pointerEvents='none';
+    os.style.borderColor='#FECACA';
+    if(odn)odn.classList.remove('hidden');
   }
 
   // === TOGGLE ONLINE STATE ===
   if(state.isOnline){
     tg.classList.add('on');
-    od.textContent='Anda sedang online — muncul ke penumpang';
+    od.textContent='Anda sedang online';
     oi.style.color='#00A651';
     oiw.style.background='#E8F5E9';
+    if(osb)osb.classList.remove('hidden');
   } else {
     tg.classList.remove('on');
     od.textContent=isActive?'Aktifkan untuk muncul ke penumpang':'Akun harus aktif untuk online';
     oi.style.color='#9CA3AF';
     oiw.style.background='#F3F4F6';
+    if(osb)osb.classList.add('hidden');
   }
 
   // === INFO CARDS ===
   const ei=document.getElementById('expiry-info');
-  if(isActive)ei.innerHTML=`<span style="color:#00A651">${days} hari</span><br><span class="font-500 text-[10px]" style="color:#6B7280">${formatDate(d.expired_at)}</span>`;
+  if(isActive&&days>7)ei.innerHTML=`<span style="color:#00A651">${days} hari</span><br><span class="font-500 text-[10px]" style="color:#6B7280">${formatDate(d.expired_at)}</span>`;
+  else if(isActive&&days>0)ei.innerHTML=`<span style="color:#D97706">${days} hari</span><br><span class="font-500 text-[10px]" style="color:#6B7280">${formatDate(d.expired_at)}</span>`;
   else if(isExpired)ei.innerHTML=`<span style="color:#EF4444">Expired</span><br><span class="font-500 text-[10px]" style="color:#6B7280">${formatDate(d.expired_at)}</span>`;
   else ei.innerHTML=`<span style="color:#6B7280">Nonaktif</span><br><span class="font-500 text-[10px]" style="color:#6B7280">${formatDate(d.expired_at)}</span>`;
 
-  // Tombol extend tersembunyi (sudah ada di payment section)
+  // Tombol extend di aksi cepat
   const be=document.getElementById('btn-extend');
   if(isActive&&days>7){be.classList.add('hidden');}
-  else if(!isActive){be.classList.remove('hidden');be.className='w-full bg-brand-500 hover:bg-brand-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-brand-500/25 card-tap flex items-center justify-center gap-2';be.disabled=false;}
-  else{be.classList.remove('hidden');be.className='w-full bg-amber-500 hover:bg-amber-600 text-white font-700 py-3.5 rounded-xl transition-colors shadow-lg shadow-amber-500/25 card-tap flex items-center justify-center gap-2';be.disabled=false;}
+  else if(!isActive){be.classList.remove('hidden');}
+  else if(isActive&&days<=7){be.classList.remove('hidden');}
+  else{be.classList.add('hidden');}
 }
 
 function toggleOnline(){
@@ -1437,11 +1579,19 @@ function confirmPayment(){
     showToast('Pembayaran dikonfirmasi (mode demo). Admin akan memverifikasi dalam 1x24 jam.','success');
     return;
   }
-  // Kirim notifikasi ke admin via WhatsApp
-  if(d){
-    window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(`Halo Admin BecaKita, saya sudah melakukan pembayaran langganan.\n\nNama: ${d.nama}\nNo HP: ${d.nomorHP}\nNominal: Rp10.000\n\nMohon diverifikasi. Terima kasih.`)}`,'_blank');
+  showToast('Terima kasih! Admin akan memverifikasi pembayaran Anda dalam 1x24 jam.','success');
+}
+
+function reportToAdmin(){
+  const d=state.currentDriver;
+  if(!d)return;
+  closePaymentModal();
+  if(isDemoMode){
+    showToast('Laporan dikirim ke admin (mode demo)','success');
+    return;
   }
-  showToast('Pembayaran dikonfirmasi! Admin akan memverifikasi dalam 1x24 jam.','success');
+  // Kirim notifikasi ke admin via WhatsApp
+  window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(`Halo Admin BecaKita, saya sudah melakukan pembayaran langganan.\n\nNama: ${d.nama}\nNo HP: ${d.nomorHP}\nNominal: Rp10.000\n\nMohon diverifikasi. Terima kasih.`)}`,'_blank');
 }
 
 function showDriverEdit(){
