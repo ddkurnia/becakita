@@ -29,6 +29,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
 .toast{transform:translateY(-100%);opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1)}.toast.show{transform:translateY(0);opacity:1}
 .update-banner{animation:slideDown .4s ease,bounceIn .3s ease .4s}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
+.line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
 </head>
@@ -149,6 +150,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
       <i class="fa-solid fa-chevron-right text-ink-300 text-xs"></i>
     </div>
 
+    <!-- Reports Shortcut -->
+    <div onclick="showReports()" class="bg-white rounded-xl shadow-sm p-3 flex items-center gap-3 cursor-pointer card-tap border border-surface-100 hover:border-red-300 transition-colors">
+      <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-flag text-red-500 text-sm"></i></div>
+      <div class="flex-1">
+        <div class="font-700 text-sm">Laporan Driver</div>
+        <div class="text-xs text-ink-500">Lihat laporan dari penumpang</div>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span id="reports-badge" class="hidden text-[10px] font-700 bg-red-500 text-white px-2 py-0.5 rounded-full">0</span>
+        <i class="fa-solid fa-chevron-right text-ink-300 text-xs"></i>
+      </div>
+    </div>
+
     <!-- Driver List -->
     <div id="admin-driver-list" class="space-y-3"></div>
 
@@ -263,6 +277,51 @@ body{font-family:'Plus Jakarta Sans',sans-serif;overscroll-behavior:none}
     <!-- Demo Badge -->
     <div id="demo-badge-ads" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
       <i class="fa-solid fa-circle-info"></i><span>Mode demo — perubahan iklan hanya berlaku sesi ini.</span>
+    </div>
+  </main>
+</div>
+
+<!-- REPORTS VIEW -->
+<div id="view-reports" class="view min-h-screen">
+  <header class="bg-slate-800 px-4 py-3 flex items-center justify-between flex-shrink-0 sticky top-0 z-20">
+    <div class="flex items-center gap-3">
+      <button onclick="showView('dashboard')" class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center"><i class="fa-solid fa-arrow-left text-white text-xs"></i></button>
+      <span class="font-700 text-white text-sm">Laporan Driver</span>
+    </div>
+    <button onclick="loadReports()" class="text-slate-400 hover:text-white text-xs font-500 card-tap flex items-center gap-1"><i class="fa-solid fa-rotate-right text-[10px]"></i> Refresh</button>
+  </header>
+  <main class="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-6">
+    <!-- Stats -->
+    <div class="grid grid-cols-2 gap-2">
+      <div class="bg-red-50 rounded-xl p-3 shadow-sm text-center">
+        <div id="report-stat-pending" class="text-xl font-800 text-red-500">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Belum Ditinjau</div>
+      </div>
+      <div class="bg-brand-50 rounded-xl p-3 shadow-sm text-center">
+        <div id="report-stat-resolved" class="text-xl font-800 text-brand-600">0</div>
+        <div class="text-[9px] text-ink-500 font-500 mt-0.5">Selesai</div>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="flex gap-2">
+      <button onclick="setReportFilter('all')" class="report-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="all">Semua</button>
+      <button onclick="setReportFilter('pending')" class="report-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="pending">Belum Ditinjau</button>
+      <button onclick="setReportFilter('resolved')" class="report-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors" data-filter="resolved">Selesai</button>
+    </div>
+
+    <h3 class="font-700 text-sm text-ink-900">Daftar Laporan</h3>
+
+    <!-- Reports List -->
+    <div id="reports-list" class="space-y-3"></div>
+    <div id="reports-empty" class="hidden text-center py-8">
+      <i class="fa-solid fa-flag text-4xl text-surface-200 mb-3 block"></i>
+      <p class="text-sm text-ink-500">Belum ada laporan</p>
+    </div>
+
+    <!-- Demo Badge -->
+    <div id="demo-badge-reports" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 flex items-center gap-2">
+      <i class="fa-solid fa-circle-info"></i><span>Mode demo — data laporan simulasi.</span>
     </div>
   </main>
 </div>
@@ -848,6 +907,154 @@ function setupManifest(){
   const m={name:'BecaKita Admin',short_name:'BK Admin',description:'Panel admin BecaKita — Kelola driver becak',start_url:'/admin.html',scope:'/',display:'standalone',orientation:'portrait',theme_color:'#1E293B',background_color:'#F8F9FC',icons:[{src:'https://img.icons8.com/fluency/192/bicycle.png',sizes:'192x192',type:'image/png'},{src:'https://img.icons8.com/fluency/512/bicycle.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
   const blob=new Blob([JSON.stringify(m)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('link');
   link.rel='manifest';link.href=url;document.head.appendChild(link);
+}
+
+// ============================================================
+// REPORTS MANAGER
+// ============================================================
+let allReports=[], reportFilter='all';
+
+function showReports(){showView('reports');loadReports();}
+
+function setReportFilter(f){
+  reportFilter=f;
+  document.querySelectorAll('.report-filter-btn').forEach(b=>{
+    b.className=`report-filter-btn text-xs font-600 px-3 py-1.5 rounded-full transition-colors ${b.dataset.filter===f?'bg-red-500 text-white':'bg-white text-ink-500 border border-surface-200'}`;
+  });
+  renderReports();
+}
+
+async function loadReports(){
+  if(isDemoMode){
+    allReports=[
+      {id:'rpt001',driverId:'drv001',driverName:'Pak Hamid',alasan:'Tidak datang',deskripsi:'Sudah pesan lewat WhatsApp tapi driver tidak datang padahal sudah dihubungi 3 kali.',timestamp:new Date(Date.now()-2*60*60*1000).toISOString(),status:'pending',userPhone:''},
+      {id:'rpt002',driverId:'drv002',driverName:'Pak Usman',alasan:'Tarif tidak sesuai',deskripsi:'Driver meminta tarif Rp25.000 padahal jaraknya hanya 1 km. Biasanya hanya Rp10.000.',timestamp:new Date(Date.now()-1*24*60*60*1000).toISOString(),status:'pending',userPhone:''},
+      {id:'rpt003',driverId:'drv003',driverName:'Buk Dewi',alasan:'Perilaku tidak sopan',deskripsi:'Driver berbicara tidak sopan selama perjalanan.',timestamp:new Date(Date.now()-3*24*60*60*1000).toISOString(),status:'resolved',resolvedAt:new Date(Date.now()-2*24*60*60*1000).toISOString(),userPhone:''}
+    ];
+    const dbr=document.getElementById('demo-badge-reports');if(dbr)dbr.classList.remove('hidden');
+  }else{
+    allReports=[];
+    try{
+      const s=await db.collection('reports').orderBy('timestamp','desc').get();
+      s.forEach(doc=>allReports.push({id:doc.id,...doc.data()}));
+    }catch(e){showToast('Gagal memuat laporan','error');}
+  }
+  renderReports();
+  updateReportStats();
+  updateReportBadge();
+}
+
+function renderReports(){
+  const list=document.getElementById('reports-list');
+  const empty=document.getElementById('reports-empty');
+  let filtered=allReports;
+  if(reportFilter==='pending')filtered=allReports.filter(r=>r.status!=='resolved');
+  else if(reportFilter==='resolved')filtered=allReports.filter(r=>r.status==='resolved');
+
+  if(filtered.length===0){
+    list.innerHTML='';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  const reasonIcons={
+    'Tidak datang':'fa-person-walking',
+    'Tarif tidak sesuai':'fa-money-bill-wave',
+    'Perilaku tidak sopan':'fa-face-frown',
+    'Penipuan':'fa-mask',
+    'Lainnya':'fa-circle-exclamation'
+  };
+
+  list.innerHTML=filtered.map(r=>{
+    const isPending=r.status!=='resolved';
+    const icon=reasonIcons[r.alasan]||'fa-circle-exclamation';
+    const date=new Date(r.timestamp);
+    const timeStr=date.toLocaleDateString('id-ID',{day:'numeric',month:'short'})+' '+date.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    return `
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden border ${isPending?'border-red-100':'border-surface-100'}">
+      <div class="p-3.5">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isPending?'bg-red-50':'bg-brand-50'}">
+            <i class="fa-solid ${icon} text-sm ${isPending?'text-red-500':'text-brand-500'}"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-700 text-sm truncate">${r.driverName||'Driver'}</span>
+              <span class="text-[10px] font-600 px-2 py-0.5 rounded-full flex-shrink-0 ${isPending?'bg-red-50 text-red-600':'bg-brand-50 text-brand-600'}">${isPending?'Belum Ditinjau':'Selesai'}</span>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[11px] font-600 text-ink-700">${r.alasan}</span>
+              <span class="text-ink-300">·</span>
+              <span class="text-[10px] text-ink-400">${timeStr}</span>
+            </div>
+            <p class="text-[12px] text-ink-500 mt-1.5 leading-relaxed line-clamp-2">${r.deskripsi||'-'}</p>
+          </div>
+        </div>
+      </div>
+      ${isPending?`
+      <div class="flex border-t border-surface-100">
+        <button onclick="resolveReport('${r.id}')" class="flex-1 py-2.5 text-[11px] font-600 text-brand-600 hover:bg-brand-50 transition-colors flex items-center justify-center gap-1.5 card-tap"><i class="fa-solid fa-check text-[10px]"></i> Tandai Selesai</button>
+        <button onclick="deleteReport('${r.id}')" class="flex-1 py-2.5 text-[11px] font-600 text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5 card-tap border-l border-surface-100"><i class="fa-solid fa-trash text-[10px]"></i> Hapus</button>
+      </div>
+      `:`
+      <div class="flex border-t border-surface-100">
+        <button onclick="deleteReport('${r.id}')" class="flex-1 py-2.5 text-[11px] font-600 text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5 card-tap"><i class="fa-solid fa-trash text-[10px]"></i> Hapus</button>
+      </div>
+      `}
+    </div>`;
+  }).join('');
+}
+
+function updateReportStats(){
+  const pending=allReports.filter(r=>r.status!=='resolved').length;
+  const resolved=allReports.filter(r=>r.status==='resolved').length;
+  document.getElementById('report-stat-pending').textContent=pending;
+  document.getElementById('report-stat-resolved').textContent=resolved;
+}
+
+function updateReportBadge(){
+  const pending=allReports.filter(r=>r.status!=='resolved').length;
+  const badge=document.getElementById('reports-badge');
+  if(pending>0){badge.classList.remove('hidden');badge.textContent=pending;}
+  else{badge.classList.add('hidden');}
+}
+
+async function resolveReport(id){
+  if(isDemoMode){
+    const r=allReports.find(x=>x.id===id);
+    if(r){r.status='resolved';r.resolvedAt=new Date().toISOString();}
+    renderReports();updateReportStats();updateReportBadge();
+    showToast('Laporan ditandai selesai','success');
+    return;
+  }
+  if(db){
+    try{
+      await db.collection('reports').doc(id).update({status:'resolved',resolvedAt:new Date().toISOString()});
+      const r=allReports.find(x=>x.id===id);
+      if(r){r.status='resolved';r.resolvedAt=new Date().toISOString();}
+      renderReports();updateReportStats();updateReportBadge();
+      showToast('Laporan ditandai selesai','success');
+    }catch(e){showToast('Gagal mengubah status','error');}
+  }
+}
+
+async function deleteReport(id){
+  if(!confirm('Hapus laporan ini?'))return;
+  if(isDemoMode){
+    allReports=allReports.filter(x=>x.id!==id);
+    renderReports();updateReportStats();updateReportBadge();
+    showToast('Laporan dihapus','success');
+    return;
+  }
+  if(db){
+    try{
+      await db.collection('reports').doc(id).delete();
+      allReports=allReports.filter(x=>x.id!==id);
+      renderReports();updateReportStats();updateReportBadge();
+      showToast('Laporan dihapus','success');
+    }catch(e){showToast('Gagal menghapus','error');}
+  }
 }
 
 // ============================================================
